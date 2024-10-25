@@ -14,6 +14,6 @@ type Scientist struct {
 	ResearchArea  string    `db:"research_area" json:"research_area"`
 	Email         string    `db:"email" json:"email"`
 	ProfileUrl    string    `db:"profile_url" json:"profile_url"`
-	Created_at    time.Time `db:"created_at" json:"created_at"`
-	Updated_at    time.Time `db:"updated_at" json:"updated_at"`
+	CreatedAt     time.Time `db:"created_at" json:"created_at"`
+	UpdatedAt     time.Time `db:"updated_at" json:"updated_at"`
 }
