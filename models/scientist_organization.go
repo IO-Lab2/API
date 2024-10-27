@@ -13,3 +13,16 @@ type ScientistOrganization struct {
 	CreatedAt      time.Time `db:"created_at" json:"created_at"`
 	UpdatedAt      time.Time `db:"updated_at" json:"updated_at"`
 }
+type CreateScientistOrganization struct {
+	ScientistID    uuid.UUID `db:"scientist_id" json:"scientist_id"`
+	OrganizationID uuid.UUID `db:"organization_id" json:"organization_id"`
+}
+type UpdateScientistOrganization struct {
+	ID             uuid.UUID `db:"id" json:"id"`
+	ScientistID    uuid.UUID `db:"scientist_id" json:"scientist_id"`
+	OrganizationID uuid.UUID `db:"organization_id" json:"organization_id"`
+	UpdatedAt      time.Time `db:"updated_at" json:"updated_at"`
+}
+type DeleteScientistOrganization struct {
+	ID uuid.UUID `db:"id" json:"id"`
+}
