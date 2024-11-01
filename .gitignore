@@ -1,0 +1,44 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Go specific files
+*.test
+*.out
+
+# Logs and debugging files
+*.log
+
+# Environment variables
+.env
+
+# Dependency directories (for vendored packages)
+vendor/
+
+# Go workspace files
+go.work
+go.work.sum
+
+# IDE/editor-specific files
+### VS Code ###
+.vscode/
+*.code-workspace
+
+### JetBrains ###
+.idea/
+*.iml
+
+### Sublime ###
+*.sublime-workspace
+*.sublime-project
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# User-specific files
+*.swp
+*.swo
+*~
