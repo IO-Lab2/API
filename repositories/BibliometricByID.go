@@ -1,4 +1,4 @@
-package models
+package repositories
 
 import (
 	"database/sql"
@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func BibliometricsByID(db *sql.DB, id uuid.UUID) ([]models.Bibliometrics, error) {
+func BibliometricByID(db *sql.DB, id uuid.UUID) ([]models.Bibliometrics, error) {
 	query := "SELECT id, h_index, citation_count, publication_count, ministerial_score, scientist_id FROM bibliometrics WHERE id = $1"
 	rows, err := db.Query(query, id)
 	if err != nil {
