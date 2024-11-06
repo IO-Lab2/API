@@ -25,7 +25,6 @@ func PublicationByID(db *sql.DB, id uuid.UUID) ([]models.Publication, error) {
 			&Publication.PublicationDate,
 			&Publication.CitationsCount,
 			&Publication.ImpactFactor,
-			&Publication.ScientistID,
 			&Publication.CreatedAt,
 			&Publication.UpdatedAt,
 		)
