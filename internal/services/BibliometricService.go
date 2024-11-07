@@ -3,8 +3,8 @@ package services
 import (
 	"database/sql"
 	"errors"
-	"io-project-api/models"
-	"io-project-api/repositories"
+	"io-project-api/internal/models"
+	"io-project-api/internal/repositories"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"

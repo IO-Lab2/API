@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"database/sql"
-	"io-project-api/models"
+	"io-project-api/internal/models"
 
 	"github.com/google/uuid"
 )
