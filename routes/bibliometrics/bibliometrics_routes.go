@@ -16,7 +16,7 @@ func RegisterBibliometricsRoutes(api huma.API, basePath string) {
 		OperationID: "Get Bibliometrics by ID",
 		Description: "Get Bibliometrics by ID",
 		Tags:        []string{"bibliometrics"},
-		Method:      http.MethodPost,
+		Method:      http.MethodGet,
 		Path:        fmt.Sprintf("%s/bibliometrics/{id}", basePath),
 		Responses: map[string]*huma.Response{
 			"200": {Description: "Bibliometrics found"},
