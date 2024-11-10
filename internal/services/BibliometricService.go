@@ -1,10 +1,10 @@
 package services
 
 import (
-	"database/sql"
 	"errors"
-	"io-project-api/internal/models"
+	"io-project-api/internal/database"
 	"io-project-api/internal/repositories"
+	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -14,8 +14,8 @@ var (
 	ErrBibliometricNotFound = errors.New("bibliometric not found for the given ID")
 )
 
-func GetBibliometricByID(db *sql.DB, id uuid.UUID) ([]models.Bibliometrics, error) {
-	bibliometric, err := repositories.BibliometricByID(db, id)
+func GetBibliometricByID(id uuid.UUID) ([]responses.BibliometricBody, error) {
+	bibliometric, err := repositories.BibliometricByID(database.GetDB().DB, id)
 	if err != nil {
 		zap.L().Error("Error querying bibliometric by ID", zap.Error(err))
 		return nil, err

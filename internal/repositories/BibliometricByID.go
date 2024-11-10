@@ -2,22 +2,22 @@ package repositories
 
 import (
 	"database/sql"
-	"io-project-api/internal/models"
+	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
 )
 
-func BibliometricByID(db *sql.DB, id uuid.UUID) ([]models.Bibliometrics, error) {
+func BibliometricByID(db *sql.DB, id uuid.UUID) ([]responses.BibliometricBody, error) {
 	query := "SELECT id, h_index, citation_count, publication_count, ministerial_score, scientist_id FROM bibliometrics WHERE id = $1"
 	rows, err := db.Query(query, id)
 	if err != nil {
 		return nil, err
 	}
 
-	var Bibliometrics []models.Bibliometrics
+	var Bibliometrics []responses.BibliometricBody
 
 	for rows.Next() {
-		var Bibliometric models.Bibliometrics
+		var Bibliometric responses.BibliometricBody
 		err := rows.Scan(
 			&Bibliometric.ID,
 			&Bibliometric.HIndex,
