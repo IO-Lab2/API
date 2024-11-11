@@ -2,22 +2,22 @@ package repositories
 
 import (
 	"database/sql"
-	"io-project-api/internal/models"
+	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
 )
 
-func OrganizationByID(db *sql.DB, id uuid.UUID) ([]models.Organization, error) {
+func OrganizationByID(db *sql.DB, id uuid.UUID) ([]responses.OrganizationBody, error) {
 	query := "SELECT id, name, type organization FROM organizations WHERE id = $1"
 	rows, err := db.Query(query, id)
 	if err != nil {
 		return nil, err
 	}
 
-	var Organizations []models.Organization
+	var Organizations []responses.OrganizationBody
 
 	for rows.Next() {
-		var Organization models.Organization
+		var Organization responses.OrganizationBody
 		err := rows.Scan(
 			&Organization.ID,
 			&Organization.Name,

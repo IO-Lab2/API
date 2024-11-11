@@ -1,10 +1,10 @@
 package services
 
 import (
-	"database/sql"
 	"errors"
-	"io-project-api/internal/models"
+	"io-project-api/internal/database"
 	"io-project-api/internal/repositories"
+	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -14,8 +14,8 @@ var (
 	ErrOrganizationNotFound = errors.New("organization not found for the given ID")
 )
 
-func GetOrganizationByID(db *sql.DB, id uuid.UUID) ([]models.Organization, error) {
-	organization, err := repositories.OrganizationByID(db, id)
+func GetOrganizationByID(id uuid.UUID) ([]responses.OrganizationBody, error) {
+	organization, err := repositories.OrganizationByID(database.GetDB().DB, id)
 	if err != nil {
 		zap.L().Error("Error querying organization by ID", zap.Error(err))
 		return nil, err
