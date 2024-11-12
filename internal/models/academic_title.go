@@ -1,14 +1,5 @@
 package models
 
-import (
-	"time"
-
-	"github.com/google/uuid"
-)
-
 type AcademicTitle struct {
-	ID          uuid.UUID `db:"id" json:"id"`
-	ScientistID uuid.UUID `db:"scientist_id" json:"scientist_id"`
-	Title       string    `db:"title" json:"title"`
-	UpdatedAt   time.Time `db:"updated_at" json:"updated_at"`
+	Title string `db:"title" json:"title"`
 }
