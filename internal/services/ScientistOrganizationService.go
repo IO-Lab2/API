@@ -1,10 +1,10 @@
 package services
 
 import (
-	"database/sql"
 	"errors"
-	"io-project-api/internal/models"
+	"io-project-api/internal/database"
 	"io-project-api/internal/repositories"
+	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -14,8 +14,8 @@ var (
 	ErrScientistOrganizationNotFound = errors.New("scientist organization not found for the given ID")
 )
 
-func GetScientistOragnizationByID(db *sql.DB, id uuid.UUID) ([]models.ScientistOrganization, error) {
-	scientistOrganization, err := repositories.ScientistOragnizationByID(db, id)
+func GetScientistOrganizationByID(id uuid.UUID) ([]responses.ScientistOrganizationBody, error) {
+	scientistOrganization, err := repositories.ScientistOragnizationByID(database.GetDB().DB, id)
 	if err != nil {
 		zap.L().Error("Error querying Scientist Organization by ID", zap.Error(err))
 		return nil, err
