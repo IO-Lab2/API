@@ -7,15 +7,15 @@
 	"runArgs": [
 		"--name=io-project-api",
 		"--hostname=io-project-api"
-	],
+	]
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"cweijan.vscode-postgresql-client2"
-			]
-		}
-	}
+	// "customizations": {
+	// 	"vscode": {
+	// 		"extensions": [
+	// 			"cweijan.vscode-postgresql-client2"
+	// 		]
+	// 	}
+	// }
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
