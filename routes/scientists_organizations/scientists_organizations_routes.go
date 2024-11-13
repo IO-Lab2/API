@@ -16,6 +16,7 @@ func RegisterScientistsOrganizationsRoutes(api huma.API, basePath string) {
 		Description: "Get a scientist organization by ID",
 		Tags:        []string{"scientists organizations"},
 		Method:      http.MethodGet,
+		Path:        basePath + "/scientists_organizations/{id}",
 		Responses: map[string]*huma.Response{
 			"200": {Description: "Scientist organization found"},
 			"400": {Description: "Bad request"},

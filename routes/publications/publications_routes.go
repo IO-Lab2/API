@@ -16,6 +16,7 @@ func RegisterPublicationsRoutes(api huma.API, basePath string) {
 		Description: "Get a publication by ID",
 		Tags:        []string{"publications"},
 		Method:      http.MethodGet,
+		Path:        basePath + "/publications/{id}",
 		Responses: map[string]*huma.Response{
 			"200": {Description: "Publication found"},
 			"400": {Description: "Bad request"},
