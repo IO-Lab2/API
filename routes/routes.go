@@ -5,6 +5,11 @@ import (
 	"net/http"
 
 	"io-project-api/internal/responses"
+	"io-project-api/routes/bibliometrics"
+	"io-project-api/routes/organizations"
+	"io-project-api/routes/publications"
+	"io-project-api/routes/scientists"
+	scientistsorganizations "io-project-api/routes/scientists_organizations"
 
 	"github.com/danielgtaylor/huma/v2"
 )
@@ -37,4 +42,10 @@ func RegisterAPIRoutes(api huma.API, prefix string) {
 	}, func(ctx context.Context, i *struct{}) (*responses.Healthcheck, error) {
 		return &responses.Healthcheck{Message: "Healthy"}, nil
 	})
+
+	bibliometrics.RegisterBibliometricsRoutes(api, prefix)
+	organizations.RegisterOrganizationsRoutes(api, prefix)
+	publications.RegisterPublicationsRoutes(api, prefix)
+	scientists.RegisterScientistsRoutes(api, prefix)
+	scientistsorganizations.RegisterScientistsOrganizationsRoutes(api, prefix)
 }
