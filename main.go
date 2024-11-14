@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io-project-api/internal/database"
 	logging "io-project-api/internal/logger"
 	"time"
 
@@ -15,6 +16,8 @@ import (
 
 func main() {
 	logging.Logger.Info("Starting server...")
+
+	database.InitDB()
 
 	defer logging.Sync()
 
