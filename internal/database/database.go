@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -39,6 +40,10 @@ func InitDB() (*sqlx.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed db connection! %v", err)
 	}
+
+	db.SetMaxOpenConns(50)
+	db.SetMaxIdleConns(50)
+	db.SetConnMaxLifetime(20 * time.Minute)
 	log.Println("DB connection initialized!")
 
 	return db, nil
