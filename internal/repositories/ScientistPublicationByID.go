@@ -1,13 +1,13 @@
 package repositories
 
 import (
-	"database/sql"
 	"io-project-api/internal/models"
 
 	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx"
 )
 
-func ScientistPublicationByID(db *sql.DB, id uuid.UUID) ([]models.ScientistPublication, error) {
+func ScientistPublicationByID(db *sqlx.DB, id uuid.UUID) ([]models.ScientistPublication, error) {
 	query := "SELECT id, scientist_id, publication_id, created_at, updated_at FROM scientists_publications WHERE id = $1"
 	rows, err := db.Query(query, id)
 	if err != nil {

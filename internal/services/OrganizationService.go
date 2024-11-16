@@ -15,7 +15,7 @@ var (
 )
 
 func GetOrganizationByID(id uuid.UUID) ([]responses.OrganizationBody, error) {
-	organization, err := repositories.OrganizationByID(database.GetDB().DB, id)
+	organization, err := repositories.OrganizationByID(database.GetDB(), id)
 	if err != nil {
 		zap.L().Error("Error querying organization by ID", zap.Error(err))
 		return nil, err

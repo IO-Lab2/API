@@ -15,7 +15,7 @@ var (
 )
 
 func GetScientistOrganizationByID(id uuid.UUID) ([]responses.ScientistOrganizationBody, error) {
-	scientistOrganization, err := repositories.ScientistOragnizationByID(database.GetDB().DB, id)
+	scientistOrganization, err := repositories.ScientistOragnizationByID(database.GetDB(), id)
 	if err != nil {
 		zap.L().Error("Error querying Scientist Organization by ID", zap.Error(err))
 		return nil, err

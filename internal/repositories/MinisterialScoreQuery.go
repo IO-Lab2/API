@@ -1,11 +1,12 @@
 package repositories
 
 import (
-	"database/sql"
 	"io-project-api/internal/models"
+
+	"github.com/jmoiron/sqlx"
 )
 
-func GetMinisterialScoreFilter(db *sql.DB) ([]models.MinisterialScore, error) {
+func GetMinisterialScoreFilter(db *sqlx.DB) ([]models.MinisterialScore, error) {
 	query := ""
 	rows, err := db.Query(query)
 	if err != nil {

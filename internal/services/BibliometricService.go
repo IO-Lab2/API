@@ -15,7 +15,7 @@ var (
 )
 
 func GetBibliometricByID(id uuid.UUID) ([]responses.BibliometricBody, error) {
-	bibliometric, err := repositories.BibliometricByID(database.GetDB().DB, id)
+	bibliometric, err := repositories.BibliometricByID(database.GetDB(), id)
 	if err != nil {
 		zap.L().Error("Error querying bibliometric by ID", zap.Error(err))
 		return nil, err

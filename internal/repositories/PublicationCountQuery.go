@@ -1,11 +1,12 @@
 package repositories
 
 import (
-	"database/sql"
 	"io-project-api/internal/models"
+
+	"github.com/jmoiron/sqlx"
 )
 
-func GetPublicationCountFilter(db *sql.DB) ([]models.PublicationCount, error) {
+func GetPublicationCountFilter(db *sqlx.DB) ([]models.PublicationCount, error) {
 	query := ""
 	rows, err := db.Query(query)
 	if err != nil {

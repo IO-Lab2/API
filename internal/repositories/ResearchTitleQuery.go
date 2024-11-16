@@ -1,11 +1,12 @@
 package repositories
 
 import (
-	"database/sql"
 	"io-project-api/internal/models"
+
+	"github.com/jmoiron/sqlx"
 )
 
-func GetResearchTitleFilter(db *sql.DB) ([]models.ResearchTitle, error) {
+func GetResearchTitleFilter(db *sqlx.DB) ([]models.ResearchTitle, error) {
 	query := ""
 	rows, err := db.Query(query)
 	if err != nil {

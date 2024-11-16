@@ -1,11 +1,12 @@
 package repositories
 
 import (
-	"database/sql"
 	"io-project-api/internal/models"
+
+	"github.com/jmoiron/sqlx"
 )
 
-func GetCitationCountFilter(db *sql.DB) ([]models.CitationCount, error) {
+func GetCitationCountFilter(db *sqlx.DB) ([]models.CitationCount, error) {
 	query := ""
 	rows, err := db.Query(query)
 	if err != nil {

@@ -1,13 +1,13 @@
 package repositories
 
 import (
-	"database/sql"
 	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx"
 )
 
-func ScientistOragnizationByID(db *sql.DB, id uuid.UUID) ([]responses.ScientistOrganizationBody, error) {
+func ScientistOragnizationByID(db *sqlx.DB, id uuid.UUID) ([]responses.ScientistOrganizationBody, error) {
 	query := "SELECT id, scientist_id, organization_id FROM scientist_organization WHERE id = $1"
 	rows, err := db.Query(query, id)
 	if err != nil {

@@ -15,7 +15,7 @@ var (
 )
 
 func GetPublicationByID(id uuid.UUID) ([]responses.PublicationBody, error) {
-	publication, err := repositories.PublicationByID(database.GetDB().DB, id)
+	publication, err := repositories.PublicationByID(database.GetDB(), id)
 	if err != nil {
 		zap.L().Error("Error querying Publication by ID", zap.Error(err))
 		return nil, err
