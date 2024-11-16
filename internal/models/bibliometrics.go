@@ -8,7 +8,8 @@ import (
 
 type Bibliometrics struct {
 	ID               uuid.UUID `db:"id" json:"id"`
-	HIndex           int       `db:"h_index" json:"h_index"`
+	HIndexWos        int       `db:"h_index_wos" json:"h_index_wos"`
+	HIndexScopus     int       `db:"h_index_scopus" json:"h_index_scopus"`
 	CitationCount    int       `db:"citation_count" json:"citation_count"`
 	PublicationCount int       `db:"publication_count" json:"publication_count"`
 	MinisterialScore float64   `db:"ministerial_score" json:"ministerial_score"`
@@ -17,7 +18,8 @@ type Bibliometrics struct {
 	UpdatedAt        time.Time `db:"updated_at" json:"updated_at"`
 }
 type CreateBibliometrics struct {
-	HIndex           int       `db:"h_index" json:"h_index"`
+	HIndexWos        int       `db:"h_index_wos" json:"h_index_wos"`
+	HIndexScopus     int       `db:"h_index_scopus" json:"h_index_scopus"`
 	CitationCount    int       `db:"citation_count" json:"citation_count"`
 	PublicationCount int       `db:"publication_count" json:"publication_count"`
 	MinisterialScore float64   `db:"ministerial_score" json:"ministerial_score"`
@@ -25,7 +27,8 @@ type CreateBibliometrics struct {
 }
 type UpdateBibliometrics struct {
 	ID               uuid.UUID `db:"id" json:"id"`
-	HIndex           int       `db:"h_index" json:"h_index"`
+	HIndexWos        int       `db:"h_index_wos" json:"h_index_wos"`
+	HIndexScopus     int       `db:"h_index_scopus" json:"h_index_scopus"`
 	CitationCount    int       `db:"citation_count" json:"citation_count"`
 	PublicationCount int       `db:"publication_count" json:"publication_count"`
 	MinisterialScore float64   `db:"ministerial_score" json:"ministerial_score"`

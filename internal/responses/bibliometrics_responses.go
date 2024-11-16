@@ -12,7 +12,8 @@ type BibliometricsResponse struct {
 
 type BibliometricBody struct {
 	ID               uuid.UUID `json:"id" doc:"Bibliometric ID" format:"uuid" example:"8c4bfb01-3c0a-416c-a07c-a24ee52a8b2a"`
-	HIndex           int       `json:"h_index" doc:"H-Index" format:"int" example:"20"`
+	HIndexWos        int       `json:"h_index_wos" doc:"HIndex Wos" format:"int" example:"1"`
+	HIndexScopus     int       `json:"h_index_scopus" doc:"HIndex Scopus" format:"int" example:"2"`
 	CitationCount    int       `json:"citation_count" doc:"Citation count" format:"int" example:"67"`
 	PublicationCount int       `json:"publication_count" doc:"Publication count" format:"int" example:"123"`
 	MinisterialScore float64   `json:"ministerial_score" doc:"Ministerial score" format:"float" example:"65.7"`
