@@ -8,11 +8,12 @@ import (
 )
 
 func ScientistByID(db *sql.DB, id uuid.UUID) ([]responses.ScientistBody, error) {
-	query := "SELECT id first_name, last_name,  academic_title,  research_area, email,  profile_url FROM scientists WHERE id = $1"
+	query := "SELECT id, first_name, last_name, academic_title, research_area, email, profile_url, created_at, updated_at FROM scientists WHERE id = $1"
 	rows, err := db.Query(query, id)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var scientists []responses.ScientistBody
 
