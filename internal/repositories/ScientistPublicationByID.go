@@ -1,13 +1,13 @@
 package repositories
 
 import (
-	"io-project-api/internal/models"
+	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 )
 
-func ScientistPublicationByID(db *sqlx.DB, id uuid.UUID) ([]models.ScientistPublication, error) {
+func ScientistPublicationByID(db *sqlx.DB, id uuid.UUID) ([]responses.ScientistPublicationBody, error) {
 	query := "SELECT id, scientist_id, publication_id, created_at, updated_at FROM scientists_publications WHERE id = $1"
 	rows, err := db.Query(query, id)
 	if err != nil {
@@ -15,10 +15,10 @@ func ScientistPublicationByID(db *sqlx.DB, id uuid.UUID) ([]models.ScientistPubl
 	}
 	defer rows.Close()
 
-	var scientistPublications []models.ScientistPublication
+	var scientistPublications []responses.ScientistPublicationBody
 
 	for rows.Next() {
-		var scientistPublication models.ScientistPublication
+		var scientistPublication responses.ScientistPublicationBody
 		err := rows.Scan(
 			&scientistPublication.ID,
 			&scientistPublication.ScientistID,
