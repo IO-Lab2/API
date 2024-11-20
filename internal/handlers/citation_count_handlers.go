@@ -11,7 +11,6 @@ import (
 func GetCitationCountHandler(ctx context.Context) (*responses.CitationCountResponse, error) {
 	response := &responses.CitationCountResponse{}
 
-	
 	counts, err := services.GetCitationCount()
 	if err != nil {
 		if err == services.ErrCitationCountFilterNotFound {
@@ -20,7 +19,6 @@ func GetCitationCountHandler(ctx context.Context) (*responses.CitationCountRespo
 		return nil, huma.Error500InternalServerError("Failed to retrieve citation counts")
 	}
 
-	
 	response.Body = counts
-	return counts, nil
+	return response, nil
 }

@@ -23,8 +23,8 @@ func RegisterMinisterialScoresRoutes(api huma.API, basePath string) {
 			"404": {Description: "No ministerial scores found"},
 			"500": {Description: "Internal server error"},
 		}},
-		func(ctx context.Context, input *requests.MinisterialScoreFilterRequest) (*responses.MinisterialScoresResponse, error) {
-			return handlers.GetMinisterialScoresHandler(ctx)
+		func(ctx context.Context, input *requests.MinisterialScoreFilterRequest) (*responses.MinisterialScoreResponse, error) {
+			return handlers.GetMinisterialScoreHandler(ctx)
 		},
 	)
 }

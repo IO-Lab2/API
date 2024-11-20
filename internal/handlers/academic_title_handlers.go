@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"context"
-	
+
 	"io-project-api/internal/responses"
 	"io-project-api/internal/services"
 
@@ -12,7 +12,6 @@ import (
 func GetAcademicTitleHandler(ctx context.Context) (*responses.AcademicTitleResponse, error) {
 	response := &responses.AcademicTitleResponse{}
 
-	
 	titles, err := services.GetAcademicTitles()
 	if err != nil {
 		if err == services.ErrAcademicTitleFilterNotFound {
@@ -21,7 +20,6 @@ func GetAcademicTitleHandler(ctx context.Context) (*responses.AcademicTitleRespo
 		return nil, huma.Error500InternalServerError("Failed to retrieve academic titles")
 	}
 
-	
 	response.Body = titles
-	return titles, nil
+	return response, nil
 }

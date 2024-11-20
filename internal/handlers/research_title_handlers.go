@@ -11,7 +11,6 @@ import (
 func GetResearchTitleHandler(ctx context.Context) (*responses.ResearchTitleResponse, error) {
 	response := &responses.ResearchTitleResponse{}
 
-	
 	titles, err := services.GetResearchTitle()
 	if err != nil {
 		if err == services.ErrResearchTitleFilterNotFound {
@@ -20,7 +19,6 @@ func GetResearchTitleHandler(ctx context.Context) (*responses.ResearchTitleRespo
 		return nil, huma.Error500InternalServerError("Failed to retrieve research titles")
 	}
 
-	
 	response.Body = titles
-	return titles, nil
+	return response, nil
 }
