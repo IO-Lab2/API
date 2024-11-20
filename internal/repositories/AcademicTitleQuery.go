@@ -6,7 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func GetAcademicTitleFilter(db *sqlx.DB) ([]models.AcademicTitle, error) {
+func AcademicTitleFilter(db *sqlx.DB) ([]models.AcademicTitle, error) {
 	query := ""
 	rows, err := db.Query(query)
 	if err != nil {

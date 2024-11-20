@@ -6,7 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func GetPublicationCountFilter(db *sqlx.DB) ([]models.PublicationCount, error) {
+func PublicationCountFilter(db *sqlx.DB) ([]models.PublicationCount, error) {
 	query := ""
 	rows, err := db.Query(query)
 	if err != nil {
