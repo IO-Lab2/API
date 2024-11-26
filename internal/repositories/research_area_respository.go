@@ -6,17 +6,17 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func AcademicTitleFilter(db *sqlx.DB) ([]models.AcademicTitle, error) {
-	query := ""
+func ResearchAreaFilter(db *sqlx.DB) ([]models.ResearchTitle, error) {
+	query := "SELECT DISTINCT research_area FROM scientists"
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var titles []models.AcademicTitle
+	var titles []models.ResearchTitle
 	for rows.Next() {
-		var title models.AcademicTitle
+		var title models.ResearchTitle
 		if err := rows.Scan(&title.Title); err != nil {
 			return nil, err
 		}

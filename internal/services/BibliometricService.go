@@ -28,3 +28,18 @@ func GetBibliometricByID(id uuid.UUID) ([]responses.BibliometricBody, error) {
 
 	return bibliometric, nil
 }
+
+func GetBibliometricByAuthor(author string) ([]responses.BibliometricBody, error) {
+	bibliometric, err := repositories.BibliometricByAuthor(database.GetDB(), author)
+	if err != nil {
+		zap.L().Error("Error querying bibliometric by author", zap.Error(err))
+		return nil, err
+	}
+
+	if len(bibliometric) == 0 {
+		zap.L().Warn("No bibliometric found", zap.String("Author", author))
+		return nil, ErrBibliometricNotFound
+	}
+
+	return bibliometric, nil
+}
