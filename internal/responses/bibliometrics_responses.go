@@ -6,8 +6,12 @@ import (
 	"github.com/google/uuid"
 )
 
-type BibliometricsResponse struct {
+type ListOfBibliometricsResponse struct {
 	Body []BibliometricBody `json:"body" doc:"Bibliometrics object"`
+}
+
+type BibliometricsResponse struct {
+	Body *BibliometricBody `json:"body" doc:"Bibliometrics object"`
 }
 
 type BibliometricBody struct {

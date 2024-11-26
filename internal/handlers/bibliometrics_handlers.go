@@ -19,8 +19,8 @@ func GetBibliometricByID(ctx context.Context, input *requests.BibliometricsID) (
 	return response, nil
 }
 
-func GetBibliometricByAuthor(ctx context.Context, input *requests.BibliometricsAuthor) (*responses.BibliometricsResponse, error) {
-	response := &responses.BibliometricsResponse{}
+func GetBibliometricByAuthor(ctx context.Context, input *requests.BibliometricsAuthor) (*responses.ListOfBibliometricsResponse, error) {
+	response := &responses.ListOfBibliometricsResponse{}
 	resultingBibliometrics, err := services.GetBibliometricByAuthor(input.Author)
 	if err != nil {
 		return nil, huma.Error400BadRequest("Failed to get bibliometrics by author")

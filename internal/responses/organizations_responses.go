@@ -7,6 +7,10 @@ import (
 )
 
 type OrganizationsResponse struct {
+	Body *OrganizationBody `json:"body" doc:"Organization object"`
+}
+
+type ListOfOrganizationsResponse struct {
 	Body []OrganizationBody `json:"body" doc:"Organization object"`
 }
 type OrganizationBody struct {

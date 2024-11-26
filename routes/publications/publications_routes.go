@@ -24,4 +24,18 @@ func RegisterPublicationsRoutes(api huma.API, basePath string) {
 	}, func(ctx context.Context, i *requests.PublicationID) (*responses.PublicationsResponse, error) {
 		return handlers.GetPublicationByID(ctx, i)
 	})
+
+	huma.Register(api, huma.Operation{
+		OperationID: "Get Scientists Publication By Scientists ID",
+		Description: "Get Scientists Publication By Scientists ID",
+		Tags:        []string{"scientists publications"},
+		Method:      http.MethodGet,
+		Path:        basePath + "/scientists_publications/{id}",
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Scientist publication found"},
+			"400": {Description: "Bad request"},
+		}},
+		func(ctx context.Context, i *requests.ScientistPublicationID) (*responses.ScientistPublicationResponse, error) {
+			return handlers.GetScientistPublicationByID(ctx, i)
+		})
 }
