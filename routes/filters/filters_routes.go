@@ -60,4 +60,20 @@ func RegisterFiltersRoutes(api huma.API, basePath string) {
 
 		},
 	)
+
+	huma.Register(api, huma.Operation{
+		OperationID: "Get Academic Titles Filter",
+		Description: "Retrieve a list of academic titles",
+		Tags:        []string{"Filters", "Academic Titles"},
+		Method:      http.MethodGet,
+		Path:        fmt.Sprintf("%s/filters/academic-titles", basePath),
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Academic titles retrieved successfully"},
+			"404": {Description: "No academic titles found"},
+			"500": {Description: "Internal server error"},
+		}},
+		func(ctx context.Context, input *requests.AcademicTitleFilterRequest) (*responses.AcademicTitleResponse, error) {
+			return handlers.GetAcademicTitleHandler(ctx)
+		},
+	)
 }

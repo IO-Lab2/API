@@ -1,5 +1,5 @@
 package models
 
 type AcademicTitle struct {
-	Title string `db:"title" json:"title"`
+	Title string `json:"title" doc:"Academic title" format:"string" example:"prof. dr hab."`
 }
