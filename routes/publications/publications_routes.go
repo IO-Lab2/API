@@ -28,7 +28,7 @@ func RegisterPublicationsRoutes(api huma.API, basePath string) {
 	huma.Register(api, huma.Operation{
 		OperationID: "Get Scientists Publication By Scientists ID",
 		Description: "Get Scientists Publication By Scientists ID",
-		Tags:        []string{"scientists publications"},
+		Tags:        []string{"Publications"},
 		Method:      http.MethodGet,
 		Path:        basePath + "/scientists_publications/{id}",
 		Responses: map[string]*huma.Response{

@@ -11,12 +11,11 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 )
 
-
 func RegisterCitationCountRoutes(api huma.API, basePath string) {
 	huma.Register(api, huma.Operation{
 		OperationID: "Get Citation Counts",
 		Description: "Retrieve a list of citation counts",
-		Tags:        []string{"citation-counts"},
+		Tags:        []string{"Citation Counts"},
 		Method:      http.MethodGet,
 		Path:        fmt.Sprintf("%s/citation-counts", basePath),
 		Responses: map[string]*huma.Response{

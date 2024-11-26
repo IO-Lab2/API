@@ -15,7 +15,7 @@ func RegisterMinisterialScoresRoutes(api huma.API, basePath string) {
 	huma.Register(api, huma.Operation{
 		OperationID: "Get Ministerial Scores",
 		Description: "Retrieve a list of ministerial scores",
-		Tags:        []string{"ministerial-scores"},
+		Tags:        []string{"Ministerial Scores"},
 		Method:      http.MethodGet,
 		Path:        fmt.Sprintf("%s/ministerial-scores", basePath),
 		Responses: map[string]*huma.Response{

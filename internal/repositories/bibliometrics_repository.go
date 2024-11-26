@@ -17,9 +17,9 @@ func BibliometricByID(db *sqlx.DB, id uuid.UUID) (*responses.BibliometricBody, e
 	return bibliometrics, nil
 }
 
-func BibliometricByAuthor(db *sqlx.DB, author string) ([]responses.BibliometricBody, error) {
+func BibliometricByAuthor(db *sqlx.DB, id uuid.UUID) ([]responses.BibliometricBody, error) {
 	query := "SELECT id, h_index_wos, h_index_scopus, citation_count, publication_count, ministerial_score, scientist_id, created_at, updated_at FROM bibliometrics WHERE scientist_id = $1"
-	rows, err := db.Query(query, author)
+	rows, err := db.Query(query, id)
 	if err != nil {
 		return nil, err
 	}

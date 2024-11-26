@@ -27,9 +27,9 @@ func RegisterOrganizationsRoutes(api huma.API, basePath string) {
 		})
 
 	huma.Register(api, huma.Operation{
-		OperationID: "Get scientist organization by ID",
+		OperationID: "Get Scientist Organization by ID",
 		Description: "Get a scientist organization by ID",
-		Tags:        []string{"scientists organizations"},
+		Tags:        []string{"Organization"},
 		Method:      http.MethodGet,
 		Path:        basePath + "/scientists_organizations/{id}",
 		Responses: map[string]*huma.Response{
