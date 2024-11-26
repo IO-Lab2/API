@@ -22,7 +22,7 @@ func RegisterOrganizationsRoutes(api huma.API, basePath string) {
 			"200": {Description: "Organization found"},
 			"400": {Description: "Bad request"},
 		}},
-		func(ctx context.Context, input *requests.OrganizationID) (*responses.OrganizationsResponse, error) {
+		func(ctx context.Context, input *requests.OrganizationID) (*responses.OrganizationResponse, error) {
 			return handlers.GetOrganizationById(ctx, input)
 		})
 

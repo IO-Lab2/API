@@ -9,8 +9,8 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 )
 
-func GetOrganizationById(ctx context.Context, input *requests.OrganizationID) (*responses.OrganizationsResponse, error) {
-	response := &responses.OrganizationsResponse{}
+func GetOrganizationById(ctx context.Context, input *requests.OrganizationID) (*responses.OrganizationResponse, error) {
+	response := &responses.OrganizationResponse{}
 	resultingOrganizations, err := services.GetOrganizationByID(input.ID)
 	if err != nil {
 		return nil, huma.Error400BadRequest("Failed to get organization by ID")
@@ -29,8 +29,8 @@ func GetOrganizationsByScientistId(ctx context.Context, input *requests.Scientis
 	return response, nil
 }
 
-func GetOrganizationsHandler(ctx context.Context) (*responses.ListOfOrganizationsResponse, error) {
-	response := &responses.ListOfOrganizationsResponse{}
+func GetOrganizationsHandler(ctx context.Context) (*responses.ListOfOrganizations, error) {
+	response := &responses.ListOfOrganizations{}
 	resultingOrganizations, err := services.GetOrganizations()
 	if err != nil {
 		return nil, huma.Error400BadRequest("Failed to get organizations")

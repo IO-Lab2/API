@@ -55,7 +55,7 @@ func RegisterFiltersRoutes(api huma.API, basePath string) {
 			"404": {Description: "No organizations found"},
 			"500": {Description: "Internal server error"},
 		}},
-		func(ctx context.Context, input *requests.OrganizationFilterRequest) (*responses.ListOfOrganizationsResponse, error) {
+		func(ctx context.Context, input *requests.OrganizationFilterRequest) (*responses.ListOfOrganizations, error) {
 			return handlers.GetOrganizationsHandler(ctx)
 
 		},

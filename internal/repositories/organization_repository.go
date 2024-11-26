@@ -7,9 +7,9 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func OrganizationByID(db *sqlx.DB, id uuid.UUID) (*responses.OrganizationBody, error) {
-	query := "SELECT id, name, type organization FROM organizations WHERE id = $1"
-	var organization responses.OrganizationBody
+func OrganizationByID(db *sqlx.DB, id uuid.UUID) (*responses.OrganizationBodyExtended, error) {
+	query := "SELECT id, name, type, created_at, updated_at FROM organizations WHERE id = $1"
+	var organization responses.OrganizationBodyExtended
 	if err := db.Get(&organization, query, id); err != nil {
 		return nil, err
 	}
@@ -17,7 +17,7 @@ func OrganizationByID(db *sqlx.DB, id uuid.UUID) (*responses.OrganizationBody, e
 	return &organization, nil
 }
 
-func OrganizationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.OrganizationBody, error) {
+func OrganizationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.OrganizationBodyExtended, error) {
 	query := `
 		SELECT o.*
 		FROM organizations o
@@ -28,10 +28,10 @@ func OrganizationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.Organiza
 		return nil, err
 	}
 
-	var Organizations []responses.OrganizationBody
+	var Organizations []responses.OrganizationBodyExtended
 
 	for rows.Next() {
-		var Organization responses.OrganizationBody
+		var Organization responses.OrganizationBodyExtended
 		err := rows.Scan(
 			&Organization.ID,
 			&Organization.Name,
@@ -59,11 +59,8 @@ func Organizations(db *sqlx.DB) ([]responses.OrganizationBody, error) {
 	for rows.Next() {
 		var Organization responses.OrganizationBody
 		err := rows.Scan(
-			&Organization.ID,
 			&Organization.Name,
 			&Organization.Type,
-			&Organization.CreatedAt,
-			&Organization.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err

@@ -14,7 +14,7 @@ var (
 	ErrOrganizationNotFound = errors.New("organization not found for the given ID")
 )
 
-func GetOrganizationByID(id uuid.UUID) (*responses.OrganizationBody, error) {
+func GetOrganizationByID(id uuid.UUID) (*responses.OrganizationBodyExtended, error) {
 	organization, err := repositories.OrganizationByID(database.GetDB(), id)
 	if err != nil {
 		zap.L().Error("Error querying organization by ID", zap.Error(err))
@@ -24,7 +24,7 @@ func GetOrganizationByID(id uuid.UUID) (*responses.OrganizationBody, error) {
 	return organization, nil
 }
 
-func GetOrganizationsByScientistID(id uuid.UUID) ([]responses.OrganizationBody, error) {
+func GetOrganizationsByScientistID(id uuid.UUID) ([]responses.OrganizationBodyExtended, error) {
 	organizations, err := repositories.OrganizationsByScientistID(database.GetDB(), id)
 	if err != nil {
 		zap.L().Error("Error querying organizations by scientist ID", zap.Error(err))

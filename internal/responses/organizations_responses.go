@@ -6,14 +6,23 @@ import (
 	"github.com/google/uuid"
 )
 
-type OrganizationsResponse struct {
-	Body *OrganizationBody `json:"body" doc:"Organization object"`
+type OrganizationResponse struct {
+	Body *OrganizationBodyExtended `json:"body" doc:"Organization object"`
+}
+
+type ListOfOrganizations struct {
+	Body []OrganizationBody `json:"body" doc:"Organization object"`
+}
+
+type OrganizationBody struct {
+	Name string `json:"name" doc:"Name of the organization" format:"string" example:"Politechnika Warszawska"`
+	Type string `json:"type" doc:"Type of the organization" format:"string" example:"Uniwersytet"`
 }
 
 type ListOfOrganizationsResponse struct {
-	Body []OrganizationBody `json:"body" doc:"Organization object"`
+	Body []OrganizationBodyExtended `json:"body" doc:"Organization object"`
 }
-type OrganizationBody struct {
+type OrganizationBodyExtended struct {
 	ID        uuid.UUID `json:"id" doc:"Organization ID" format:"uuid" example:"8c4bfb01-3c0a-416c-a07c-a24ee52a8b2a"`
 	Name      string    `json:"name" doc:"Name of the organization" format:"string" example:"Politechnika Warszawska"`
 	Type      string    `json:"type" doc:"Type of the organization" format:"string" example:"Uniwersytet"`
