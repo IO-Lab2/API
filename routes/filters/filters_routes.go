@@ -94,14 +94,14 @@ func RegisterFiltersRoutes(api huma.API, basePath string) {
 	)
 
 	huma.Register(api, huma.Operation{
-		OperationID: "Get Research Titles Filter",
-		Description: "Retrieves a list of research titles",
-		Tags:        []string{"Filters", "Research Titles"},
+		OperationID: "Get Research Areas Filter",
+		Description: "Retrieves a list of research Areas",
+		Tags:        []string{"Filters", "Research Areas"},
 		Method:      http.MethodGet,
-		Path:        fmt.Sprintf("%s/research-titles", basePath),
+		Path:        fmt.Sprintf("%s/research-areas", basePath),
 		Responses: map[string]*huma.Response{
-			"200": {Description: "Research titles retrieved successfully"},
-			"404": {Description: "No research titles found"},
+			"200": {Description: "Research areas retrieved successfully"},
+			"404": {Description: "No research areas found"},
 			"500": {Description: "Internal server error"},
 		}},
 		func(ctx context.Context, input *requests.ResearchAreasFilterRequest) (*responses.ResearchAreasResponse, error) {
