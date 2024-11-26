@@ -6,7 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func GetMinisterialScoreFilter(db *sqlx.DB) ([]models.MinisterialScore, error) {
+func MinisterialScoreFilter(db *sqlx.DB) ([]models.MinisterialScore, error) {
 	query := ""
 	rows, err := db.Query(query)
 	if err != nil {

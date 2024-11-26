@@ -6,7 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func GetCitationCountFilter(db *sqlx.DB) ([]models.CitationCount, error) {
+func CitationCountFilter(db *sqlx.DB) ([]models.CitationCount, error) {
 	query := ""
 	rows, err := db.Query(query)
 	if err != nil {
