@@ -6,7 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func ResearchAreaFilter(db *sqlx.DB) ([]models.ResearchTitle, error) {
+func ResearchAreaFilter(db *sqlx.DB) ([]models.ResearchArea, error) {
 	query := "SELECT DISTINCT research_area FROM scientists"
 	rows, err := db.Query(query)
 	if err != nil {
@@ -14,13 +14,13 @@ func ResearchAreaFilter(db *sqlx.DB) ([]models.ResearchTitle, error) {
 	}
 	defer rows.Close()
 
-	var titles []models.ResearchTitle
+	var areas []models.ResearchArea
 	for rows.Next() {
-		var title models.ResearchTitle
-		if err := rows.Scan(&title.Title); err != nil {
+		var area models.ResearchArea
+		if err := rows.Scan(&area.Area); err != nil {
 			return nil, err
 		}
-		titles = append(titles, title)
+		areas = append(areas, area)
 	}
-	return titles, nil
+	return areas, nil
 }

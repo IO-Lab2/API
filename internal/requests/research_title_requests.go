@@ -1,7 +1,4 @@
 package requests
 
-
-
-type ResearchTitleFilterRequest struct {
-
+type ResearchAreasFilterRequest struct {
 }

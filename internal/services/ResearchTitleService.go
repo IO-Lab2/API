@@ -13,7 +13,7 @@ var (
 	ErrResearchTitleFilterNotFound = errors.New("no research title found")
 )
 
-func GetResearchTitle() ([]models.ResearchTitle, error) {
+func GetResearchAreas() ([]models.ResearchArea, error) {
 
 	db := database.GetDB()
 

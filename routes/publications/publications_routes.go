@@ -12,7 +12,7 @@ import (
 
 func RegisterPublicationsRoutes(api huma.API, basePath string) {
 	huma.Register(api, huma.Operation{
-		OperationID: "Get publications by ID",
+		OperationID: "Get Publications By ID",
 		Description: "Get a publication by ID",
 		Tags:        []string{"Publications"},
 		Method:      http.MethodGet,

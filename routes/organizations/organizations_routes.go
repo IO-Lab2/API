@@ -15,7 +15,7 @@ func RegisterOrganizationsRoutes(api huma.API, basePath string) {
 	huma.Register(api, huma.Operation{
 		OperationID: "Get Organization by ID",
 		Description: "Get Organization by ID",
-		Tags:        []string{"Organization"},
+		Tags:        []string{"Organizations"},
 		Method:      http.MethodGet,
 		Path:        fmt.Sprintf("%s/organizations/{id}", basePath),
 		Responses: map[string]*huma.Response{
@@ -29,7 +29,7 @@ func RegisterOrganizationsRoutes(api huma.API, basePath string) {
 	huma.Register(api, huma.Operation{
 		OperationID: "Get Scientist Organization by ID",
 		Description: "Get a scientist organization by ID",
-		Tags:        []string{"Organization"},
+		Tags:        []string{"Organizations"},
 		Method:      http.MethodGet,
 		Path:        basePath + "/scientists_organizations/{id}",
 		Responses: map[string]*huma.Response{
@@ -43,7 +43,7 @@ func RegisterOrganizationsRoutes(api huma.API, basePath string) {
 	huma.Register(api, huma.Operation{
 		OperationID: "Get Organizations By Scientist ID",
 		Description: "Get Organizations By Scientist ID",
-		Tags:        []string{"Organization"},
+		Tags:        []string{"Organizations"},
 		Method:      http.MethodGet,
 		Path:        fmt.Sprintf("%s/organizations/scientist/{id}", basePath),
 		Responses: map[string]*huma.Response{

@@ -8,10 +8,10 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 )
 
-func GetResearchTitleHandler(ctx context.Context) (*responses.ResearchTitleResponse, error) {
-	response := &responses.ResearchTitleResponse{}
+func GetResearchTitleHandler(ctx context.Context) (*responses.ResearchAreasResponse, error) {
+	response := &responses.ResearchAreasResponse{}
 
-	titles, err := services.GetResearchTitle()
+	areas, err := services.GetResearchAreas()
 	if err != nil {
 		if err == services.ErrResearchTitleFilterNotFound {
 			return nil, huma.Error404NotFound("No research titles found")
@@ -19,6 +19,6 @@ func GetResearchTitleHandler(ctx context.Context) (*responses.ResearchTitleRespo
 		return nil, huma.Error500InternalServerError("Failed to retrieve research titles")
 	}
 
-	response.Body = titles
+	response.Body = areas
 	return response, nil
 }

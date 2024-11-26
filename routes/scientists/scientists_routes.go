@@ -16,7 +16,7 @@ func RegisterScientistsRoutes(api huma.API, basePath string) {
 	huma.Register(api, huma.Operation{
 		OperationID: "Get Scientists by ID",
 		Description: "Get a scientist by ID",
-		Tags:        []string{"scientists"},
+		Tags:        []string{"Scientists"},
 		Method:      http.MethodGet,
 		Path:        fmt.Sprintf("%s/scientists/{id}", basePath),
 		Responses: map[string]*huma.Response{

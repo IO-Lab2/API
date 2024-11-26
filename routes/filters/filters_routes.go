@@ -63,7 +63,7 @@ func RegisterFiltersRoutes(api huma.API, basePath string) {
 
 	huma.Register(api, huma.Operation{
 		OperationID: "Get Academic Titles Filter",
-		Description: "Retrieve a list of academic titles",
+		Description: "Retrieves a list of academic titles",
 		Tags:        []string{"Filters", "Academic Titles"},
 		Method:      http.MethodGet,
 		Path:        fmt.Sprintf("%s/filters/academic-titles", basePath),
@@ -74,6 +74,38 @@ func RegisterFiltersRoutes(api huma.API, basePath string) {
 		}},
 		func(ctx context.Context, input *requests.AcademicTitleFilterRequest) (*responses.AcademicTitleResponse, error) {
 			return handlers.GetAcademicTitleHandler(ctx)
+		},
+	)
+
+	huma.Register(api, huma.Operation{
+		OperationID: "Get Citations Counts",
+		Description: "Retrieves a range of citations counts",
+		Tags:        []string{"Filters", "Citation Counts"},
+		Method:      http.MethodGet,
+		Path:        fmt.Sprintf("%s/filters/citation-counts", basePath),
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Citation counts retrieved successfully"},
+			"404": {Description: "No citation counts found"},
+			"500": {Description: "Internal server error"},
+		}},
+		func(ctx context.Context, input *requests.CitationCountFilterRequest) (*responses.CitationCountResponse, error) {
+			return handlers.GetCitationCountHandler(ctx)
+		},
+	)
+
+	huma.Register(api, huma.Operation{
+		OperationID: "Get Research Titles Filter",
+		Description: "Retrieves a list of research titles",
+		Tags:        []string{"Filters", "Research Titles"},
+		Method:      http.MethodGet,
+		Path:        fmt.Sprintf("%s/research-titles", basePath),
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Research titles retrieved successfully"},
+			"404": {Description: "No research titles found"},
+			"500": {Description: "Internal server error"},
+		}},
+		func(ctx context.Context, input *requests.ResearchAreasFilterRequest) (*responses.ResearchAreasResponse, error) {
+			return handlers.GetResearchTitleHandler(ctx)
 		},
 	)
 }
