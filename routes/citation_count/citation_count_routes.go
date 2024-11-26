@@ -13,9 +13,9 @@ import (
 
 func RegisterCitationCountRoutes(api huma.API, basePath string) {
 	huma.Register(api, huma.Operation{
-		OperationID: "Get Citation Counts",
-		Description: "Retrieve a list of citation counts",
-		Tags:        []string{"Citation Counts"},
+		OperationID: "Get Citations Counts",
+		Description: "Retrieves a range of citations counts",
+		Tags:        []string{"Filters", "Citation Counts"},
 		Method:      http.MethodGet,
 		Path:        fmt.Sprintf("%s/citation-counts", basePath),
 		Responses: map[string]*huma.Response{

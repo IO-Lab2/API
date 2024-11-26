@@ -6,21 +6,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func MinisterialScoreFilter(db *sqlx.DB) ([]models.MinisterialScore, error) {
-	query := ""
-	rows, err := db.Query(query)
-	if err != nil {
+func MinisterialScoreFilter(db *sqlx.DB) (*models.MinisterialScore, error) {
+	query := "SELECT MAX(ministerial_score ) as largest, MIN(ministerial_score ) as smallest FROM ministerial_score"
+	var scores models.MinisterialScore
+	if err := db.Get(&scores, query); err != nil {
 		return nil, err
 	}
-	defer rows.Close()
 
-	var scores []models.MinisterialScore
-	for rows.Next() {
-		var score models.MinisterialScore
-		if err := rows.Scan(&score.Score); err != nil {
-			return nil, err
-		}
-		scores = append(scores, score)
-	}
-	return scores, nil
+	return &scores, nil
 }

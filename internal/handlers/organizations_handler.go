@@ -28,3 +28,13 @@ func GetOrganizationsByScientistId(ctx context.Context, input *requests.Scientis
 	response.Body = resultingOrganizations
 	return response, nil
 }
+
+func GetOrganizationsHandler(ctx context.Context) (*responses.ListOfOrganizationsResponse, error) {
+	response := &responses.ListOfOrganizationsResponse{}
+	resultingOrganizations, err := services.GetOrganizations()
+	if err != nil {
+		return nil, huma.Error400BadRequest("Failed to get organizations")
+	}
+	response.Body = resultingOrganizations
+	return response, nil
+}

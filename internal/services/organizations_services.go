@@ -33,3 +33,13 @@ func GetOrganizationsByScientistID(id uuid.UUID) ([]responses.OrganizationBody, 
 
 	return organizations, nil
 }
+
+func GetOrganizations() ([]responses.OrganizationBody, error) {
+	organizations, err := repositories.Organizations(database.GetDB())
+	if err != nil {
+		zap.L().Error("Error querying organizations", zap.Error(err))
+		return nil, err
+	}
+
+	return organizations, nil
+}
