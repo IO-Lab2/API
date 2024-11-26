@@ -10,6 +10,7 @@ import (
 	"io-project-api/routes/organizations"
 	"io-project-api/routes/publications"
 	"io-project-api/routes/scientists"
+	"io-project-api/routes/search"
 
 	"github.com/danielgtaylor/huma/v2"
 )
@@ -48,4 +49,5 @@ func RegisterAPIRoutes(api huma.API, prefix string) {
 	organizations.RegisterOrganizationsRoutes(api, prefix)
 	publications.RegisterPublicationsRoutes(api, prefix)
 	scientists.RegisterScientistsRoutes(api, prefix)
+	search.RegisterSearchRoutes(api, prefix)
 }
