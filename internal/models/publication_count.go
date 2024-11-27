@@ -1,5 +1,6 @@
 package models
 
 type PublicationCount struct {
-	Count int `db:"count" json:"count"`
+	Largest  int `json:"largest"`
+	Smallest int `json:"smallest"`
 }

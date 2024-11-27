@@ -32,3 +32,32 @@ func ScientistOragnizationByID(db *sqlx.DB, id uuid.UUID) ([]responses.Scientist
 	}
 	return scientistsOrganizations, nil
 }
+
+func ScientistsOrganizationByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.ScientistOrganizationBody, error) {
+	query := `
+		SELECT so.*
+		FROM scientist_organization so
+		WHERE so.scientist_id = $1`
+	rows, err := db.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+
+	var scientistsOrganizations []responses.ScientistOrganizationBody
+
+	for rows.Next() {
+		var scientistOrganization responses.ScientistOrganizationBody
+		err := rows.Scan(
+			&scientistOrganization.ID,
+			&scientistOrganization.ScientistID,
+			&scientistOrganization.OrganizationID,
+			&scientistOrganization.CreatedAt,
+			&scientistOrganization.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		scientistsOrganizations = append(scientistsOrganizations, scientistOrganization)
+	}
+	return scientistsOrganizations, nil
+}

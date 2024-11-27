@@ -14,15 +14,25 @@ var (
 	ErrBibliometricNotFound = errors.New("bibliometric not found for the given ID")
 )
 
-func GetBibliometricByID(id uuid.UUID) ([]responses.BibliometricBody, error) {
+func GetBibliometricByID(id uuid.UUID) (*responses.BibliometricBody, error) {
 	bibliometric, err := repositories.BibliometricByID(database.GetDB(), id)
 	if err != nil {
 		zap.L().Error("Error querying bibliometric by ID", zap.Error(err))
 		return nil, err
 	}
 
+	return bibliometric, nil
+}
+
+func GetBibliometricByAuthor(id uuid.UUID) ([]responses.BibliometricBody, error) {
+	bibliometric, err := repositories.BibliometricByAuthor(database.GetDB(), id)
+	if err != nil {
+		zap.L().Error("Error querying bibliometric by author", zap.Error(err))
+		return nil, err
+	}
+
 	if len(bibliometric) == 0 {
-		zap.L().Warn("No bibliometric found", zap.String("ID", id.String()))
+		zap.L().Warn("No bibliometric found for scientist ID: ", zap.String("scientist_id", id.String()))
 		return nil, ErrBibliometricNotFound
 	}
 

@@ -1,5 +1,5 @@
 package models
 
-type ResearchTitle struct {
-	Title string `db:"title" json:"title"`
+type ResearchArea struct {
+	Area string `json:"area" doc:"Research area" format:"string" example:"Artificial Intelligence"`
 }

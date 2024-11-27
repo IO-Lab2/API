@@ -1,5 +1,6 @@
 package models
 
-type CitationCount struct {
-	Count int `db:"count" json:"count"`
+type CitationsFilter struct {
+	Largest  int `json:"largest"`
+	Smallest int `json:"smallest"`
 }

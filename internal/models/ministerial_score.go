@@ -1,5 +1,6 @@
 package models
 
 type MinisterialScore struct {
-	Score int `db:"score" json:"score"`
+	Largest  int `json:"largest"`
+	Smallest int `json:"smallest"`
 }

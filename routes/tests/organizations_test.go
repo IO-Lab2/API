@@ -12,7 +12,7 @@ import (
 
 func TestRegisterOrganizations(t *testing.T) {
 
-	id := "85237a55-a223-46ad-92d5-be9cc104fa0f"
+	id := "d328f702-3f5c-45ed-ba33-ae311fd6ca97"
 	url := fmt.Sprintf("http://127.0.0.1:8000/api/organizations/%s", id)
 
 	// Wykonaj zapytanie GET

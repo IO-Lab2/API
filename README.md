@@ -14,4 +14,4 @@ API component for the project
 3. Wait for the container to build and open the project in the container
 
 ### Awesome docs:
-http://epickaporownywarkabazwiedzyuczelni.rocks:8000/
+https://api.epickaporownywarkabazwiedzyuczelni.rocks/docs#/

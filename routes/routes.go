@@ -6,11 +6,11 @@ import (
 
 	"io-project-api/internal/responses"
 	"io-project-api/routes/bibliometrics"
+	"io-project-api/routes/filters"
 	"io-project-api/routes/organizations"
 	"io-project-api/routes/publications"
 	"io-project-api/routes/scientists"
-	scientistsorganizations "io-project-api/routes/scientists_organizations"
-	scientistspublications "io-project-api/routes/scientists_publications"
+	"io-project-api/routes/search"
 
 	"github.com/danielgtaylor/huma/v2"
 )
@@ -45,9 +45,9 @@ func RegisterAPIRoutes(api huma.API, prefix string) {
 	})
 
 	bibliometrics.RegisterBibliometricsRoutes(api, prefix)
+	filters.RegisterFiltersRoutes(api, prefix)
 	organizations.RegisterOrganizationsRoutes(api, prefix)
 	publications.RegisterPublicationsRoutes(api, prefix)
 	scientists.RegisterScientistsRoutes(api, prefix)
-	scientistsorganizations.RegisterScientistsOrganizationsRoutes(api, prefix)
-	scientistspublications.RegisterScientistsOrganizationsRoutes(api, prefix)
+	search.RegisterSearchRoutes(api, prefix)
 }

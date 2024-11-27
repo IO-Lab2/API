@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"io-project-api/internal/models"
@@ -13,7 +12,6 @@ import (
 func TestRegisterBibliometricsRoutes(t *testing.T) {
 
 	// Przypisujemy zmienną ID
-	id := "cd85ed8e-4c50-45c7-90dd-24d34323ee74"
 	url := fmt.Sprintf("http://127.0.0.1:8000/api/bibliometrics/%s", id)
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -46,9 +44,5 @@ func TestRegisterBibliometricsRoutes(t *testing.T) {
 	}
 
 	fmt.Printf("Bibliometrics dla ID %s:", id)
-
-	for _, bibliometric := range result {
-		fmt.Println("\n", bibliometric)
-	}
 
 }

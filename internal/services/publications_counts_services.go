@@ -13,7 +13,7 @@ var (
 	ErrPublicationCountFilterNotFound = errors.New("no publication count found")
 )
 
-func GetPublicationCount() ([]models.PublicationCount, error) {
+func GetPublicationCount() (*models.PublicationCount, error) {
 
 	db := database.GetDB()
 
@@ -21,11 +21,6 @@ func GetPublicationCount() ([]models.PublicationCount, error) {
 	if err != nil {
 		zap.L().Error("Error retrieving publication counts", zap.Error(err))
 		return nil, err
-	}
-
-	if len(counts) == 0 {
-		zap.L().Warn("No publication counts found in database")
-		return nil, ErrPublicationCountFilterNotFound
 	}
 
 	return counts, nil

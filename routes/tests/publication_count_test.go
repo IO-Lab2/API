@@ -13,7 +13,7 @@ import (
 
 func TestRegisterPublicationCount(t *testing.T) {
 
-	id := "cd85ed8e-4c50-45c7-90dd-24d34323ee74"
+	id := "8611c0f6-039e-4a73-be41-b36ddf4e4674"
 	url := fmt.Sprintf("http://127.0.0.1:8000/api/bibliometrics/%s", id)
 
 	// Wykonaj zapytanie GET

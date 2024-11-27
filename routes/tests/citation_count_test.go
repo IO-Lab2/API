@@ -13,7 +13,7 @@ import (
 
 func TestRegisterCitationCount(t *testing.T) {
 
-	id := "cd85ed8e-4c50-45c7-90dd-24d34323ee74"
+	id := "8611c0f6-039e-4a73-be41-b36ddf4e4674"
 	url := fmt.Sprintf("http://127.0.0.1:8000/api/bibliometrics/%s", id)
 
 	// Wykonaj zapytanie GET
@@ -35,11 +35,11 @@ func TestRegisterCitationCount(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Bibliometrics
+	var result models.Bibliometrics
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	fmt.Printf("Citation count dla ID %s: %d\n", id, result[0].CitationCount)
+	fmt.Printf("Citation count dla ID %s: %d\n", id, result.CitationCount)
 }
