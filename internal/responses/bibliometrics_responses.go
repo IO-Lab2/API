@@ -18,7 +18,6 @@ type BibliometricBody struct {
 	ID               uuid.UUID `db:"id" json:"id" doc:"Bibliometric ID" format:"uuid" example:"8c4bfb01-3c0a-416c-a07c-a24ee52a8b2a"`
 	HIndexWos        int       `db:"h_index_wos" json:"h_index_wos" doc:"HIndex Wos" format:"int" example:"1"`
 	HIndexScopus     int       `db:"h_index_scopus" json:"h_index_scopus" doc:"HIndex Scopus" format:"int" example:"2"`
-	CitationCount    int       `db:"citation_count" json:"citation_count" doc:"Citation count" format:"int" example:"67"`
 	PublicationCount int       `db:"publication_count" json:"publication_count" doc:"Publication count" format:"int" example:"123"`
 	MinisterialScore float64   `db:"ministerial_score" json:"ministerial_score" doc:"Ministerial score" format:"float" example:"65.7"`
 	ScientistID      uuid.UUID `db:"scientist_id" json:"scientist_id" doc:"Scientist ID" format:"uuid" example:"8c4bfb01-3c0a-416c-a07c-a24ee52a8b2a"`
