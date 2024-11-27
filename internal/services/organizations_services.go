@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"io-project-api/internal/database"
+	logging "io-project-api/internal/logger"
 	"io-project-api/internal/repositories"
 	"io-project-api/internal/responses"
 
@@ -17,7 +18,7 @@ var (
 func GetOrganizationByID(id uuid.UUID) (*responses.OrganizationBodyExtended, error) {
 	organization, err := repositories.OrganizationByID(database.GetDB(), id)
 	if err != nil {
-		zap.L().Error("Error querying organization by ID", zap.Error(err))
+		logging.Logger.Error("Error querying organization by ID: ", zap.Error(err))
 		return nil, err
 	}
 

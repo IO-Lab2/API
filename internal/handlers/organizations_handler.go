@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	logging "io-project-api/internal/logger"
 	"io-project-api/internal/requests"
 	"io-project-api/internal/responses"
 	"io-project-api/internal/services"
@@ -13,6 +14,7 @@ func GetOrganizationById(ctx context.Context, input *requests.OrganizationID) (*
 	response := &responses.OrganizationResponse{}
 	resultingOrganizations, err := services.GetOrganizationByID(input.ID)
 	if err != nil {
+		logging.Logger.Error("Failed to get organization by ID: ", err)
 		return nil, huma.Error400BadRequest("Failed to get organization by ID")
 	}
 	response.Body = resultingOrganizations
