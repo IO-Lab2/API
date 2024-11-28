@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"io-project-api/internal/database"
+	logging "io-project-api/internal/logger"
 	"io-project-api/internal/repositories"
 	"io-project-api/internal/responses"
 
@@ -19,10 +20,10 @@ func GetPublicationByID(id uuid.UUID) (*responses.PublicationBody, error) {
 	publication, err := repositories.PublicationByID(database.GetDB(), id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			zap.L().Warn("No Publication found", zap.String("ID", id.String()))
+			logging.Logger.Warn("No Publication found: ", zap.String("ID", id.String()))
 			return nil, ErrPublicationNotFound
 		}
-		zap.L().Error("Error querying Publication by ID", zap.Error(err))
+		logging.Logger.Error("Error querying Publication by ID: ", zap.Error(err))
 		return nil, err
 	}
 

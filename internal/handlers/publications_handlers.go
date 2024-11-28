@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	logging "io-project-api/internal/logger"
 	"io-project-api/internal/requests"
 	"io-project-api/internal/responses"
 	"io-project-api/internal/services"
@@ -21,7 +22,8 @@ func GetPublicationByID(ctx context.Context, input *requests.PublicationID) (*re
 			return nil, huma.NewError(http.StatusNotFound, "Publication not found")
 		}
 
-		zap.L().Error("Failed to get publication by ID", zap.Error(err))
+		logging.Logger.Error("Failed to get publication by ID: ", zap.Error(err))
+
 		return nil, huma.NewError(http.StatusInternalServerError, "Failed to get publication by ID")
 	}
 	response.Body = result
