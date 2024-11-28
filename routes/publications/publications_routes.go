@@ -21,7 +21,7 @@ func RegisterPublicationsRoutes(api huma.API, basePath string) {
 			"200": {Description: "Publication found"},
 			"400": {Description: "Bad request"},
 		},
-	}, func(ctx context.Context, i *requests.PublicationID) (*responses.PublicationsResponse, error) {
+	}, func(ctx context.Context, i *requests.PublicationID) (*responses.PublicationResponse, error) {
 		return handlers.GetPublicationByID(ctx, i)
 	})
 
