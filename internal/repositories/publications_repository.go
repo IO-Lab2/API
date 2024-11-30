@@ -8,66 +8,28 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func PublicationByID(db *sqlx.DB, id uuid.UUID) ([]responses.PublicationBody, error) {
-	query := "SELECT id, title, journal, publication_date, citations_count, impact_factor, scientist_id, created_at,  updated_at FROM publications WHERE id =$1"
-	rows, err := db.Query(query, id)
-	if err != nil {
+// PublicationByID retrieves a publication entry by its ID.
+func PublicationByID(db *sqlx.DB, id uuid.UUID) (*responses.PublicationBody, error) {
+	query := "SELECT id, title, journal, publication_date, journal_impact_factor, created_at, updated_at FROM publications WHERE id = $1"
+	var publication responses.PublicationBody
+	if err := db.Get(&publication, query, id); err != nil {
 		return nil, err
 	}
-
-	var Publications []responses.PublicationBody
-
-	for rows.Next() {
-		var Publication responses.PublicationBody
-		err := rows.Scan(
-			&Publication.ID,
-			&Publication.Title,
-			&Publication.Journal,
-			&Publication.PublicationDate,
-			&Publication.CitationsCount,
-			&Publication.ImpactFactor,
-			&Publication.CreatedAt,
-			&Publication.UpdatedAt,
-		)
-		if err != nil {
-			return nil, err
-		}
-		Publications = append(Publications, Publication)
-	}
-	return Publications, nil
+	return &publication, nil
 }
 
+// PublicationsByScientistID retrieves publication entries by the scientist's ID.
 func PublicationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.PublicationBody, error) {
 	query := `
-		SELECT p.*
+		SELECT p.id, p.title, p.journal, p.publication_date, p.journal_impact_factor, p.created_at, p.updated_at
 		FROM publications p
 		JOIN scientist_publication sp ON p.id = sp.publication_id
 		WHERE sp.scientist_id = $1`
-	rows, err := db.Query(query, id)
-	if err != nil {
+	var publications []responses.PublicationBody
+	if err := db.Select(&publications, query, id); err != nil {
 		return nil, err
 	}
-
-	var Publications []responses.PublicationBody
-
-	for rows.Next() {
-		var Publication responses.PublicationBody
-		err := rows.Scan(
-			&Publication.ID,
-			&Publication.Title,
-			&Publication.Journal,
-			&Publication.PublicationDate,
-			&Publication.CitationsCount,
-			&Publication.ImpactFactor,
-			&Publication.CreatedAt,
-			&Publication.UpdatedAt,
-		)
-		if err != nil {
-			return nil, err
-		}
-		Publications = append(Publications, Publication)
-	}
-	return Publications, nil
+	return publications, nil
 }
 
 func PublicationCountFilter(db *sqlx.DB) (*models.PublicationCount, error) {
