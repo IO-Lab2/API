@@ -42,4 +42,18 @@ func RegisterBibliometricsRoutes(api huma.API, basePath string) {
 			return handlers.GetBibliometricByAuthor(ctx, input)
 		},
 	)
+	huma.Register(api, huma.Operation{
+		OperationID: "Create Bibliometrics",
+		Description: "Create Biblometrics",
+		Tags:        []string{"Bibliometrics"},
+		Method:      http.MethodPost,
+		Path:        fmt.Sprintf("%s/bibliometrics", basePath),
+		Responses: map[string]*huma.Response{
+			"201": {Description: "Succesfully created new biblometric"},
+			"400": {Description: "Failed to create bibliometric!"},
+		},
+	},
+		func(ctx context.Context, input *requests.CreateBibliometric) (*responses.CreateBibliometricResponse, error) {
+			return handlers.CreateBibliometric(ctx, input)
+		})
 }

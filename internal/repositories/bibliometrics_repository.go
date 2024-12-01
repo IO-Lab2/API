@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"io-project-api/internal/requests"
 	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
@@ -53,4 +54,11 @@ func BibliometricByAuthor(db *sqlx.DB, id uuid.UUID) ([]responses.BibliometricBo
 	}
 
 	return bibliometrics, nil
+}
+func CreateBibliometric(db *sqlx.DB, id uuid.UUID, input *requests.CreateBibliometric) error {
+	query := `
+        INSERT INTO bibliometrics (id, h_index_wos, h_index_scopus, publication_count, ministerial_score, scientist_id, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())`
+	_, err := db.Exec(query, id, input.HIndexWos, input.HIndexScopus, input.PublicationCount, input.MinisterialScore, input.ScientistID)
+	return err
 }

@@ -24,3 +24,9 @@ type BibliometricBody struct {
 	CreatedAt        time.Time `db:"created_at" json:"created_at" doc:"Creation date of bibliometric" format:"date-time" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt        time.Time `db:"updated_at" json:"updated_at" doc:"Update date of bibliometric" format:"date-time" example:"2021-01-01T00:00:00Z"`
 }
+type CreateBibliometric struct {
+	ID uuid.UUID `db:"id" json:"id" doc:"ID of created Bibliometric" format:"uuid" example:"8c4bfb01-3c0a-416c-a07c-a24ee52a8b2a"`
+}
+type CreateBibliometricResponse struct {
+	Body CreateBibliometric `json:"body" doc:"Bibliometric creation object"`
+}

@@ -3,7 +3,9 @@ package services
 import (
 	"errors"
 	"io-project-api/internal/database"
+	logging "io-project-api/internal/logger"
 	"io-project-api/internal/repositories"
+	"io-project-api/internal/requests"
 	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
@@ -37,4 +39,13 @@ func GetBibliometricByAuthor(id uuid.UUID) ([]responses.BibliometricBody, error)
 	}
 
 	return bibliometric, nil
+}
+func CreateBibliometric(input *requests.CreateBibliometric) (uuid.UUID, error) {
+	id := uuid.New()
+	err := repositories.CreateBibliometric(database.GetDB(), id, input)
+	if err != nil {
+		logging.Logger.Error("Error creating bibliometric", err)
+		return uuid.Nil, err
+	}
+	return id, nil
 }

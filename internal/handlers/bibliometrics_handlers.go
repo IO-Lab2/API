@@ -28,3 +28,12 @@ func GetBibliometricByAuthor(ctx context.Context, input *requests.BibliometricsS
 	response.Body = resultingBibliometrics
 	return response, nil
 }
+func CreateBibliometric(ctx context.Context, input *requests.CreateBibliometric) (*responses.CreateBibliometricResponse, error) {
+	response := &responses.CreateBibliometricResponse{}
+	createdBibliometric, err := services.CreateBibliometric(input)
+	if err != nil {
+		return nil, huma.Error400BadRequest("Failed to create bibliometric")
+	}
+	response.Body = responses.CreateBibliometric{ID: createdBibliometric}
+	return response, nil
+}
