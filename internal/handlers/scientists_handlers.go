@@ -11,14 +11,16 @@ import (
 )
 
 func GetScientistByID(ctx context.Context, input *requests.ScientistID) (*responses.ScientistsResponse, error) {
-
+	logging.Logger.Info("INFO: Handling GetScientistByID request")
 	response := &responses.ScientistsResponse{}
+
 	resultingScientists, err := services.GetScientistByID(input.ID)
 	if err != nil {
-		logging.Logger.Error("Failed to get scientist by ID: ", err)
+		logging.Logger.Error("ERROR: Failed to get scientist by ID:", err)
 		return nil, huma.Error400BadRequest("Failed to get scientist by ID")
 	}
 
+	logging.Logger.Info("INFO: Successfully retrieved scientist by ID")
 	response.Body = resultingScientists
 	return response, nil
 }

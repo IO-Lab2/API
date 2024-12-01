@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	logging "io-project-api/internal/logger"
 	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
@@ -9,63 +10,91 @@ import (
 
 func OrganizationByID(db *sqlx.DB, id uuid.UUID) (*responses.OrganizationBodyExtended, error) {
 	query := "SELECT id, name, type, created_at, updated_at FROM organizations WHERE id = $1"
+	logging.Logger.Info("INFO: Executing query:", query)
+
 	var organization responses.OrganizationBodyExtended
 	if err := db.Get(&organization, query, id); err != nil {
+		logging.Logger.Error("ERROR: Error executing query:", err)
 		return nil, err
 	}
-
+	logging.Logger.Info("INFO: Successfully retrieved organization by ID")
 	return &organization, nil
 }
 
 func OrganizationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.OrganizationBodyExtended, error) {
 	query := `
-		SELECT o.*
+		SELECT o.id, o.name, o.type, o.created_at, o.updated_at
 		FROM organizations o
 		JOIN scientist_organization so ON o.id = so.organization_id
 		WHERE so.scientist_id = $1`
+	logging.Logger.Info("INFO: Executing query:", query)
+
 	rows, err := db.Query(query, id)
 	if err != nil {
+		logging.Logger.Error("ERROR: Error executing query:", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var organizations []responses.OrganizationBodyExtended
+	for rows.Next() {
+		var organization responses.OrganizationBodyExtended
+		err := rows.Scan(
+			&organization.ID,
+			&organization.Name,
+			&organization.Type,
+			&organization.CreatedAt,
+			&organization.UpdatedAt,
+		)
+		if err != nil {
+			logging.Logger.Error("ERROR: Error scanning row:", err)
+			return nil, err
+		}
+		organizations = append(organizations, organization)
+	}
+
+	if err = rows.Err(); err != nil {
+		logging.Logger.Error("ERROR: Error iterating over rows:", err)
 		return nil, err
 	}
 
-	var Organizations []responses.OrganizationBodyExtended
-
-	for rows.Next() {
-		var Organization responses.OrganizationBodyExtended
-		err := rows.Scan(
-			&Organization.ID,
-			&Organization.Name,
-			&Organization.Type,
-			&Organization.CreatedAt,
-			&Organization.UpdatedAt,
-		)
-		if err != nil {
-			return nil, err
-		}
-		Organizations = append(Organizations, Organization)
-	}
-	return Organizations, nil
+	logging.Logger.Info("INFO: Successfully retrieved organizations by scientist ID")
+	return organizations, nil
 }
 
-func Organizations(db *sqlx.DB) ([]responses.OrganizationBody, error) {
+func Organizations(db *sqlx.DB) ([]responses.OrganizationBodyExtended, error) {
 	query := "SELECT id, name, type, created_at, updated_at FROM organizations"
+	logging.Logger.Info("INFO: Executing query:", query)
+
 	rows, err := db.Query(query)
 	if err != nil {
+		logging.Logger.Error("ERROR: Error executing query:", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var organizations []responses.OrganizationBodyExtended
+	for rows.Next() {
+		var organization responses.OrganizationBodyExtended
+		err := rows.Scan(
+			&organization.ID,
+			&organization.Name,
+			&organization.Type,
+			&organization.CreatedAt,
+			&organization.UpdatedAt,
+		)
+		if err != nil {
+			logging.Logger.Error("ERROR: Error scanning row:", err)
+			return nil, err
+		}
+		organizations = append(organizations, organization)
+	}
+
+	if err = rows.Err(); err != nil {
+		logging.Logger.Error("ERROR: Error iterating over rows:", err)
 		return nil, err
 	}
 
-	var Organizations []responses.OrganizationBody
-
-	for rows.Next() {
-		var Organization responses.OrganizationBody
-		err := rows.Scan(
-			&Organization.Name,
-			&Organization.Type,
-		)
-		if err != nil {
-			return nil, err
-		}
-		Organizations = append(Organizations, Organization)
-	}
-	return Organizations, nil
+	logging.Logger.Info("INFO: Successfully retrieved all organizations")
+	return organizations, nil
 }

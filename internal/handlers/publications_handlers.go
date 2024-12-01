@@ -9,24 +9,24 @@ import (
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
-	"go.uber.org/zap"
 )
 
 func GetPublicationByID(ctx context.Context, input *requests.PublicationID) (*responses.PublicationResponse, error) {
-	// Call the service layer to get the publication by ID
+	logging.Logger.Info("INFO: Handling GetPublicationByID request")
+
 	response := &responses.PublicationResponse{}
 	result, err := services.GetPublicationByID(input.ID)
 	if err != nil {
 		if err == services.ErrPublicationNotFound {
-			zap.L().Warn("Publication not found", zap.Error(err))
+			logging.Logger.Warn("WARNING: Publication not found", err)
 			return nil, huma.NewError(http.StatusNotFound, "Publication not found")
 		}
 
-		logging.Logger.Error("Failed to get publication by ID: ", zap.Error(err))
-
+		logging.Logger.Error("ERROR: Failed to get publication by ID:", err)
 		return nil, huma.NewError(http.StatusInternalServerError, "Failed to get publication by ID")
 	}
-	response.Body = result
 
+	logging.Logger.Info("INFO: Successfully retrieved publication by ID")
+	response.Body = result
 	return response, nil
 }

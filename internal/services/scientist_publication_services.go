@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"io-project-api/internal/database"
+	logging "io-project-api/internal/logger"
 	"io-project-api/internal/repositories"
 	"io-project-api/internal/responses"
 
@@ -15,14 +16,16 @@ var (
 )
 
 func GetScientistPublicationByID(id uuid.UUID) ([]responses.ScientistPublicationBody, error) {
+	logging.Logger.Info("INFO: Retrieving scientist publication by ID")
 	scientistPublication, err := repositories.ScientistPublicationByID(database.GetDB(), id)
 	if err != nil {
-		zap.L().Error("Error querying scientist publication relationship by id", zap.Error(err))
+		logging.Logger.Error("ERROR: Error querying scientist publication relationship by id", zap.Error(err))
 		return nil, err
 	}
 	if len(scientistPublication) == 0 {
-		zap.L().Error("No scientist publication relationship found", zap.String("ID", id.String()))
+		logging.Logger.Error("ERROR: No scientist publication relationship found", zap.String("ID", id.String()))
 		return nil, ErrScientistOrganizationNotFound
 	}
+	logging.Logger.Info("INFO: Successfully retrieving scientist publication by ID")
 	return scientistPublication, nil
 }
