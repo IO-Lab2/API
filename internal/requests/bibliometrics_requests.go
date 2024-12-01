@@ -20,3 +20,6 @@ type CreateBibliometric struct {
 	MinisterialScore float64   `query:"ministerial_score" json:"ministerial_score" doc:"Ministerial score" format:"float" example:"65.7"`
 	ScientistID      uuid.UUID `query:"scientist_id" json:"scientist_id" doc:"Scientist ID" format:"uuid" example:"8c4bfb01-3c0a-416c-a07c-a24ee52a8b2a"`
 }
+type DeleteBiblometric struct {
+	ID uuid.UUID `path:"id" doc:"Bibliometric ID" format:"UUID" example:"8c4bfb01-3c0a-416c-a07c-a24ee52a8b2a"`
+}

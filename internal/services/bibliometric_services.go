@@ -49,3 +49,11 @@ func CreateBibliometric(input *requests.CreateBibliometric) (uuid.UUID, error) {
 	}
 	return id, nil
 }
+func DeleteBibliometricByID(input *requests.DeleteBiblometric) error {
+	err := repositories.DeleteBibliometric(database.GetDB(), input)
+	if err != nil {
+		logging.Logger.Error("Error deleting Bibliometrics!", err)
+		return err
+	}
+	return nil
+}

@@ -37,3 +37,7 @@ func CreateBibliometric(ctx context.Context, input *requests.CreateBibliometric)
 	response.Body = responses.CreateBibliometric{ID: createdBibliometric}
 	return response, nil
 }
+func DeleteBibliometricByID(ctx context.Context, input *requests.DeleteBiblometric) error {
+	err := services.DeleteBibliometricByID(input)
+	return err
+}
