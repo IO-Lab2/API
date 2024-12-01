@@ -13,7 +13,7 @@ func SearchHandler(ctx context.Context, input *models.SearchInput) (*responses.S
 
 	response := &responses.ScientistsResponse{}
 	result, err := services.SearchForScientists(input)
-	if result == nil || len(result) == 0 || err != nil {
+	if len(result) == 0 || err != nil {
 		return nil, huma.Error400BadRequest("Failed to search for scientists")
 	}
 

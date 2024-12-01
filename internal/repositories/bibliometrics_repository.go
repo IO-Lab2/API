@@ -62,8 +62,16 @@ func CreateBibliometric(db *sqlx.DB, id uuid.UUID, input *requests.CreateBibliom
 	_, err := db.Exec(query, id, input.HIndexWos, input.HIndexScopus, input.PublicationCount, input.MinisterialScore, input.ScientistID)
 	return err
 }
-func DeleteBibliometric(db *sqlx.DB, input *requests.DeleteBiblometric) error {
+func DeleteBibliometric(db *sqlx.DB, input *requests.DeleteBibliometric) error {
 	query := "DELETE FROM bibliometrics WHERE id = $1"
 	_, err := db.Exec(query, input.ID)
+	return err
+}
+func UpdateBibliometric(db *sqlx.DB, input *requests.UpdateBibliometric) error {
+	query := `
+        UPDATE bibliometrics
+        SET h_index_wos = $2, h_index_scopus = $3, publication_count = $4, ministerial_score = $5, updated_at = NOW()
+        WHERE id = $1`
+	_, err := db.Exec(query, input.ID, input.HIndexWos, input.HIndexScopus, input.PublicationCount, input.MinisterialScore)
 	return err
 }

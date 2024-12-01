@@ -61,14 +61,29 @@ func RegisterBibliometricsRoutes(api huma.API, basePath string) {
 		Description: "Delete Bibliometrics",
 		Tags:        []string{"Bibliometrics"},
 		Method:      http.MethodDelete,
-		Path:        fmt.Sprintf("%s/bibliometrics{id}", basePath),
+		Path:        fmt.Sprintf("%s/bibliometrics/{id}", basePath),
 		Responses: map[string]*huma.Response{
 			"204": {Description: "Bibliometric deleted!"},
 			"400": {Description: "Bad request"},
 			"404": {Description: "Bibliometric not found"},
 		},
 	},
-		func(ctx context.Context, input *requests.DeleteBiblometric) (*huma.Response, error) {
+		func(ctx context.Context, input *requests.DeleteBibliometric) (*huma.Response, error) {
 			return &huma.Response{}, handlers.DeleteBibliometricByID(ctx, input)
 		})
+	huma.Register(api, huma.Operation{
+		OperationID: "Update Bibliometrics",
+		Description: "Update bibliometrics",
+		Tags:        []string{"Bibliometrics"},
+		Method:      http.MethodPut,
+		Path:        fmt.Sprintf("%s/bibliometrics/{id}", basePath),
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Bibliometrics updated"},
+			"400": {Description: "Bad request"},
+			"404": {Description: "Bibliometric not found"},
+		}},
+		func(ctx context.Context, input *requests.UpdateBibliometric) (*responses.UpdateBibliometricResponse, error) {
+			return handlers.UpdateBibliometric(ctx, input)
+		},
+	)
 }

@@ -30,3 +30,6 @@ type CreateBibliometric struct {
 type CreateBibliometricResponse struct {
 	Body CreateBibliometric `json:"body" doc:"Bibliometric creation object"`
 }
+type UpdateBibliometricResponse struct {
+	Body BibliometricBody `json:"body" doc:"Updated Bibliometric"`
+}

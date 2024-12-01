@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	logging "io-project-api/internal/logger"
 	"io-project-api/internal/requests"
 	"io-project-api/internal/responses"
 	"io-project-api/internal/services"
@@ -37,7 +38,15 @@ func CreateBibliometric(ctx context.Context, input *requests.CreateBibliometric)
 	response.Body = responses.CreateBibliometric{ID: createdBibliometric}
 	return response, nil
 }
-func DeleteBibliometricByID(ctx context.Context, input *requests.DeleteBiblometric) error {
+func DeleteBibliometricByID(ctx context.Context, input *requests.DeleteBibliometric) error {
 	err := services.DeleteBibliometricByID(input)
 	return err
+}
+func UpdateBibliometric(ctx context.Context, input *requests.UpdateBibliometric) (*responses.UpdateBibliometricResponse, error) {
+	updatedBibliometric, err := services.UpdateBibliometricById(input)
+	if err != nil {
+		logging.Logger.Error("Failed to update bibliometrics", err)
+		return nil, err
+	}
+	return updatedBibliometric, nil
 }

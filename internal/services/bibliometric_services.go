@@ -49,11 +49,24 @@ func CreateBibliometric(input *requests.CreateBibliometric) (uuid.UUID, error) {
 	}
 	return id, nil
 }
-func DeleteBibliometricByID(input *requests.DeleteBiblometric) error {
+func DeleteBibliometricByID(input *requests.DeleteBibliometric) error {
 	err := repositories.DeleteBibliometric(database.GetDB(), input)
 	if err != nil {
 		logging.Logger.Error("Error deleting Bibliometrics!", err)
 		return err
 	}
 	return nil
+}
+func UpdateBibliometricById(input *requests.UpdateBibliometric) (*responses.UpdateBibliometricResponse, error) {
+	err := repositories.UpdateBibliometric(database.GetDB(), input)
+	if err != nil {
+		logging.Logger.Error("Error updating bibliometric!", err)
+		return nil, err
+	}
+	updatedBibliometric, err := repositories.BibliometricByID(database.GetDB(), input.ID)
+	if err != nil {
+		logging.Logger.Error("Error geting updated bibliometrics!", err)
+		return nil, err
+	}
+	return &responses.UpdateBibliometricResponse{Body: *updatedBibliometric}, nil
 }
