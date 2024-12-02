@@ -1,8 +1,9 @@
 package models
 
 type SearchInput struct {
-	Query string           `query:"q" doc:"The search query to run."`
-	Body  *SearchInputBody `json:"filters" doc:"The body of the search query."`
+	Name    *string          `query:"name" doc:"The name of the scientist to search for."`
+	Surname *string          `query:"surname" doc:"The surname of the scientist to search for."`
+	Body    *SearchInputBody `json:"filters" doc:"The body of the search query."`
 }
 
 type SearchInputBody struct {
