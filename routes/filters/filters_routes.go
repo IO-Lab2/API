@@ -105,7 +105,25 @@ func RegisterFiltersRoutes(api huma.API, basePath string) {
 			"500": {Description: "Internal server error"},
 		}},
 		func(ctx context.Context, input *requests.ResearchAreasFilterRequest) (*responses.ResearchAreasResponse, error) {
+
 			return handlers.GetResearchTitleHandler(ctx)
+		},
+	)
+
+	huma.Register(api, huma.Operation{
+		OperationID: "Traverse Organizations Tree",
+		Description: "Traverses the organizations tree for a nice visualization of the organizations",
+		Tags:        []string{"Filters", "Organizations Tree"},
+		Method:      http.MethodGet,
+		Path:        fmt.Sprintf("%s/filters/organizations-tree", basePath),
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Organizations tree retrieved successfully"},
+			"404": {Description: "No organizations tree found"},
+			"500": {Description: "Internal server error"},
+		}},
+		func(ctx context.Context, input *requests.OrganizationTreeFilterRequest) (*responses.ListOfOrganizations, error) {
+
+			return handlers.GetOrganizationTreeHandler(ctx, input)
 		},
 	)
 }
