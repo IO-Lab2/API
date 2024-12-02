@@ -15,8 +15,9 @@ type ListOfOrganizations struct {
 }
 
 type OrganizationBody struct {
-	Name string `json:"name" doc:"Name of the organization" format:"string" example:"Politechnika Warszawska"`
-	Type string `json:"type" doc:"Type of the organization" format:"string" example:"Uniwersytet"`
+	ID   uuid.UUID `json:"id" doc:"Organization ID" format:"uuid" example:"8c4bfb01-3c0a-416c-a07c-a24ee52a8b2a"`
+	Name string    `json:"name" doc:"Name of the organization" format:"string" example:"Politechnika Warszawska"`
+	Type string    `json:"type" doc:"Type of the organization" format:"string" example:"Uniwersytet"`
 }
 
 type ListOfOrganizationsResponse struct {
