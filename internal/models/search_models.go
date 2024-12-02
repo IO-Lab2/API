@@ -1,8 +1,8 @@
 package models
 
 type SearchInput struct {
-	Query string          `query:"q" doc:"The search query to run."`
-	Body  SearchInputBody `json:"filters" doc:"The body of the search query."`
+	Query string           `query:"q" doc:"The search query to run."`
+	Body  *SearchInputBody `json:"filters" doc:"The body of the search query."`
 }
 
 type SearchInputBody struct {
@@ -15,24 +15,24 @@ type SearchInputBody struct {
 }
 
 type CitationsCounts struct {
-	Min int `json:"min" doc:"The minimum number of citations."`
-	Max int `json:"max" doc:"The maximum number of citations."`
+	Min *int `json:"min" doc:"The minimum number of citations."`
+	Max *int `json:"max" doc:"The maximum number of citations."`
 }
 
 type MinisterialScores struct {
-	Min int `json:"min" doc:"The minimum ministerial score."`
-	Max int `json:"max" doc:"The maximum ministerial score."`
+	Min *int `json:"min" doc:"The minimum ministerial score."`
+	Max *int `json:"max" doc:"The maximum ministerial score."`
 }
 
 type OrganizationsNames struct {
-	Name string `json:"name" doc:"The name of the organization."`
+	Name *string `json:"name" doc:"The name of the organization."`
 }
 
 type PublicationsCounts struct {
-	Min int `json:"min" doc:"The minimum number of publications."`
-	Max int `json:"max" doc:"The maximum number of publications."`
+	Min *int `json:"min" doc:"The minimum number of publications."`
+	Max *int `json:"max" doc:"The maximum number of publications."`
 }
 
 type ResearchAreas struct {
-	Name string `json:"name" doc:"The name of the research area."`
+	Name *string `json:"name" doc:"The name of the research area."`
 }
