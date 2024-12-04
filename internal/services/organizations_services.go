@@ -5,6 +5,7 @@ import (
 	"io-project-api/internal/database"
 	logging "io-project-api/internal/logger"
 	"io-project-api/internal/repositories"
+	"io-project-api/internal/requests"
 	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
@@ -46,4 +47,13 @@ func GetOrganizations() (*responses.ListOfOrganizations, error) {
 	}
 	logging.Logger.Info("INFO: Successfully retrieving organization")
 	return organizations, nil
+}
+func CreateOrganization(input *requests.CreateOrganization) (uuid.UUID, error) {
+	id := uuid.New()
+	err := repositories.CreateOrganization(database.GetDB(), id, input)
+	if err != nil {
+		logging.Logger.Error("Error: Failed to create organization!", err)
+		return uuid.Nil, err
+	}
+	return id, nil
 }

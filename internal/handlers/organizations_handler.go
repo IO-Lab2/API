@@ -48,3 +48,12 @@ func GetOrganizationsHandler(ctx context.Context) (*responses.ListOfOrganization
 	response.Body = resultingOrganizations.Body
 	return response, nil
 }
+func CreateOrganization(ctx context.Context, input *requests.CreateOrganization) (*responses.CreateOrganizationResponse, error) {
+	response := &responses.CreateOrganizationResponse{}
+	createdOrganization, err := services.CreateOrganization(input)
+	if err != nil {
+		return nil, huma.Error400BadRequest("Failed to create bibliometric")
+	}
+	response.Body = responses.CreateOrganization{ID: createdOrganization}
+	return response, nil
+}

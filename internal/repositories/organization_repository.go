@@ -2,6 +2,7 @@ package repositories
 
 import (
 	logging "io-project-api/internal/logger"
+	"io-project-api/internal/requests"
 	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
@@ -96,4 +97,14 @@ func Organizations(db *sqlx.DB) (*responses.ListOfOrganizations, error) {
 	logging.Logger.Info("INFO: Successfully retrieved all organizations")
 	organizationResponse := &responses.ListOfOrganizations{Body: organizations}
 	return organizationResponse, nil
+}
+
+func CreateOrganization(db *sqlx.DB, id uuid.UUID, input *requests.CreateOrganization) error {
+	query := `
+        INSERT INTO organizations (id,name, type, created_at, updated_at)
+        VALUES ($1, $2, $3, NOW(), NOW())
+		`
+	_, err := db.Exec(query, id, input.Name, input.OrganizationType)
+	return err
+
 }

@@ -8,13 +8,15 @@ import (
 	"log"
 	"net/http"
 	"testing"
+
+	"github.com/goccy/go-json"
 )
 
 func TestRegisterBibliometricsRoutes(t *testing.T) {
 
 	// Przypisujemy zmienną ID
 	id := "8611c0f6-039e-4a73-be41-b36ddf4e4674"
-	url := fmt.Sprintf("http://127.0.0.1:8000/api/bibliometrics/%s", id)
+	url := fmt.Sprintf("http://localhost:8000/api/bibliometrics/%s", id)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
