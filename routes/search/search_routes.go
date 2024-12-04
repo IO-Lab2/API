@@ -17,7 +17,7 @@ func RegisterSearchRoutes(api huma.API, prefix string) {
 		OperationID: "Search",
 		Description: "Search for academic profiles.",
 		Tags:        []string{"Search"},
-		Method:      http.MethodPost,
+		Method:      http.MethodGet,
 		Path:        prefix + "/search",
 		Responses: map[string]*huma.Response{
 			"200": {Description: "Search results retrieved successfully"},

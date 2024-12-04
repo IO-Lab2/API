@@ -62,7 +62,7 @@ func OrganizationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.Organiza
 	return organizations, nil
 }
 
-func Organizations(db *sqlx.DB) ([]responses.OrganizationBodyExtended, error) {
+func Organizations(db *sqlx.DB) (*responses.ListOfOrganizations, error) {
 	query := "SELECT id, name, type, created_at, updated_at FROM organizations"
 	logging.Logger.Info("INFO: Executing query:", query)
 
@@ -73,15 +73,13 @@ func Organizations(db *sqlx.DB) ([]responses.OrganizationBodyExtended, error) {
 	}
 	defer rows.Close()
 
-	var organizations []responses.OrganizationBodyExtended
+	var organizations []responses.OrganizationBody
 	for rows.Next() {
-		var organization responses.OrganizationBodyExtended
+		var organization responses.OrganizationBody
 		err := rows.Scan(
 			&organization.ID,
 			&organization.Name,
 			&organization.Type,
-			&organization.CreatedAt,
-			&organization.UpdatedAt,
 		)
 		if err != nil {
 			logging.Logger.Error("ERROR: Error scanning row:", err)
@@ -96,5 +94,6 @@ func Organizations(db *sqlx.DB) ([]responses.OrganizationBodyExtended, error) {
 	}
 
 	logging.Logger.Info("INFO: Successfully retrieved all organizations")
-	return organizations, nil
+	organizationResponse := &responses.ListOfOrganizations{Body: organizations}
+	return organizationResponse, nil
 }

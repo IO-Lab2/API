@@ -8,7 +8,7 @@ import (
 )
 
 func ResearchAreaFilter(db *sqlx.DB) ([]models.ResearchArea, error) {
-	query := "SELECT DISTINCT research_area FROM scientists"
+	query := "SELECT DISTINCT id, research_area FROM scientists"
 	logging.Logger.Info("INFO: Executing query:", query)
 
 	rows, err := db.Query(query)
@@ -21,7 +21,9 @@ func ResearchAreaFilter(db *sqlx.DB) ([]models.ResearchArea, error) {
 	var areas []models.ResearchArea
 	for rows.Next() {
 		var area models.ResearchArea
-		if err := rows.Scan(&area.Area); err != nil {
+		if err := rows.Scan(
+			&area.Area,
+			&area.ID); err != nil {
 			logging.Logger.Error("ERROR: Error scanning row:", err)
 			return nil, err
 		}

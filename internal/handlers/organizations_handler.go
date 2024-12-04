@@ -36,15 +36,15 @@ func GetOrganizationsByScientistId(ctx context.Context, input *requests.Scientis
 	return response, nil
 }
 
-func GetOrganizationsHandler(ctx context.Context) (*responses.ListOfOrganizationsResponse, error) {
+func GetOrganizationsHandler(ctx context.Context) (*responses.ListOfOrganizations, error) {
 	logging.Logger.Info("INFO: Handling GetOrganizationsHandler request")
-	response := &responses.ListOfOrganizationsResponse{}
+	response := &responses.ListOfOrganizations{}
 	resultingOrganizations, err := services.GetOrganizations()
 	if err != nil {
 		logging.Logger.Error("ERROR: Failed to get organizations:", err)
 		return nil, huma.Error400BadRequest("Failed to get organizations")
 	}
 	logging.Logger.Info("INFO: Successfully retrieved organizations")
-	response.Body = resultingOrganizations
+	response.Body = resultingOrganizations.Body
 	return response, nil
 }

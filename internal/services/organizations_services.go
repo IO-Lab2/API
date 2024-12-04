@@ -37,7 +37,7 @@ func GetOrganizationsByScientistID(id uuid.UUID) ([]responses.OrganizationBodyEx
 	return organizations, nil
 }
 
-func GetOrganizations() ([]responses.OrganizationBodyExtended, error) {
+func GetOrganizations() (*responses.ListOfOrganizations, error) {
 	logging.Logger.Info("INFO: Retrieving organization")
 	organizations, err := repositories.Organizations(database.GetDB())
 	if err != nil {
