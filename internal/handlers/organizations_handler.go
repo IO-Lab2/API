@@ -57,3 +57,12 @@ func CreateOrganization(ctx context.Context, input *requests.CreateOrganization)
 	response.Body = responses.CreateOrganization{ID: createdOrganization}
 	return response, nil
 }
+func UpdateOrganization(ctx context.Context, input *requests.UpdateOrganization) (*responses.UpdateOrganizationResponse, error) {
+	response := &responses.UpdateOrganizationResponse{}
+	updatedOrganization, err := services.UpdateOrganization(input)
+	if err != nil {
+		return nil, huma.Error400BadRequest("Failed to update organization")
+	}
+	response = updatedOrganization
+	return response, nil
+}

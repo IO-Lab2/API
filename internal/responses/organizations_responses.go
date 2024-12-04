@@ -36,3 +36,6 @@ type CreateOrganization struct {
 type CreateOrganizationResponse struct {
 	Body CreateOrganization `json:"body" doc:"Organization creation object"`
 }
+type UpdateOrganizationResponse struct {
+	Body OrganizationBodyExtended `json:"body" doc:"Updated organization"`
+}

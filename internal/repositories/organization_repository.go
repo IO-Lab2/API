@@ -108,3 +108,12 @@ func CreateOrganization(db *sqlx.DB, id uuid.UUID, input *requests.CreateOrganiz
 	return err
 
 }
+func UpdateOrganization(db *sqlx.DB, input *requests.UpdateOrganization) error {
+	query := `
+		UPDATE organizations
+		SET name = $1, type = $2, updated_at = NOW()
+		WHERE id = $3
+	`
+	_, err := db.Exec(query, input.Name, input.OrganizationType, input.ID)
+	return err
+}

@@ -57,3 +57,16 @@ func CreateOrganization(input *requests.CreateOrganization) (uuid.UUID, error) {
 	}
 	return id, nil
 }
+func UpdateOrganization(input *requests.UpdateOrganization) (*responses.UpdateOrganizationResponse, error) {
+	err := repositories.UpdateOrganization(database.GetDB(), input)
+	if err != nil {
+		logging.Logger.Error("Error: Failed to update organization")
+		return nil, err
+	}
+	updatedOrganization, err := repositories.OrganizationByID(database.GetDB(), input.ID)
+	if err != nil {
+		logging.Logger.Error("Error: Failed to retrieve updated organization")
+		return nil, err
+	}
+	return &responses.UpdateOrganizationResponse{Body: *updatedOrganization}, nil
+}
