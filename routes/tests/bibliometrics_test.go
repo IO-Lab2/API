@@ -1,8 +1,8 @@
 package tests
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/goccy/go-json"
 	"io"
 	"io-project-api/internal/models"
 	"log"
@@ -39,7 +39,7 @@ func TestRegisterBibliometricsRoutes(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Bibliometrics
+	var result models.Bibliometrics
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Fatalf("Błąd podczas parsowania JSON: %v", err)

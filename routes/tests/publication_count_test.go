@@ -35,11 +35,11 @@ func TestRegisterPublicationCount(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Bibliometrics
+	var result models.Bibliometrics
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	fmt.Printf("Publication count dla ID %s: %d\n", id, result[0].PublicationCount)
+	fmt.Printf("Publication count dla ID %s: %d\n", id, result.PublicationCount)
 }
