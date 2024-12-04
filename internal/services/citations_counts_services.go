@@ -3,10 +3,9 @@ package services
 import (
 	"errors"
 	"io-project-api/internal/database"
+	logging "io-project-api/internal/logger"
 	"io-project-api/internal/models"
 	"io-project-api/internal/repositories"
-
-	"go.uber.org/zap"
 )
 
 var (
@@ -14,14 +13,14 @@ var (
 )
 
 func GetCitationCount() (*models.CitationsFilter, error) {
-
+	logging.Logger.Info("INFO: Retrieving citation counts")
 	db := database.GetDB()
 
 	counts, err := repositories.CitationCountFilter(db)
 	if err != nil {
-		zap.L().Error("Error retrieving citation counts", zap.Error(err))
+		logging.Logger.Error("ERROR: Error retrieving citation counts:", err)
 		return nil, err
 	}
-
+	logging.Logger.Info("INFO: Successfully retrieved citation counts")
 	return counts, nil
 }

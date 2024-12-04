@@ -34,11 +34,11 @@ func TestRegisterMinisterialScore(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Bibliometrics
+	var result models.Bibliometrics
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	fmt.Printf("Ministerial score dla ID %s: %f\n", id, result[0].MinisterialScore)
+	fmt.Printf("Ministerial score dla ID %s: %f\n", id, result.MinisterialScore)
 }

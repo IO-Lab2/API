@@ -12,7 +12,7 @@ import (
 
 func TestRegisterScientistsOrganizations(t *testing.T) {
 
-	id := "d328f702-3f5c-45ed-ba33-ae311fd6ca97"
+	id := "4303b618-6dad-45c4-8917-86c222e5223d"
 	url := fmt.Sprintf("http://127.0.0.1:8000/api/scientists_organizations/%s", id)
 
 	// Wykonaj zapytanie GET
@@ -34,11 +34,11 @@ func TestRegisterScientistsOrganizations(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.ScientistOrganization
+	var result models.ScientistOrganization
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	fmt.Printf("Organization dla ID %s: %s\n", result[0].ID, result[0])
+	fmt.Printf("Organization dla ID %s: %s\n", result.ID, result)
 }

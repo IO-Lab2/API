@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"io-project-api/internal/database"
+	logging "io-project-api/internal/logger"
 	"io-project-api/internal/models"
 	"io-project-api/internal/repositories"
 
@@ -14,19 +15,20 @@ var (
 )
 
 func GetResearchAreas() ([]models.ResearchArea, error) {
+	logging.Logger.Info("INFO: Retrieving research areas")
 
 	db := database.GetDB()
 
 	titles, err := repositories.ResearchAreaFilter(db)
 	if err != nil {
-		zap.L().Error("Error retrieving research titles", zap.Error(err))
+		logging.Logger.Error("ERROR: Error retrieving research titles", zap.Error(err))
 		return nil, err
 	}
 
 	if len(titles) == 0 {
-		zap.L().Warn("No research titles found in database")
+		logging.Logger.Warn("No research titles found in database")
 		return nil, ErrResearchTitleFilterNotFound
 	}
-
+	logging.Logger.Info("INFO: Successfully retrieving research areas")
 	return titles, nil
 }

@@ -12,7 +12,7 @@ import (
 
 func TestRegisterScientistsPublications(t *testing.T) {
 
-	id := "72e6d858-222b-48c0-819a-4c81081c787b"
+	id := "c10d959b-cb49-4af7-9a65-858474d23811"
 	url := fmt.Sprintf("http://127.0.0.1:8000/api/scientists_publications/%s", id)
 
 	// Wykonaj zapytanie GET
@@ -40,5 +40,5 @@ func TestRegisterScientistsPublications(t *testing.T) {
 		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	fmt.Printf("Scientists publications dla %s ID: %s\n", result[0].ID, result[0])
+	fmt.Printf("Scientists publications dla ID: %s  %s\n", result[0].ID, result[0])
 }

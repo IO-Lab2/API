@@ -1,14 +1,14 @@
 name: dockerImage
 
 on:
-  push:
-    branches: [ "dev" ]
-  pull_request:
-    branches: [ "dev" ]
+  workflow_run:
+    workflows: ["Go"]
+    types: [completed]
 
 
 jobs:
   build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout

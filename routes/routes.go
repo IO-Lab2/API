@@ -50,4 +50,5 @@ func RegisterAPIRoutes(api huma.API, prefix string) {
 	publications.RegisterPublicationsRoutes(api, prefix)
 	scientists.RegisterScientistsRoutes(api, prefix)
 	search.RegisterSearchRoutes(api, prefix)
+
 }

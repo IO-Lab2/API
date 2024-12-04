@@ -13,7 +13,7 @@ import (
 
 func TestRegisterPublications(t *testing.T) {
 
-	id := "cd85ed8e-4c50-45c7-90dd-24d34323ee74"
+	id := "7fff0fe3-4c09-47e0-8798-fed3104713bb"
 	url := fmt.Sprintf("http://127.0.0.1:8000/api/publications/%s", id)
 
 	// Wykonaj zapytanie GET
@@ -35,11 +35,11 @@ func TestRegisterPublications(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Publication
+	var result models.Publication
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	fmt.Printf("Publication dla ID %s: %v\n", id, result[0])
+	fmt.Printf("Publication dla ID %s: %v\n", id, result)
 }

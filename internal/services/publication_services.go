@@ -17,15 +17,17 @@ var (
 )
 
 func GetPublicationByID(id uuid.UUID) (*responses.PublicationBody, error) {
+	logging.Logger.Info("INFO: Retrieving publication by ID")
 	publication, err := repositories.PublicationByID(database.GetDB(), id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			logging.Logger.Warn("No Publication found: ", zap.String("ID", id.String()))
+			logging.Logger.Warn("WARN: No Publication found: ", zap.String("ID", id.String()))
 			return nil, ErrPublicationNotFound
 		}
-		logging.Logger.Error("Error querying Publication by ID: ", zap.Error(err))
+		logging.Logger.Error("ERROR: Error querying Publication by ID: ", zap.Error(err))
 		return nil, err
 	}
+	logging.Logger.Info("INFO: Successfully retrieving publication by ID")
 
 	return publication, nil
 }

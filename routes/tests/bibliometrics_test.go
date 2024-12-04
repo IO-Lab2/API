@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"io-project-api/internal/models"
@@ -37,7 +38,7 @@ func TestRegisterBibliometricsRoutes(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Bibliometrics
+	var result models.Bibliometrics
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
