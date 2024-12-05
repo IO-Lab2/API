@@ -16,7 +16,6 @@ import (
 
 func main() {
 	logging.Logger.Info("Starting server...")
-
 	database.InitDB()
 
 	defer logging.Sync()
