@@ -78,22 +78,6 @@ func RegisterFiltersRoutes(api huma.API, basePath string) {
 	)
 
 	huma.Register(api, huma.Operation{
-		OperationID: "Get Citations Counts",
-		Description: "Retrieves a range of citations counts",
-		Tags:        []string{"Filters", "Citation Counts"},
-		Method:      http.MethodGet,
-		Path:        fmt.Sprintf("%s/filters/citation-counts", basePath),
-		Responses: map[string]*huma.Response{
-			"200": {Description: "Citation counts retrieved successfully"},
-			"404": {Description: "No citation counts found"},
-			"500": {Description: "Internal server error"},
-		}},
-		func(ctx context.Context, input *requests.CitationCountFilterRequest) (*responses.CitationCountResponse, error) {
-			return handlers.GetCitationCountHandler(ctx)
-		},
-	)
-
-	huma.Register(api, huma.Operation{
 		OperationID: "Get Research Areas Filter",
 		Description: "Retrieves a list of research Areas",
 		Tags:        []string{"Filters", "Research Areas"},

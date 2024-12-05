@@ -64,7 +64,7 @@ func OrganizationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.Organiza
 }
 
 func Organizations(db *sqlx.DB) (*responses.ListOfOrganizations, error) {
-	query := "SELECT id, name, type, created_at, updated_at FROM organizations"
+	query := "SELECT id, name, type FROM organizations"
 	logging.Logger.Info("INFO: Executing query:", query)
 
 	rows, err := db.Query(query)
