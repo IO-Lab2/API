@@ -8,8 +8,6 @@ import (
 	"log"
 	"net/http"
 	"testing"
-
-	"github.com/goccy/go-json"
 )
 
 func TestRegisterBibliometricsRoutes(t *testing.T) {
