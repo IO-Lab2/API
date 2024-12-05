@@ -9,14 +9,14 @@ import (
 
 func QueryGetOrganizationTree(db *sqlx.DB, parentID *uuid.UUID) (*responses.ListOfOrganizations, error) {
 
-	if parentID == nil {
+	if parentID == nil || *parentID == uuid.Nil {
 		// Query to get root organizations
 		query := `
 			SELECT o.id, o.name, o.type
 			FROM organizations o
 			INNER JOIN organizations_relationships orl
 			ON o.id = orl.child_id
-			WHERE or.parent_id IS NULL`
+			WHERE orl.parent_id IS NULL`
 
 		// Execute query
 		result := responses.ListOfOrganizations{}
