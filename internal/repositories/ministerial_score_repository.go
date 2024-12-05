@@ -8,7 +8,7 @@ import (
 )
 
 func MinisterialScoreFilter(db *sqlx.DB) (*models.MinisterialScore, error) {
-	query := "SELECT MAX(ministerial_score ) as largest, MIN(ministerial_score ) as smallest FROM ministerial_score"
+	query := "SELECT MAX(ministerial_score) as largest, MIN(ministerial_score) as smallest FROM bibliometrics"
 	logging.Logger.Info("INFO: Executing query:", query)
 	var scores models.MinisterialScore
 	if err := db.Get(&scores, query); err != nil {

@@ -30,3 +30,12 @@ type OrganizationBodyExtended struct {
 	CreatedAt time.Time `db:"created_at" json:"created_at" doc:"Creation date of the organization" format:"date-time" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt time.Time `db:"updated_at" json:"updated_at" doc:"Last update date of the organization" format:"date-time" example:"2021-01-01T00:00:00Z"`
 }
+type CreateOrganization struct {
+	ID uuid.UUID `db:"id" json:"id" doc:"ID of created organization" format:"uuid" example:"8c4bfb01-3c0a-416c-a07c-a24ee52a8b2a"`
+}
+type CreateOrganizationResponse struct {
+	Body CreateOrganization `json:"body" doc:"Organization creation object"`
+}
+type UpdateOrganizationResponse struct {
+	Body OrganizationBodyExtended `json:"body" doc:"Updated organization"`
+}

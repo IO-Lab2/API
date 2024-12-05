@@ -34,11 +34,11 @@ func TestRegisterScientistsOrganizations(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result models.ScientistOrganization
+	var result []models.ScientistOrganization
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	fmt.Printf("Organization dla ID %s: %s\n", result.ID, result)
+	fmt.Printf("Organization dla ID %s: %s\n", result[0].ID, result[0])
 }

@@ -53,4 +53,31 @@ func RegisterOrganizationsRoutes(api huma.API, basePath string) {
 		func(ctx context.Context, input *requests.ScientistID) (*responses.ListOfOrganizationsResponse, error) {
 			return handlers.GetOrganizationsByScientistId(ctx, input)
 		})
+	huma.Register(api, huma.Operation{
+		OperationID: "Create Organization",
+		Description: "Create Organization",
+		Tags:        []string{"Organizations"},
+		Method:      http.MethodPost,
+		Path:        fmt.Sprintf("%s/organizations", basePath),
+		Responses: map[string]*huma.Response{
+			"201": {Description: "Successfully created new organization"},
+			"400": {Description: "Bad request"},
+		}},
+		func(ctx context.Context, i *requests.CreateOrganization) (*responses.CreateOrganizationResponse, error) {
+			return handlers.CreateOrganization(ctx, i)
+		})
+	huma.Register(api, huma.Operation{
+		OperationID: "Update Organization",
+		Description: "Update Organization",
+		Tags:        []string{"Organizations"},
+		Method:      http.MethodPut,
+		Path:        fmt.Sprintf("%s/organizations/{id}", basePath),
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Successfully updated organization"},
+			"400": {Description: "Bad request"},
+			"404": {Description: "Organization not found"},
+		}},
+		func(ctx context.Context, input *requests.UpdateOrganization) (*responses.UpdateOrganizationResponse, error) {
+			return handlers.UpdateOrganization(ctx, input)
+		})
 }

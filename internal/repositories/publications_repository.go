@@ -40,7 +40,7 @@ func PublicationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.Publicati
 }
 
 func PublicationCountFilter(db *sqlx.DB) (*models.PublicationCount, error) {
-	query := "SELECT MAX(citations_count) as largest, MIN(citations_count) as smallest FROM publications"
+	query := "SELECT MAX(publication_count) as largest, MIN(publication_count) as smallest FROM bibliometrics"
 	logging.Logger.Info("INFO: Executing query:", query)
 
 	var publicationCount models.PublicationCount

@@ -2,6 +2,7 @@ package repositories
 
 import (
 	logging "io-project-api/internal/logger"
+	"io-project-api/internal/requests"
 	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
@@ -63,7 +64,7 @@ func OrganizationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.Organiza
 }
 
 func Organizations(db *sqlx.DB) (*responses.ListOfOrganizations, error) {
-	query := "SELECT id, name, type, created_at, updated_at FROM organizations"
+	query := "SELECT id, name, type FROM organizations"
 	logging.Logger.Info("INFO: Executing query:", query)
 
 	rows, err := db.Query(query)
@@ -96,4 +97,23 @@ func Organizations(db *sqlx.DB) (*responses.ListOfOrganizations, error) {
 	logging.Logger.Info("INFO: Successfully retrieved all organizations")
 	organizationResponse := &responses.ListOfOrganizations{Body: organizations}
 	return organizationResponse, nil
+}
+
+func CreateOrganization(db *sqlx.DB, id uuid.UUID, input *requests.CreateOrganization) error {
+	query := `
+        INSERT INTO organizations (id,name, type, created_at, updated_at)
+        VALUES ($1, $2, $3, NOW(), NOW())
+		`
+	_, err := db.Exec(query, id, input.Name, input.OrganizationType)
+	return err
+
+}
+func UpdateOrganization(db *sqlx.DB, input *requests.UpdateOrganization) error {
+	query := `
+		UPDATE organizations
+		SET name = $1, type = $2, updated_at = NOW()
+		WHERE id = $3
+	`
+	_, err := db.Exec(query, input.Name, input.OrganizationType, input.ID)
+	return err
 }

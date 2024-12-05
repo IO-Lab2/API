@@ -8,7 +8,6 @@ type SearchInput struct {
 
 type SearchInputBody struct {
 	AcademicTitles     *TitlesRequest             `json:"academic_titles,omitempty" doc:"The academic titles to filter the search result."`
-	CitationsCounts    *CitationsCountsRequest    `json:"citations_counts,omitempty" doc:"The number of citations to filter the search result."`
 	MinisterialScores  *MinisterialScoresRequest  `json:"ministerial_scores,omitempty" doc:"The ministerial scores to filter the search result."`
 	Organizations      *OrganizationsRequest      `json:"organizations,omitempty" doc:"The organizations to filter the search result."`
 	PublicationsCounts *PublicationsCountsRequest `json:"publications_counts,omitempty" doc:"The number of publications to filter the search result."`
