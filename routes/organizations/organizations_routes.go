@@ -80,4 +80,18 @@ func RegisterOrganizationsRoutes(api huma.API, basePath string) {
 		func(ctx context.Context, input *requests.UpdateOrganization) (*responses.UpdateOrganizationResponse, error) {
 			return handlers.UpdateOrganization(ctx, input)
 		})
+	huma.Register(api, huma.Operation{
+		OperationID: "Delete Organization",
+		Description: "Delete Organization",
+		Tags:        []string{"Organizations"},
+		Method:      http.MethodDelete,
+		Path:        fmt.Sprintf("%s/organizations/{id}", basePath),
+		Responses: map[string]*huma.Response{
+			"204": {Description: "Successfully deleted organization"},
+			"400": {Description: "Bad request"},
+			"404": {Description: "Organization not found"},
+		}},
+		func(ctx context.Context, input *requests.DeleteOrganization) (*huma.Response, error) {
+			return &huma.Response{}, handlers.DeleteOrganization(ctx, input)
+		})
 }

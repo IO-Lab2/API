@@ -117,3 +117,8 @@ func UpdateOrganization(db *sqlx.DB, input *requests.UpdateOrganization) error {
 	_, err := db.Exec(query, input.Name, input.OrganizationType, input.ID)
 	return err
 }
+func DeleteOrganization(db *sqlx.DB, input *requests.DeleteOrganization) error {
+	query := `DELETE FROM organizations WHERE id = $1`
+	_, err := db.Exec(query, input.ID)
+	return err
+}
