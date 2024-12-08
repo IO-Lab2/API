@@ -3,6 +3,7 @@ package repositories
 import (
 	logging "io-project-api/internal/logger"
 	"io-project-api/internal/models"
+	"io-project-api/internal/requests"
 	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
@@ -50,4 +51,18 @@ func PublicationCountFilter(db *sqlx.DB) (*models.PublicationCount, error) {
 	}
 	logging.Logger.Info("INFO: Successfully retrieved publication count filter")
 	return &publicationCount, nil
+}
+func CreatePublication(db *sqlx.DB, id uuid.UUID, publication *requests.CreatePublicationRequest) error {
+	query := `
+		INSERT INTO publications (id, title, journal, publication_date, journal_impact_factor, publisher, journal_type, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
+	`
+	logging.Logger.Info("INFO: Executing query:", query)
+	_, err := db.Exec(query, id, publication.Title, publication.Journal, publication.PublicationDate, publication.JournalImpactFactor, publication.Publisher, publication.JournalType)
+	if err != nil {
+		logging.Logger.Error("ERROR: Error executing query:", err)
+		return err
+	}
+	logging.Logger.Info("INFO: Successfully created publication")
+	return nil
 }
