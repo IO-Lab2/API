@@ -43,3 +43,11 @@ func CreatePublication(input *requests.CreatePublicationRequest) (uuid.UUID, err
 	logging.Logger.Info("INFO: Successfully creating Publication")
 	return id, nil
 }
+func DeletePublication(input *requests.DeletePublication) error {
+	logging.Logger.Info("INFO: Deleting publication by ID")
+	err := repositories.DeletePublication(database.GetDB(), input)
+	if err != nil {
+		logging.Logger.Error("ERROR: Failed to delete publication")
+	}
+	return err
+}

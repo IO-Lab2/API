@@ -66,3 +66,14 @@ func CreatePublication(db *sqlx.DB, id uuid.UUID, publication *requests.CreatePu
 	logging.Logger.Info("INFO: Successfully created publication")
 	return nil
 }
+func DeletePublication(db *sqlx.DB, input *requests.DeletePublication) error {
+	query := `
+	DELETE FROM  publications WHERE id = $1
+	`
+	logging.Logger.Info("INFO: Executing query: ", query)
+	_, err := db.Exec(query, input.ID)
+	if err != nil {
+		logging.Logger.Error("ERROR: Failed to execute query.", err)
+	}
+	return nil
+}

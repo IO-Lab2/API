@@ -54,4 +54,20 @@ func RegisterPublicationsRoutes(api huma.API, basePath string) {
 			return handlers.CreatePublication(ctx, i)
 		},
 	)
+	huma.Register(api, huma.Operation{
+		OperationID: "Delete Publication",
+		Description: "Delete a publication",
+		Tags:        []string{"Publications"},
+		Method:      http.MethodDelete,
+		Path:        fmt.Sprintf("%s/publications/{id}", basePath),
+		Responses: map[string]*huma.Response{
+			"204": {Description: "Publication deleted"},
+			"400": {Description: "Bad Request"},
+			"404": {Description: "Publication not found"},
+		},
+	},
+		func(ctx context.Context, i *requests.DeletePublication) (*huma.Response, error) {
+			return &huma.Response{}, handlers.DeletePublication(ctx, i)
+		},
+	)
 }

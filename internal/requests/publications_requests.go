@@ -17,3 +17,6 @@ type CreatePublicationRequest struct {
 	Publisher           string    `query:"publisher" json:"publisher" doc:"Publisher name" format:"string" example:"Publisher name"`
 	JournalType         string    `query:"journal_type" json:"journal_type" doc:"Journal type" format:"string" example:"Journal type"`
 }
+type DeletePublication struct {
+	ID uuid.UUID `path:"id" doc:"Publication ID" format:"uuid" example:"8c4bfb01-3c0a-416c-a07c-a24ee52a8b2a"`
+}
