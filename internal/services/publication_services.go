@@ -6,6 +6,7 @@ import (
 	"io-project-api/internal/database"
 	logging "io-project-api/internal/logger"
 	"io-project-api/internal/repositories"
+	"io-project-api/internal/requests"
 	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
@@ -30,4 +31,23 @@ func GetPublicationByID(id uuid.UUID) (*responses.PublicationBody, error) {
 	logging.Logger.Info("INFO: Successfully retrieving publication by ID")
 
 	return publication, nil
+}
+func CreatePublication(input *requests.CreatePublicationRequest) (uuid.UUID, error) {
+	id := uuid.New()
+	logging.Logger.Info("INFO: Creating Publication")
+	err := repositories.CreatePublication(database.GetDB(), id, input)
+	if err != nil {
+		logging.Logger.Error("ERROR: Error creating publication", zap.Error(err))
+		return uuid.Nil, err
+	}
+	logging.Logger.Info("INFO: Successfully creating Publication")
+	return id, nil
+}
+func DeletePublication(input *requests.DeletePublication) error {
+	logging.Logger.Info("INFO: Deleting publication by ID")
+	err := repositories.DeletePublication(database.GetDB(), input)
+	if err != nil {
+		logging.Logger.Error("ERROR: Failed to delete publication")
+	}
+	return err
 }

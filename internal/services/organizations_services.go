@@ -70,3 +70,11 @@ func UpdateOrganization(input *requests.UpdateOrganization) (*responses.UpdateOr
 	}
 	return &responses.UpdateOrganizationResponse{Body: *updatedOrganization}, nil
 }
+func DeleteOrganization(input *requests.DeleteOrganization) error {
+	err := repositories.DeleteOrganization(database.GetDB(), input)
+	if err != nil {
+		logging.Logger.Error("Error: Failed to delete organization")
+		return err
+	}
+	return nil
+}

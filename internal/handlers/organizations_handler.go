@@ -66,3 +66,11 @@ func UpdateOrganization(ctx context.Context, input *requests.UpdateOrganization)
 	response = updatedOrganization
 	return response, nil
 }
+func DeleteOrganization(ctx context.Context, input *requests.DeleteOrganization) error {
+	err := services.DeleteOrganization(input)
+	if err != nil {
+		logging.Logger.Error("Error: Failed to delete organization")
+		return err
+	}
+	return nil
+}
