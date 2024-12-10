@@ -15,3 +15,10 @@ API component for the project
 
 ### Awesome docs:
 https://api.epickaporownywarkabazwiedzyuczelni.rocks/docs#/
+
+### Workflow:
+Po zmianach w repo automatycznie uruchamia się workflow z testami (Go) i jeżeli zakończy się on pomyślnie to automatycznie jest uruchamiany workflow dockerImage tworzący obraz API, który potem jest wrzucany na serwer.
+
+Jeżeli potrzebujesz, żeby mimo nie przechodzenia testów wrzucić nową wersje API na serwer to w zakładce 'Actions' wybierasz 'dockerImage' z lewej strony i z prawej strony masz przycisk 'Run workflow', klikasz go, nic nie zmieniasz, znowu klikasz 'Run workflow' i wszystko się samo robi.
+
+Watchtower na serwerze sprawdza czy jest nowa wersja obrazu API co dziesięć minut, więc po co najwyrzej 10 minutach od zakończenia workflowu dockerImage nowa wersja powinna się pojawić na werwerze.
