@@ -13,22 +13,28 @@ import (
 func TestRegisterOrganizations(t *testing.T) {
 
 	id := "d328f702-3f5c-45ed-ba33-ae311fd6ca97"
-	url := fmt.Sprintf("http://127.0.0.1:8000/api/organizations/%s", id)
+	url := fmt.Sprintf("http://localhost:8000/api/organizations/%s", id)
 
-	// Wykonaj zapytanie GET
-	resp, err := http.Get(url)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Fatalf("Błąd podczas wysyłania zapytania: %v", err)
+		t.Fatalf("Failed to create request: %v", err)
 	}
-	defer resp.Body.Close()
+
+	req.Header.Add("Accept", "application/json")
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatalf("Failed to send request: %v", err)
+	}
+	defer res.Body.Close()
 
 	// Sprawdź, czy zapytanie zakończyło się sukcesem
-	if resp.StatusCode != http.StatusOK {
-		log.Fatalf("Otrzymano błąd: %s", resp.Status)
+	if res.StatusCode != http.StatusOK {
+		log.Fatalf("Otrzymano błąd: %s", res.Status)
 	}
 
 	// Wczytaj odpowiedź
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatalf("Błąd podczas odczytywania odpowiedzi: %v", err)
 	}
