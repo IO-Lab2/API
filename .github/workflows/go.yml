@@ -33,8 +33,8 @@ jobs:
         PGPASSWORD: ${{ secrets.PGPASSWORD }}
       run: nohup go run main.go &
       
-    # - name: Test
-    #   run: go test -v ./...
+    - name: Test
+      run: go test -v ./...
 
     - name: Kill main
       run: pkill -f "go run main.go"
