@@ -28,8 +28,8 @@ func RegisterBibliometricsRoutes(api huma.API, basePath string) {
 	)
 
 	huma.Register(api, huma.Operation{
-		OperationID: "Get Bibliometrics by Author",
-		Description: "Get Bibliometrics by Author",
+		OperationID: "Get Bibliometrics by Scientist ID",
+		Description: "Get Bibliometrics by Scientist ID",
 		Tags:        []string{"Bibliometrics"},
 		Method:      http.MethodGet,
 		Path:        fmt.Sprintf("%s/bibliometrics/author/{id}", basePath),
