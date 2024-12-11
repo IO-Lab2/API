@@ -18,11 +18,6 @@ type TitlesRequest struct {
 	Titles []AcademicTitle `json:"titles,omitempty" doc:"The academic titles to filer the search result."`
 }
 
-type CitationsCountsRequest struct {
-	LowerBound int `json:"lower_bound,omitempty" doc:"The minimum number of citations to filter the search result." format:"int64" minimum:"0"`
-	UpperBound int `json:"upper_bound,omitempty" doc:"The maximum number of citations to filter the search result." format:"int64"`
-}
-
 type MinisterialScoresRequest struct {
 	LowerBound int `json:"lower_bound,omitempty" doc:"The minimum ministerial score to filter the search result." format:"int64" minimum:"0"`
 	UpperBound int `json:"upper_bound,omitempty" doc:"The maximum ministerial score to filter the search result." format:"int64"`
@@ -42,11 +37,6 @@ type ResearchAreasRequest struct {
 }
 
 // Additional models
-type CitationsCounts struct {
-	Min *int `json:"min,omitempty" doc:"The minimum number of citations."`
-	Max *int `json:"max,omitempty" doc:"The maximum number of citations."`
-}
-
 type MinisterialScores struct {
 	Min *int `json:"min" doc:"The minimum ministerial score."`
 	Max *int `json:"max" doc:"The maximum ministerial score."`

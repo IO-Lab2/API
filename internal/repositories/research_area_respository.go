@@ -8,7 +8,7 @@ import (
 )
 
 func ResearchAreaFilter(db *sqlx.DB) ([]models.ResearchArea, error) {
-	query := "SELECT DISTINCT id, research_area FROM scientists"
+	query := "SELECT DISTINCT research_area FROM scientists"
 	logging.Logger.Info("INFO: Executing query:", query)
 
 	var areas []models.ResearchArea
