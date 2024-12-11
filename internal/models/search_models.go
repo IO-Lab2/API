@@ -19,8 +19,8 @@ type TitlesRequest struct {
 }
 
 type MinisterialScoresRequest struct {
-	LowerBound int `json:"lower_bound,omitempty" doc:"The minimum ministerial score to filter the search result." format:"int64" minimum:"0"`
-	UpperBound int `json:"upper_bound,omitempty" doc:"The maximum ministerial score to filter the search result." format:"int64"`
+	LowerBound float64 `json:"lower_bound,omitempty" doc:"The minimum ministerial score to filter the search result." format:"float64"`
+	UpperBound float64 `json:"upper_bound,omitempty" doc:"The maximum ministerial score to filter the search result." format:"float64"`
 }
 
 type OrganizationsRequest struct {
@@ -38,8 +38,8 @@ type ResearchAreasRequest struct {
 
 // Additional models
 type MinisterialScores struct {
-	Min *int `json:"min" doc:"The minimum ministerial score."`
-	Max *int `json:"max" doc:"The maximum ministerial score."`
+	Min *float64 `json:"min" doc:"The minimum ministerial score."`
+	Max *float64 `json:"max" doc:"The maximum ministerial score."`
 }
 
 type OrganizationsNames struct {
