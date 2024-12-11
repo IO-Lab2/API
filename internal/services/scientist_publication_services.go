@@ -4,8 +4,8 @@ import (
 	"errors"
 	"io-project-api/internal/database"
 	logging "io-project-api/internal/logger"
+	"io-project-api/internal/models"
 	"io-project-api/internal/repositories"
-	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -15,7 +15,7 @@ var (
 	ErrScientistPublicationNotFound = errors.New("scientist publication relationship not found for the given ID")
 )
 
-func GetScientistPublicationByID(id uuid.UUID) ([]responses.ScientistPublicationBody, error) {
+func GetScientistPublicationByID(id uuid.UUID) ([]models.Publication, error) {
 	logging.Logger.Info("INFO: Retrieving scientist publication by ID")
 	scientistPublication, err := repositories.ScientistPublicationByID(database.GetDB(), id)
 	if err != nil {

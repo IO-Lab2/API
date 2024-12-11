@@ -1,13 +1,14 @@
 package responses
 
 import (
+	"io-project-api/internal/models"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 type ScientistPublicationResponse struct {
-	Body []ScientistPublicationBody `json:"body" doc:"Scientist publication response body"`
+	Body []models.Publication `json:"body" doc:"Scientist publication response body"`
 }
 
 type ScientistPublicationBody struct {
