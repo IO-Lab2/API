@@ -7,57 +7,113 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 )
 
-func ScientistByID(db *sqlx.DB, id uuid.UUID) ([]responses.ScientistBody, error) {
-	query := "SELECT id, first_name, last_name, academic_title, research_area, email, profile_url, created_at, updated_at FROM scientists WHERE id = $1"
+func ScientistByID(db *sqlx.DB, id uuid.UUID) (*responses.ScientistBody, error) {
+	query := `
+	SELECT 
+		s.id, 
+		s.first_name, 
+		s.last_name, 
+		s.academic_title, 
+		s.email, 
+		s.profile_url, 
+		s.created_at, 
+		s.updated_at, 
+		ARRAY_AGG(ra.name) AS research_areas
+	FROM 
+		scientists s
+	LEFT JOIN 
+		scientists_research_areas sra ON s.id = sra.scientist_id
+	LEFT JOIN 
+		research_areas ra ON sra.research_area_id = ra.id
+	WHERE 
+		s.id = $1
+	GROUP BY 
+		s.id
+	`
 	logging.Logger.Info("INFO: Executing query:", query)
 
-	rows, err := db.Query(query, id)
+	var scientist responses.ScientistBody
+	var researchAreaNames []string
+
+	// Execute the query and scan the results
+	row := db.QueryRow(query, id)
+	err := row.Scan(
+		&scientist.ID,
+		&scientist.FirstName,
+		&scientist.LastName,
+		&scientist.AcademicTitle,
+		&scientist.Email,
+		&scientist.ProfileUrl,
+		&scientist.CreatedAt,
+		&scientist.UpdatedAt,
+		pq.Array(&researchAreaNames), // Use pq.Array to scan the ARRAY_AGG result
+	)
 	if err != nil {
 		logging.Logger.Error("ERROR: Error executing query:", err)
 		return nil, err
 	}
-	defer rows.Close()
 
-	var scientists []responses.ScientistBody
-	for rows.Next() {
-		var scientist responses.ScientistBody
-		err := rows.Scan(
-			&scientist.ID,
-			&scientist.FirstName,
-			&scientist.LastName,
-			&scientist.AcademicTitle,
-			&scientist.ResearchArea,
-			&scientist.Email,
-			&scientist.ProfileUrl,
-			&scientist.CreatedAt,
-			&scientist.UpdatedAt,
-		)
-		if err != nil {
-			logging.Logger.Error("ERROR: Error scanning row:", err)
-			return nil, err
-		}
-		scientists = append(scientists, scientist)
+	// Map research area names to ResearchArea structs
+	for _, name := range researchAreaNames {
+		scientist.ResearchAreas = append(scientist.ResearchAreas, responses.ResearchArea{Name: name})
 	}
 
-	if err := rows.Err(); err != nil {
-		logging.Logger.Error("ERROR: Error iterating over rows:", err)
-		return nil, err
-	}
-
-	logging.Logger.Info("INFO: Successfully retrieved scientists by ID")
-	return scientists, nil
+	logging.Logger.Info("INFO: Successfully retrieved scientist by ID")
+	return &scientist, nil
 }
 
 func ScientistByName(db *sqlx.DB, name *requests.ScientistName) (*responses.ScientistBody, error) {
-	query := "SELECT id, first_name, last_name, academic_title, research_area, email, profile_url, created_at, updated_at FROM scientists WHERE first_name = $1 AND last_name = $2"
+	query := `
+	SELECT 
+		s.id, 
+		s.first_name, 
+		s.last_name, 
+		s.academic_title, 
+		s.email, 
+		s.profile_url, 
+		s.created_at, 
+		s.updated_at, 
+		ARRAY_AGG(ra.name) AS research_areas
+	FROM 
+		scientists s
+	LEFT JOIN 
+		scientists_research_areas sra ON s.id = sra.scientist_id
+	LEFT JOIN 
+		research_areas ra ON sra.research_area_id = ra.id
+	WHERE 
+		s.first_name = $1 AND s.last_name = $2
+	GROUP BY 
+		s.id
+	`
 	logging.Logger.Info("INFO: Executing query:", query)
 
 	var scientist responses.ScientistBody
-	if err := db.Get(&scientist, query, name.FirstName, name.LastName); err != nil {
+	var researchAreaNames []string
+
+	// Execute the query and scan the results
+	row := db.QueryRow(query, name.FirstName, name.LastName)
+	err := row.Scan(
+		&scientist.ID,
+		&scientist.FirstName,
+		&scientist.LastName,
+		&scientist.AcademicTitle,
+		&scientist.Email,
+		&scientist.ProfileUrl,
+		&scientist.CreatedAt,
+		&scientist.UpdatedAt,
+		pq.Array(&researchAreaNames), // Use pq.Array to scan the ARRAY_AGG result
+	)
+	if err != nil {
 		logging.Logger.Error("ERROR: Error executing query:", err)
 		return nil, err
+	}
+
+	// Map research area names to ResearchArea structs
+	for _, name := range researchAreaNames {
+		scientist.ResearchAreas = append(scientist.ResearchAreas, responses.ResearchArea{Name: name})
 	}
 
 	logging.Logger.Info("INFO: Successfully retrieved scientist by name")

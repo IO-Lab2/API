@@ -2,16 +2,16 @@ package repositories
 
 import (
 	logging "io-project-api/internal/logger"
-	"io-project-api/internal/models"
+	"io-project-api/internal/responses"
 
 	"github.com/jmoiron/sqlx"
 )
 
-func ResearchAreaFilter(db *sqlx.DB) ([]models.ResearchArea, error) {
-	query := "SELECT DISTINCT research_area FROM scientists"
+func ResearchAreaFilter(db *sqlx.DB) ([]responses.ResearchAreaExtended, error) {
+	query := "SELECT DISTINCT id, name FROM research_areas"
 	logging.Logger.Info("INFO: Executing query:", query)
 
-	var areas []models.ResearchArea
+	var areas []responses.ResearchAreaExtended
 	if err := db.Select(&areas, query); err != nil {
 		logging.Logger.Error("ERROR: Error executing query:", err)
 		return nil, err

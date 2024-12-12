@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io-project-api/internal/models"
+	"io-project-api/internal/responses"
 	_ "io-project-api/internal/responses"
 	"io/ioutil"
 	"log"
@@ -265,7 +266,7 @@ func TestGetResarchAreaFilter(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.ResearchArea
+	var result []responses.ResearchArea
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
 	}

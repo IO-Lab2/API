@@ -9,9 +9,9 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 )
 
-func GetResearchTitleHandler(ctx context.Context) (*responses.ResearchAreasResponse, error) {
+func GetResearchTitleHandler(ctx context.Context) (*responses.ResearchAreaExtendedResponse, error) {
 	logging.Logger.Info("INFO: Handling GetResearchTitleHandler request")
-	response := &responses.ResearchAreasResponse{}
+	response := &responses.ResearchAreaExtendedResponse{}
 
 	areas, err := services.GetResearchAreas()
 	if err != nil {

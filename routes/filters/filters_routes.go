@@ -88,7 +88,7 @@ func RegisterFiltersRoutes(api huma.API, basePath string) {
 			"404": {Description: "No research areas found"},
 			"500": {Description: "Internal server error"},
 		}},
-		func(ctx context.Context, input *requests.ResearchAreasFilterRequest) (*responses.ResearchAreasResponse, error) {
+		func(ctx context.Context, input *requests.ResearchAreasFilterRequest) (*responses.ResearchAreaExtendedResponse, error) {
 
 			return handlers.GetResearchTitleHandler(ctx)
 		},

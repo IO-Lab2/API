@@ -23,7 +23,7 @@ func RegisterScientistsRoutes(api huma.API, basePath string) {
 			"200": {Description: "Scientist found"},
 			"400": {Description: "Bad request"},
 		},
-	}, func(ctx context.Context, input *requests.ScientistID) (*responses.ScientistsResponse, error) {
+	}, func(ctx context.Context, input *requests.ScientistID) (*responses.ScientistResponse, error) {
 
 		return handlers.GetScientistByID(ctx, input)
 	})

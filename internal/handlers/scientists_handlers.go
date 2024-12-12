@@ -10,9 +10,9 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 )
 
-func GetScientistByID(ctx context.Context, input *requests.ScientistID) (*responses.ScientistsResponse, error) {
+func GetScientistByID(ctx context.Context, input *requests.ScientistID) (*responses.ScientistResponse, error) {
 	logging.Logger.Info("INFO: Handling GetScientistByID request")
-	response := &responses.ScientistsResponse{}
+	response := &responses.ScientistResponse{}
 
 	resultingScientists, err := services.GetScientistByID(input.ID)
 	if err != nil {

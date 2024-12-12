@@ -4,8 +4,8 @@ import (
 	"errors"
 	"io-project-api/internal/database"
 	logging "io-project-api/internal/logger"
-	"io-project-api/internal/models"
 	"io-project-api/internal/repositories"
+	"io-project-api/internal/responses"
 
 	"go.uber.org/zap"
 )
@@ -14,7 +14,7 @@ var (
 	ErrResearchTitleFilterNotFound = errors.New("no research title found")
 )
 
-func GetResearchAreas() ([]models.ResearchArea, error) {
+func GetResearchAreas() ([]responses.ResearchAreaExtended, error) {
 	logging.Logger.Info("INFO: Retrieving research areas")
 
 	db := database.GetDB()
