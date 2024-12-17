@@ -15,9 +15,9 @@ func SearchHandler(ctx context.Context, input *models.SearchInput) (*responses.S
 	response := &responses.ScientistsResponse{}
 
 	result, err := services.SearchForScientists(input)
-	if len(result) == 0 || err != nil {
+	if result == nil || len(result) == 0 || err != nil {
 		logging.Logger.Error("ERROR: Failed to search for scientists:", err)
-		return nil, huma.Error400BadRequest("Failed to search for scientists")
+		return nil, huma.Error400BadRequest(err.Error())
 	}
 
 	logging.Logger.Info("INFO: Successfully retrieved search results for scientists")

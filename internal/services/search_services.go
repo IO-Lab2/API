@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 	"io-project-api/internal/database"
 	logging "io-project-api/internal/logger"
@@ -124,6 +125,11 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 			scientist.ResearchAreas = append(scientist.ResearchAreas, responses.ResearchArea{Name: name})
 		}
 		scientists = append(scientists, scientist)
+	}
+
+	logging.Logger.Debug("Number of scientists found: ", len(scientists))
+	if len(scientists) == 0 {
+		return nil, errors.New("No scientists found")
 	}
 
 	return scientists, nil
