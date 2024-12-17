@@ -42,47 +42,41 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 	args := map[string]interface{}{}
 
 	// Filters
-	if input.Name != "" {
+	if isNotEmpty(input.Name) {
 		whereClauses = append(whereClauses, "s.first_name ILIKE :name")
 		args["name"] = "%" + input.Name + "%"
 	}
-	if input.Surname != "" {
+	if isNotEmpty(input.Surname) {
 		whereClauses = append(whereClauses, "s.last_name ILIKE :surname")
 		args["surname"] = "%" + input.Surname + "%"
 	}
-	if input.Body != nil {
-		if input.Body.AcademicTitles != nil {
-			whereClauses = append(whereClauses, "s.academic_title = ANY(:titles)")
-			args["titles"] = input.Body.AcademicTitles.Titles
-		}
-		if input.Body.PublicationsCounts != nil {
-			if input.Body.PublicationsCounts.LowerBound > 0 {
-				whereClauses = append(whereClauses, "b.publication_count >= :publications_lower")
-				args["publications_lower"] = input.Body.PublicationsCounts.LowerBound
-			}
-			if input.Body.PublicationsCounts.UpperBound > 0 {
-				whereClauses = append(whereClauses, "b.publication_count <= :publications_upper")
-				args["publications_upper"] = input.Body.PublicationsCounts.UpperBound
-			}
-		}
-		if input.Body.MinisterialScores != nil {
-			if input.Body.MinisterialScores.LowerBound > 0 {
-				whereClauses = append(whereClauses, "b.ministerial_score >= :score_lower")
-				args["score_lower"] = input.Body.MinisterialScores.LowerBound
-			}
-			if input.Body.MinisterialScores.UpperBound > 0 {
-				whereClauses = append(whereClauses, "b.ministerial_score <= :score_upper")
-				args["score_upper"] = input.Body.MinisterialScores.UpperBound
-			}
-		}
-		if input.Body.ResearchAreas != nil && len(input.Body.ResearchAreas.ResearchAreas) > 0 {
-			whereClauses = append(whereClauses, "ra.name = ANY(:research_areas)")
-			args["research_areas"] = input.Body.ResearchAreas.ResearchAreas
-		}
-		if input.Body.Organizations != nil && len(input.Body.Organizations.Organizations) > 0 {
-			whereClauses = append(whereClauses, "o.name = ANY(:organizations)")
-			args["organizations"] = input.Body.Organizations.Organizations
-		}
+	if isNotEmpty(input.AcademicTitles) {
+		whereClauses = append(whereClauses, "s.academic_title = ANY(:academic_titles)")
+		args["academic_titles"] = pq.Array(input.AcademicTitles)
+	}
+	if isNotEmpty(input.Organizations) {
+		whereClauses = append(whereClauses, "o.name = ANY(:organizations)")
+		args["organizations"] = pq.Array(input.Organizations)
+	}
+	if isNotEmpty(input.ResearchAreas) {
+		whereClauses = append(whereClauses, "ra.name = ANY(:research_areas)")
+		args["research_areas"] = pq.Array(input.ResearchAreas)
+	}
+	if isNotEmpty(input.MinPublications) {
+		whereClauses = append(whereClauses, "b.publication_count >= :min_publications")
+		args["min_publications"] = input.MinPublications
+	}
+	if isNotEmpty(input.MaxPublications) {
+		whereClauses = append(whereClauses, "b.publication_count <= :max_publications")
+		args["max_publications"] = input.MaxPublications
+	}
+	if isNotEmpty(input.MinMinisterialScore) {
+		whereClauses = append(whereClauses, "b.ministerial_score >= :min_score")
+		args["min_score"] = input.MinMinisterialScore
+	}
+	if isNotEmpty(input.MaxMinisterialScore) {
+		whereClauses = append(whereClauses, "b.ministerial_score <= :max_score")
+		args["max_score"] = input.MaxMinisterialScore
 	}
 
 	// Combine query
@@ -107,12 +101,10 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 
 	// Parse results
 	var scientists []responses.ScientistBody
-	var count int
 	for rows.Next() {
 		var scientist responses.ScientistBody
 		var researchAreaNames []string
 
-		// Scan the scientist data and research areas
 		if err := rows.Scan(
 			&scientist.ID,
 			&scientist.FirstName,
@@ -128,20 +120,26 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 			return nil, fmt.Errorf("failed to scan result row: %w", err)
 		}
 
-		// Map research area names to ResearchArea structs
 		for _, name := range researchAreaNames {
 			scientist.ResearchAreas = append(scientist.ResearchAreas, responses.ResearchArea{Name: name})
 		}
-
 		scientists = append(scientists, scientist)
-		count++
 	}
 
-	if err := rows.Err(); err != nil {
-		logging.Logger.Error("ERROR: Error after iterating rows:", err)
-		return nil, fmt.Errorf("row iteration error: %w", err)
-	}
-
-	logging.Logger.Info("INFO: Successfully executed search query, found: ", count)
 	return scientists, nil
+}
+
+func isNotEmpty(param interface{}) bool {
+	switch v := param.(type) {
+	case string:
+		return v != ""
+	case []string:
+		return len(v) > 0
+	case int:
+		return v > 0
+	case float64:
+		return v > 0
+	default:
+		return false
+	}
 }

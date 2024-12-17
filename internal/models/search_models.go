@@ -1,17 +1,15 @@
 package models
 
 type SearchInput struct {
-	Name    string           `query:"name" doc:"The name of the scientist to search for."`
-	Surname string           `query:"surname" doc:"The surname of the scientist to search for."`
-	Body    *SearchInputBody `json:"body" doc:"The body of the search query."`
-}
-
-type SearchInputBody struct {
-	AcademicTitles     *TitlesRequest             `json:"academic_titles,omitempty" doc:"The academic titles to filter the search result."`
-	MinisterialScores  *MinisterialScoresRequest  `json:"ministerial_scores,omitempty" doc:"The ministerial scores to filter the search result."`
-	Organizations      *OrganizationsRequest      `json:"organizations,omitempty" doc:"The organizations to filter the search result."`
-	PublicationsCounts *PublicationsCountsRequest `json:"publications_counts,omitempty" doc:"The number of publications to filter the search result."`
-	ResearchAreas      *ResearchAreasRequest      `json:"research_areas,omitempty" doc:"The research areas to filter the search result."`
+	Name                string   `query:"name" doc:"The name of the scientist to search for."`
+	Surname             string   `query:"surname" doc:"The surname of the scientist to search for."`
+	AcademicTitles      []string `query:"academic_titles[]" doc:"List of academic titles to filter the search result."`
+	Organizations       []string `query:"organizations[]" doc:"List of organizations to filter the search result."`
+	ResearchAreas       []string `query:"research_areas[]" doc:"List of research areas to filter the search result."`
+	MinMinisterialScore float64  `query:"ministerial_score_min" doc:"Minimum ministerial score."`
+	MaxMinisterialScore float64  `query:"ministerial_score_max" doc:"Maximum ministerial score."`
+	MinPublications     int      `query:"publications_min" doc:"Minimum number of publications."`
+	MaxPublications     int      `query:"publications_max" doc:"Maximum number of publications."`
 }
 
 type TitlesRequest struct {
