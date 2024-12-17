@@ -124,7 +124,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 			&scientist.UpdatedAt,
 			pq.Array(&researchAreaNames),
 		); err != nil {
-			logging.Logger.Error("ERROR: Error scanning row:", err)
+			logging.Logger.Error("ERROR: Error scanning row: ", err)
 			return nil, fmt.Errorf("failed to scan result row: %w", err)
 		}
 
