@@ -21,44 +21,22 @@ func BibliometricByID(db *sqlx.DB, id uuid.UUID) (*responses.BibliometricBody, e
 	return &bibliometric, nil
 }
 
-func BibliometricByAuthor(db *sqlx.DB, id uuid.UUID) ([]responses.BibliometricBody, error) {
-	query := "SELECT id, h_index_wos, h_index_scopus, publication_count, ministerial_score, scientist_id, created_at, updated_at FROM bibliometrics WHERE scientist_id = $1"
+func BibliometricByScientistID(db *sqlx.DB, id uuid.UUID) (*responses.BibliometricBody, error) {
+	query := `
+		SELECT id, h_index_wos, h_index_scopus, publication_count, ministerial_score, scientist_id, created_at, updated_at 
+		FROM bibliometrics 
+		WHERE scientist_id = $1
+		ORDER BY id DESC
+		LIMIT 1`
 	logging.Logger.Info("INFO: Executing query:", query)
-	rows, err := db.Query(query, id)
-	if err != nil {
+	var result *responses.BibliometricBody
+	if err := db.Get(&result, query, id); err != nil {
 		logging.Logger.Error("ERROR: Error executing query:", err)
-		return nil, err
-	}
-	defer rows.Close()
-
-	var bibliometrics []responses.BibliometricBody
-
-	for rows.Next() {
-		var bibliometric responses.BibliometricBody
-		err := rows.Scan(
-			&bibliometric.ID,
-			&bibliometric.HIndexWos,
-			&bibliometric.HIndexScopus,
-			&bibliometric.PublicationCount,
-			&bibliometric.MinisterialScore,
-			&bibliometric.ScientistID,
-			&bibliometric.CreatedAt,
-			&bibliometric.UpdatedAt,
-		)
-		if err != nil {
-			logging.Logger.Error("ERROR: Error scanning row:", err)
-			return nil, err
-		}
-		bibliometrics = append(bibliometrics, bibliometric)
-	}
-
-	if err = rows.Err(); err != nil {
-		logging.Logger.Error("ERROR: Error iterating over rows:", err)
 		return nil, err
 	}
 
 	logging.Logger.Info("INFO: Successfully retrieved bibliometrics by author ID")
-	return bibliometrics, nil
+	return result, nil
 }
 
 func CreateBibliometric(db *sqlx.DB, id uuid.UUID, input *requests.CreateBibliometric) error {

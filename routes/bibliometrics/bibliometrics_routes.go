@@ -37,9 +37,9 @@ func RegisterBibliometricsRoutes(api huma.API, basePath string) {
 			"200": {Description: "Bibliometrics found"},
 			"400": {Description: "Bad request"},
 		}},
-		func(ctx context.Context, input *requests.BibliometricsScientistID) (*responses.ListOfBibliometricsResponse, error) {
+		func(ctx context.Context, input *requests.BibliometricsScientistID) (*responses.BibliometricsResponse, error) {
 
-			return handlers.GetBibliometricByAuthor(ctx, input)
+			return handlers.GetBibliometricByScientistID(ctx, input)
 		},
 	)
 	huma.Register(api, huma.Operation{

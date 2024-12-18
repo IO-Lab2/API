@@ -23,16 +23,16 @@ func GetBibliometricByID(ctx context.Context, input *requests.BibliometricsID) (
 	return response, nil
 }
 
-func GetBibliometricByAuthor(ctx context.Context, input *requests.BibliometricsScientistID) (*responses.ListOfBibliometricsResponse, error) {
+func GetBibliometricByScientistID(ctx context.Context, input *requests.BibliometricsScientistID) (*responses.BibliometricsResponse, error) {
 	logging.Logger.Info("INFO: Handling GetBibliometricByAuthor request")
-	response := &responses.ListOfBibliometricsResponse{}
-	resultingBibliometrics, err := services.GetBibliometricByAuthor(input.ID)
+	response := &responses.BibliometricsResponse{}
+	bibliometrics, err := services.GetBibliometricByScientistID(input.ID)
 	if err != nil {
 		logging.Logger.Error("ERROR: Failed to get bibliometrics by author:", err)
 		return nil, huma.Error400BadRequest("Failed to get bibliometrics by author")
 	}
 	logging.Logger.Info("INFO: Successfully retrieved bibliometrics by author")
-	response.Body = resultingBibliometrics
+	response.Body = bibliometrics
 	return response, nil
 }
 

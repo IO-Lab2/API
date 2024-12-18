@@ -9,7 +9,6 @@ import (
 	"io-project-api/internal/responses"
 
 	"github.com/google/uuid"
-	"go.uber.org/zap"
 )
 
 var (
@@ -27,20 +26,16 @@ func GetBibliometricByID(id uuid.UUID) (*responses.BibliometricBody, error) {
 	return bibliometric, nil
 }
 
-func GetBibliometricByAuthor(id uuid.UUID) ([]responses.BibliometricBody, error) {
+func GetBibliometricByScientistID(id uuid.UUID) (*responses.BibliometricBody, error) {
 	logging.Logger.Info("INFO: Retrieving Bibliometric by Author")
-	bibliometric, err := repositories.BibliometricByAuthor(database.GetDB(), id)
+	result, err := repositories.BibliometricByScientistID(database.GetDB(), id)
 	if err != nil {
 		logging.Logger.Error("ERROR: Error querying bibliometric by Author", err)
 		return nil, err
 	}
 
-	if len(bibliometric) == 0 {
-		logging.Logger.Warn("WARN: No bibliometric found for scientist ID:", zap.String("scientist_id", id.String()), err)
-		return nil, ErrBibliometricNotFound
-	}
 	logging.Logger.Info("INFO: Successfully retrieving Bibliometric by Author")
-	return bibliometric, nil
+	return result, nil
 }
 func CreateBibliometric(input *requests.CreateBibliometric) (uuid.UUID, error) {
 	id := uuid.New()
