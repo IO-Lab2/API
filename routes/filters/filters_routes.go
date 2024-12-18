@@ -110,4 +110,69 @@ func RegisterFiltersRoutes(api huma.API, basePath string) {
 			return handlers.GetOrganizationTreeHandler(ctx, input)
 		},
 	)
+
+	huma.Register(api, huma.Operation{
+		OperationID: "Get Positions Filter",
+		Description: "Retrieves a list of positions",
+		Tags:        []string{"Filters", "Positions"},
+		Method:      http.MethodGet,
+		Path:        fmt.Sprintf("%s/filters/positions", basePath),
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Positions retrieved successfully"},
+			"404": {Description: "No positions found"},
+			"500": {Description: "Internal server error"},
+		}},
+
+		func(ctx context.Context, input *requests.PositionFilterRequest) (*responses.PositionsResponse, error) {
+			return handlers.GetPositionsHandler(ctx)
+		},
+	)
+
+	huma.Register(api, huma.Operation{
+		OperationID: "Get Publishers Filter",
+		Description: "Retrieves a list of publishers",
+		Tags:        []string{"Filters", "Publishers"},
+		Method:      http.MethodGet,
+		Path:        fmt.Sprintf("%s/filters/publishers", basePath),
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Publishers retrieved successfully"},
+			"404": {Description: "No publishers found"},
+			"500": {Description: "Internal server error"},
+		}},
+		func(ctx context.Context, input *requests.PublishersFilterRequest) (*responses.PublishersResponse, error) {
+			return handlers.GetPublishersHandler(ctx)
+		},
+	)
+
+	huma.Register(api, huma.Operation{
+		OperationID: "Get Publication Years Filter",
+		Description: "Retrieves a list of publication years",
+		Tags:        []string{"Filters", "Publication Years"},
+		Method:      http.MethodGet,
+		Path:        fmt.Sprintf("%s/filters/publication-years", basePath),
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Publication years retrieved successfully"},
+			"404": {Description: "No publication years found"},
+			"500": {Description: "Internal server error"},
+		}},
+		func(ctx context.Context, input *requests.PublicationsYearsFilterRequest) (*responses.PublicationsYearsResponse, error) {
+			return handlers.GetPublicationsYearsHandler(ctx)
+		},
+	)
+
+	huma.Register(api, huma.Operation{
+		OperationID: "Get Journal Types Filter",
+		Description: "Retrieves a list of journal types",
+		Tags:        []string{"Filters", "Journal Types"},
+		Method:      http.MethodGet,
+		Path:        fmt.Sprintf("%s/filters/journal-types", basePath),
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Journal types retrieved successfully"},
+			"404": {Description: "No journal types found"},
+			"500": {Description: "Internal server error"},
+		}},
+		func(ctx context.Context, input *requests.JournalTypesFilterRequest) (*responses.JournalTypeResponse, error) {
+			return handlers.GetJournalTypesHandler(ctx)
+		},
+	)
 }
