@@ -29,14 +29,14 @@ func BibliometricByScientistID(db *sqlx.DB, id uuid.UUID) (*responses.Bibliometr
 		ORDER BY id DESC
 		LIMIT 1`
 	logging.Logger.Info("INFO: Executing query:", query)
-	var result *responses.BibliometricBody
+	var result responses.BibliometricBody
 	if err := db.Get(&result, query, id); err != nil {
 		logging.Logger.Error("ERROR: Error executing query:", err)
 		return nil, err
 	}
 
 	logging.Logger.Info("INFO: Successfully retrieved bibliometrics by author ID")
-	return result, nil
+	return &result, nil
 }
 
 func CreateBibliometric(db *sqlx.DB, id uuid.UUID, input *requests.CreateBibliometric) error {
