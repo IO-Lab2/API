@@ -13,6 +13,7 @@ type SearchInput struct {
 	Positions           []string `query:"positions[]" doc:"List of positions to filter the search result."`
 	JournalTypes        []string `query:"journal_types[]" doc:"List of journal types to filter the search result."`
 	PublicationsYears   []int    `query:"publications_years[]" doc:"List of publication years to filter the search result."`
+	Publishers          []string `query:"publishers[]" doc:"List of publishers to filter the search result."`
 }
 
 type TitlesRequest struct {
