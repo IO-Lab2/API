@@ -37,6 +37,10 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 	LEFT JOIN 
 		bibliometrics b ON s.id = b.scientist_id
 	LEFT JOIN 
+		scientists_publications sp ON s.id = sp.scientist_id
+	LEFT JOIN 
+		publications p ON sp.publication_id = p.id
+	LEFT JOIN 
 		scientist_organization so ON s.id = so.scientist_id
 	LEFT JOIN 
 		organizations o ON so.organization_id = o.id
@@ -82,6 +86,14 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 	if isNotEmpty(input.MaxMinisterialScore) {
 		whereClauses = append(whereClauses, "b.ministerial_score <= :max_score")
 		args["max_score"] = input.MaxMinisterialScore
+	}
+	if isNotEmpty(input.Positions) {
+		whereClauses = append(whereClauses, "s.position = ANY(:positions)")
+		args["positions"] = pq.Array(input.Positions)
+	}
+	if isNotEmpty(input.JournalTypes) {
+		whereClauses = append(whereClauses, "p.journal_type = ANY(:journal_types)")
+		args["journal_types"] = pq.Array(input.JournalTypes)
 	}
 
 	// Combine query
