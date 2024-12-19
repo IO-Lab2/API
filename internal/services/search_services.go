@@ -23,7 +23,11 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		s.profile_url, 
 		s.created_at, 
 		s.updated_at, 
-		ARRAY_AGG(DISTINCT ra.name) AS research_areas
+		ARRAY_AGG(DISTINCT ra.name) AS research_areas,
+		b.h_index_wos, 
+		b.h_index_scopus, 
+		b.publication_count, 
+		b.ministerial_score
 	FROM 
 		scientists s
 	LEFT JOIN 
@@ -87,7 +91,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 
 	// Group and order results
 	query += `
-	GROUP BY s.id
+	GROUP BY s.id, b.h_index_wos, b.h_index_scopus, b.publication_count, b.ministerial_score
 	ORDER BY s.last_name, s.first_name
 	`
 
@@ -116,14 +120,20 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 			&scientist.CreatedAt,
 			&scientist.UpdatedAt,
 			pq.Array(&researchAreaNames),
+			&scientist.Bibliometrics.HIndexWOS,
+			&scientist.Bibliometrics.HIndexScopus,
+			&scientist.Bibliometrics.PublicationCount,
+			&scientist.Bibliometrics.MinisterialScore,
 		); err != nil {
 			logging.Logger.Error("ERROR: Error scanning row: ", err)
 			return nil, fmt.Errorf("failed to scan result row: %w", err)
 		}
 
+		// Add research areas to the scientist
 		for _, name := range researchAreaNames {
 			scientist.ResearchAreas = append(scientist.ResearchAreas, responses.ResearchArea{Name: name})
 		}
+
 		scientists = append(scientists, scientist)
 	}
 

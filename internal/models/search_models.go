@@ -10,6 +10,8 @@ type SearchInput struct {
 	MaxMinisterialScore float64  `query:"ministerial_score_max" doc:"Maximum ministerial score."`
 	MinPublications     int      `query:"publications_min" doc:"Minimum number of publications."`
 	MaxPublications     int      `query:"publications_max" doc:"Maximum number of publications."`
+	Positions           []string `query:"positions[]" doc:"List of positions to filter the search result."`
+	JournalTypes        []string `query:"journal_types[]" doc:"List of journal types to filter the search result."`
 }
 
 type TitlesRequest struct {
