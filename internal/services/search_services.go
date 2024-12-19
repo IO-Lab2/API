@@ -95,6 +95,10 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		whereClauses = append(whereClauses, "p.journal_type = ANY(:journal_types)")
 		args["journal_types"] = pq.Array(input.JournalTypes)
 	}
+	if isNotEmpty(input.PublicationsYears) {
+		whereClauses = append(whereClauses, "EXTRACT(YEAR FROM p.publication_date) = ANY(:publications_years)")
+		args["publication_years"] = pq.Array(input.PublicationsYears)
+	}
 
 	// Combine query
 	if len(whereClauses) > 0 {
