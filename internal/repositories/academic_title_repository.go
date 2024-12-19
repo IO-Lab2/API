@@ -8,7 +8,7 @@ import (
 )
 
 func AcademicTitleFilter(db *sqlx.DB) ([]models.AcademicTitle, error) {
-	query := `SELECT DISTINCT academic_title FROM scientists`
+	query := "SELECT DISTINCT academic_title FROM scientists"
 	logging.Logger.Info("INFO: Executing query:", query)
 
 	rows, err := db.Query(query)
