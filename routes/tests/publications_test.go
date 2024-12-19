@@ -3,49 +3,47 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io-project-api/internal/models"
-	_ "io-project-api/internal/responses"
-	"io/ioutil"
-	"log"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
 func TestRegisterPublicationsbyID(t *testing.T) {
+
+	router := TestSetUP()
 
 	id := "cd9d766f-897f-40d3-a259-9d9001545394"
 	url := fmt.Sprintf("http://localhost:8000/api/publications/%s", id)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
 
 	req.Header.Add("Accept", "application/json")
 
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Fatalf("Failed to send request: %v", err)
-	}
-	defer res.Body.Close()
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
 
 	// Sprawdź, czy zapytanie zakończyło się sukcesem
-	if res.StatusCode != http.StatusOK {
-		log.Fatalf("Otrzymano błąd: %s", res.Status)
+	if w.Code != http.StatusOK {
+		t.Errorf("Otrzymano błąd: %v", w.Code)
 	}
 
 	// Wczytaj odpowiedź
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(w.Body)
 	if err != nil {
-		log.Fatalf("Błąd podczas odczytywania odpowiedzi: %v", err)
+		t.Errorf("Błąd podczas odczytywania odpowiedzi: %v", err)
 	}
 
 	// Rozpakuj JSON do struktury
 	var result models.Publication
 
 	if err := json.Unmarshal(body, &result); err != nil {
-		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
+		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	fmt.Printf("Publication dla ID %s: %v\n", id, result)
+	t.Logf("Test zakończony pomyślnie, tytuły naukowców są zgodne.")
 }

@@ -5,79 +5,85 @@ import (
 	"fmt"
 	"io"
 	"io-project-api/internal/models"
-	"io/ioutil"
-	"log"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
 func TestRegisterScientistsOrganizationsByID(t *testing.T) {
+
+	router := TestSetUP()
 
 	id := "d58b4cf2-f79b-4820-a465-868892e122a6"
 	url := fmt.Sprintf("http://localhost:8000/api/scientists_organizations/%s", id)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
 
 	req.Header.Add("Accept", "application/json")
 
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Fatalf("Failed to send request: %v", err)
-	}
-	defer res.Body.Close()
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
 
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		t.Fatalf("Failed to read response body: %v", err)
+	// Sprawdź, czy zapytanie zakończyło się sukcesem
+	if w.Code != http.StatusOK {
+		t.Errorf("Otrzymano błąd: %v", w.Code)
 	}
 
-	if res.StatusCode != http.StatusOK {
-		t.Errorf("Expected status 200, got %d", res.StatusCode)
+	// Wczytaj odpowiedź
+	body, err := io.ReadAll(w.Body)
+	if err != nil {
+		t.Errorf("Błąd podczas odczytywania odpowiedzi: %v", err)
 	}
 
 	// Rozpakuj JSON do struktury
 	var result []models.ScientistOrganization
 
 	if err := json.Unmarshal(body, &result); err != nil {
-		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
+		t.Errorf("Błąd podczas parsowania result JSON: %v", err)
 	}
 
-	fmt.Printf("Organization dla ID %s: %s\n", result[0].ID, result[0])
+	t.Logf("Test zakończony pomyślnie.")
 }
 func TestRegisterScientistsOrganizationsByScientistID(t *testing.T) {
+
+	router := TestSetUP()
+	name := "Marcin"
 	surname := "Bator"
-	url := fmt.Sprintf("http://localhost:8000/api/search?surname=%s", surname)
+	url := fmt.Sprintf("http://localhost:8000/api/search?name=%s&surname=%s", name, surname)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
 
 	req.Header.Add("Accept", "application/json")
 
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Fatalf("Failed to send request: %v", err)
-	}
-	defer res.Body.Close()
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
 
-	body, err := ioutil.ReadAll(res.Body)
+	// Sprawdź, czy zapytanie zakończyło się sukcesem
+	if w.Code != http.StatusOK {
+		t.Errorf("Otrzymano błąd: %v", w.Code)
+	}
+
+	// Wczytaj odpowiedź
+	body, err := io.ReadAll(w.Body)
 	if err != nil {
-		log.Fatalf("Błąd podczas odczytywania odpowiedzi: %v", err)
+		t.Errorf("Błąd podczas odczytywania odpowiedzi: %v", err)
 	}
 
 	// Rozpakuj JSON do struktury
 	var subject []models.Scientist
 
 	if err := json.Unmarshal(body, &subject); err != nil {
-		log.Fatalf("(Subject) Błąd podczas parsowania JSON: %v", err)
+		t.Errorf("(Subject) Błąd podczas parsowania subject JSON: %v", err)
 	}
 
 	if len(subject) == 0 {
-		t.Fatalf("Nie znaleziono naukowca dla nazwiska %s", surname)
+		t.Errorf("Nie znaleziono naukowca dla imienia: %s i nazwiska: %s", name, surname)
 	}
 
 	id := subject[0].ID
@@ -85,30 +91,31 @@ func TestRegisterScientistsOrganizationsByScientistID(t *testing.T) {
 
 	req, err = http.NewRequest("GET", url, nil)
 	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
 
 	req.Header.Add("Accept", "application/json")
 
-	res, err = http.DefaultClient.Do(req)
-	if err != nil {
-		t.Fatalf("Failed to send request: %v", err)
-	}
-	defer res.Body.Close()
+	w = httptest.NewRecorder()
+	router.ServeHTTP(w, req)
 
-	body, err = io.ReadAll(res.Body)
-	if err != nil {
-		t.Fatalf("Failed to read response body: %v", err)
+	// Sprawdź, czy zapytanie zakończyło się sukcesem
+	if w.Code != http.StatusOK {
+		t.Errorf("Otrzymano błąd: %v", w.Code)
 	}
 
-	if res.StatusCode != http.StatusOK {
-		t.Errorf("Expected status 200, got %d", res.StatusCode)
+	// Wczytaj odpowiedź
+	body, err = io.ReadAll(w.Body)
+	if err != nil {
+		t.Errorf("Błąd podczas odczytywania odpowiedzi: %v", err)
 	}
 
 	// Rozpakuj JSON do struktury
 	var result []models.ScientistOrganization
 
 	if err := json.Unmarshal(body, &result); err != nil {
-		log.Fatalf("Błąd podczas parsowania JSON: %v", err)
+		t.Errorf("Błąd podczas parsowania result JSON: %v", err)
 	}
+
+	t.Logf("Test zakończony pomyślnie.")
 }
