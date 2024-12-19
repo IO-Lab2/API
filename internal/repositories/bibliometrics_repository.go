@@ -10,7 +10,11 @@ import (
 )
 
 func BibliometricByID(db *sqlx.DB, id uuid.UUID) (*responses.BibliometricBody, error) {
-	query := "SELECT id, h_index_wos, h_index_scopus, publication_count, ministerial_score, scientist_id, created_at, updated_at FROM bibliometrics WHERE id = $1"
+	query := `
+			SELECT id, h_index_wos, h_index_scopus, publication_count, ministerial_score, scientist_id, created_at, updated_at 
+			FROM bibliometrics 
+			WHERE id = $1`
+
 	logging.Logger.Info("INFO: Executing query:", query)
 	var bibliometric responses.BibliometricBody
 	if err := db.Get(&bibliometric, query, id); err != nil {
