@@ -29,8 +29,8 @@ type ScientistBody struct {
 }
 
 type PublicationScore struct {
-	Year  *string  `json:"year"`
-	Score *float64 `json:"score"`
+	Year  *string  `json:"year" doc:"Year of the publication score" format:"string" example:"2021"`
+	Score *float64 `json:"score" doc:"Total score for the publications" format:"float" example:"1.0"`
 }
 
 type Bibliometrics struct {

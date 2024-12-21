@@ -1,19 +1,26 @@
 package models
 
+type YearScoreFilter struct {
+	Year     int     `json:"year" doc:"Year to filter ministerial scores by."`
+	MinScore float64 `json:"min_score" doc:"Minimum ministerial score for the year."`
+	MaxScore float64 `json:"max_score" doc:"Maximum ministerial score for the year."`
+}
+
 type SearchInput struct {
-	Name                string   `query:"name" doc:"The name of the scientist to search for."`
-	Surname             string   `query:"surname" doc:"The surname of the scientist to search for."`
-	AcademicTitles      []string `query:"academic_titles[]" doc:"List of academic titles to filter the search result."`
-	Organizations       []string `query:"organizations[]" doc:"List of organizations to filter the search result."`
-	ResearchAreas       []string `query:"research_areas[]" doc:"List of research areas to filter the search result."`
-	MinMinisterialScore float64  `query:"ministerial_score_min" doc:"Minimum ministerial score."`
-	MaxMinisterialScore float64  `query:"ministerial_score_max" doc:"Maximum ministerial score."`
-	MinPublications     int      `query:"publications_min" doc:"Minimum number of publications."`
-	MaxPublications     int      `query:"publications_max" doc:"Maximum number of publications."`
-	Positions           []string `query:"positions[]" doc:"List of positions to filter the search result."`
-	JournalTypes        []string `query:"journal_types[]" doc:"List of journal types to filter the search result."`
-	PublicationsYears   []int    `query:"publications_years[]" doc:"List of publication years to filter the search result."`
-	Publishers          []string `query:"publishers[]" doc:"List of publishers to filter the search result."`
+	Name                string            `query:"name" doc:"The name of the scientist to search for."`
+	Surname             string            `query:"surname" doc:"The surname of the scientist to search for."`
+	AcademicTitles      []string          `query:"academic_titles[]" doc:"List of academic titles to filter the search result."`
+	Organizations       []string          `query:"organizations[]" doc:"List of organizations to filter the search result."`
+	ResearchAreas       []string          `query:"research_areas[]" doc:"List of research areas to filter the search result."`
+	MinMinisterialScore float64           `query:"ministerial_score_min" doc:"Minimum ministerial score."`
+	MaxMinisterialScore float64           `query:"ministerial_score_max" doc:"Maximum ministerial score."`
+	YearScoreFilters    []YearScoreFilter `query:"year_score_filters[]" doc:"Filters by year and ministerial score boundaries."`
+	MinPublications     int               `query:"publications_min" doc:"Minimum number of publications."`
+	MaxPublications     int               `query:"publications_max" doc:"Maximum number of publications."`
+	Positions           []string          `query:"positions[]" doc:"List of positions to filter the search result."`
+	JournalTypes        []string          `query:"journal_types[]" doc:"List of journal types to filter the search result."`
+	PublicationsYears   []int             `query:"publications_years[]" doc:"List of publication years to filter the search result."`
+	Publishers          []string          `query:"publishers[]" doc:"List of publishers to filter the search result."`
 }
 
 type TitlesRequest struct {
