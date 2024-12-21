@@ -25,14 +25,19 @@ type ScientistBody struct {
 	CreatedAt         time.Time          `db:"created_at" json:"created_at" doc:"Creation date of the scientist" format:"date-time" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt         time.Time          `db:"updated_at" json:"updated_at" doc:"Last update date of the scientist" format:"date-time" example:"2021-01-01T00:00:00Z"`
 	Bibliometrics     Bibliometrics      `json:"bibliometrics" doc:"Bibliometric indicators of the scientist"`
-	PublicationScores map[string]float64 `json:"publication_scores" doc:"Ministerial score points grouped by year"`
+	PublicationScores []PublicationScore `json:"publication_scores" doc:"Ministerial score points grouped by year"`
+}
+
+type PublicationScore struct {
+	Year  *string  `json:"year"`
+	Score *float64 `json:"score"`
 }
 
 type Bibliometrics struct {
-	HIndexWOS        *int    `db:"h_index_wos" json:"h_index_wos,omitempty"`
-	HIndexScopus     *int    `db:"h_index_scopus" json:"h_index_scopus,omitempty"`
-	PublicationCount int     `db:"publication_count" json:"publication_count"`
-	MinisterialScore float64 `db:"ministerial_score" json:"ministerial_score"`
+	HIndexWOS        *int     `db:"h_index_wos" json:"h_index_wos,omitempty"`
+	HIndexScopus     *int     `db:"h_index_scopus" json:"h_index_scopus,omitempty"`
+	PublicationCount *int     `db:"publication_count" json:"publication_count"`
+	MinisterialScore *float64 `db:"ministerial_score" json:"ministerial_score" doc:"Total ministerial score of the scientist" format:"float" example:"1.0"`
 }
 
 type ResearchArea struct {

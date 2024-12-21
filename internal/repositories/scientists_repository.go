@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"database/sql"
 	logging "io-project-api/internal/logger"
 	"io-project-api/internal/requests"
 	"io-project-api/internal/responses"
@@ -33,6 +34,7 @@ func ScientistByID(db *sqlx.DB, id uuid.UUID) (*responses.ScientistBody, error) 
 	GROUP BY 
 		s.id
 	`
+
 	logging.Logger.Info("INFO: Executing query:", query)
 
 	var scientist responses.ScientistBody
@@ -60,6 +62,71 @@ func ScientistByID(db *sqlx.DB, id uuid.UUID) (*responses.ScientistBody, error) 
 	for _, name := range researchAreaNames {
 		scientist.ResearchAreas = append(scientist.ResearchAreas, responses.ResearchArea{Name: name})
 	}
+
+	// Fetch bibliometrics information
+	bibliometricsQuery := `
+	SELECT 
+		COALESCE(h_index_wos, 0), 
+		COALESCE(h_index_scopus, 0), 
+		COALESCE(publication_count, 0), 
+		COALESCE(ministerial_score, 0)
+	FROM 
+		bibliometrics
+	WHERE 
+		scientist_id = $1
+	`
+
+	err = db.QueryRow(bibliometricsQuery, id).Scan(
+		&scientist.Bibliometrics.HIndexWOS,
+		&scientist.Bibliometrics.HIndexScopus,
+		&scientist.Bibliometrics.PublicationCount,
+		&scientist.Bibliometrics.MinisterialScore,
+	)
+	if err != nil && err != sql.ErrNoRows {
+		logging.Logger.Error("ERROR: Error fetching bibliometrics:", err)
+		return nil, err
+	}
+
+	// Fetch publication scores grouped by year
+	publicationScoresQuery := `
+	SELECT 
+		EXTRACT(YEAR FROM p.publication_date) AS year, 
+		SUM(p.ministerial_score) AS total_score
+	FROM 
+		publications p
+	JOIN 
+		scientists_publications sp ON sp.publication_id = p.id
+	WHERE 
+		sp.scientist_id = $1
+	GROUP BY 
+		EXTRACT(YEAR FROM p.publication_date)
+	`
+
+	rows, err := db.Query(publicationScoresQuery, id)
+	if err != nil {
+		logging.Logger.Error("ERROR: Error fetching publication scores:", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var publicationScores []responses.PublicationScore
+
+	for rows.Next() {
+		var year *string
+		var score *float64
+		if err := rows.Scan(&year, &score); err != nil {
+			logging.Logger.Error("ERROR: Error scanning publication scores:", err)
+			return nil, err
+		}
+		publicationScores = append(publicationScores, responses.PublicationScore{Year: year, Score: score})
+	}
+
+	if err := rows.Err(); err != nil {
+		logging.Logger.Error("ERROR: Row iteration error:", err)
+		return nil, err
+	}
+
+	scientist.PublicationScores = publicationScores
 
 	logging.Logger.Info("INFO: Successfully retrieved scientist by ID")
 	return &scientist, nil
