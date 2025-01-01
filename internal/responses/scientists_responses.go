@@ -19,6 +19,7 @@ type ScientistBody struct {
 	FirstName         string             `db:"first_name" json:"first_name" doc:"First name of the scientist" format:"string" example:"John"`
 	LastName          string             `db:"last_name" json:"last_name" doc:"Last name of the scientist" format:"string" example:"Doe"`
 	AcademicTitle     string             `db:"academic_title" json:"academic_title" doc:"Academic title of the scientist" format:"string" example:"PhD"`
+	Position          *string            `db:"position" json:"position,omitempty" doc:"Position of the scientist" format:"string" example:"Researcher"`
 	ResearchAreas     []ResearchArea     `db:"research_areas" json:"research_areas" doc:"Research areas of the scientist"`
 	Email             *string            `db:"email,omitempty" json:"email" doc:"Email of the scientist" format:"string" example:"example@example.com"`
 	ProfileUrl        *string            `db:"profile_url,omitempty" json:"profile_url" doc:"Profile URL of the scientist" format:"hostname" example:"https://example.com"`
