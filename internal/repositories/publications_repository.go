@@ -23,6 +23,19 @@ func PublicationByID(db *sqlx.DB, id uuid.UUID) (*responses.PublicationBody, err
 	return &publication, nil
 }
 
+func RandomPublication(db *sqlx.DB) (*responses.PublicationBody, error) {
+	query := "SELECT id, title, journal, publication_date, journal_impact_factor, created_at, updated_at FROM publications ORDER BY RANDOM() LIMIT 1"
+	logging.Logger.Info("INFO: Executing query:", query)
+
+	var publication responses.PublicationBody
+	if err := db.Get(&publication, query); err != nil {
+		logging.Logger.Error("ERROR: Error executing query:", err)
+		return nil, err
+	}
+	logging.Logger.Info("INFO: Successfully retrieved random publication")
+	return &publication, nil
+}
+
 func PublicationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.PublicationBody, error) {
 	query := `
 		SELECT p.id, p.title, p.journal, p.publication_date, p.journal_impact_factor, p.created_at, p.updated_at
