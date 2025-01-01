@@ -10,48 +10,6 @@ import (
 	"testing"
 )
 
-func TestRegisterScientistsPublicationsByID(t *testing.T) {
-
-	t.Skip("Test oznaczony jako obsolete – pomijanie wykonania")
-
-	id := "e3efe632-fd8a-4180-a2a3-bc99037fa45a"
-	url := fmt.Sprintf("http://127.0.0.1:8000/api/scientists_publications/%s", id)
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		t.Errorf("Failed to create request: %v", err)
-	}
-
-	req.Header.Add("Accept", "application/json")
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Errorf("Failed to send request: %v", err)
-	}
-	defer res.Body.Close()
-
-	// Sprawdź, czy zapytanie zakończyło się sukcesem
-	if res.StatusCode != http.StatusOK {
-		t.Errorf("Otrzymano błąd: %s", res.Status)
-	}
-
-	// Wczytaj odpowiedź
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		t.Errorf("Błąd podczas odczytywania odpowiedzi: %v", err)
-	}
-
-	// Rozpakuj JSON do struktury
-	var result []models.ScientistPublication
-
-	if err := json.Unmarshal(body, &result); err != nil {
-		t.Errorf("Błąd podczas parsowania JSON: %v", err)
-	}
-
-	fmt.Printf("Scientists publications dla ID: %s  %s\n", result[0].ID, result[0])
-
-	t.Errorf("Ten kod nie powinien być wykonany")
-}
 func TestRegisterScientistsPublicationsByScientistsID(t *testing.T) {
 
 	router := TestSetUP()
