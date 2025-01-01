@@ -11,7 +11,7 @@ type Scientist struct {
 	FirstName     string         `db:"first_name" json:"first_name"`
 	LastName      string         `db:"last_name" json:"last_name"`
 	AcademicTitle string         `db:"academic_title" json:"academic_title"`
-	Publication   *string        `db:"publication" json:"publication"`
+	Position      *string        `db:"position" json:"position"`
 	ResearchAreas []ResearchArea `db:"research_areas" json:"research_areas" doc:"Research areas of the scientist"`
 	Email         string         `db:"email" json:"email"`
 	ProfileUrl    string         `db:"profile_url" json:"profile_url"`
