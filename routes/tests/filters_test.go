@@ -47,6 +47,42 @@ func TestGetAcademicTitleFilter(t *testing.T) {
 
 	t.Logf("Test zakończony pomyślnie.")
 }
+func TestGetJournalTypesFilter(t *testing.T) {
+	t.Skip("Nieskończony test. Czeka na funkcjonalność")
+
+	router := TestSetUP()
+	url := "http://localhost:8000/api/filters/journal-types"
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+
+	req.Header.Add("Accept", "application/json")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	// Sprawdź, czy zapytanie zakończyło się sukcesem
+	if w.Code != http.StatusOK {
+		t.Errorf("Otrzymano błąd: %v", w.Code)
+	}
+
+	// Wczytaj odpowiedź
+	body, err := io.ReadAll(w.Body)
+	if err != nil {
+		t.Errorf("Błąd podczas odczytywania odpowiedzi: %v", err)
+	}
+
+	// Rozpakuj JSON do struktury
+	var result []models.JournalType
+
+	if err := json.Unmarshal(body, &result); err != nil {
+		t.Errorf("Błąd podczas parsowania JSON: %v", err)
+	}
+
+	t.Logf("Test zakończony pomyślnie.")
+}
 
 func TestGetMinisterialScoreFilter(t *testing.T) {
 
@@ -230,7 +266,44 @@ func TestPublicationsCountFilter(t *testing.T) {
 	t.Logf("Test zakończony pomyślnie.")
 }
 
-func TestGetResarchAreaFilter(t *testing.T) {
+func TestPublishersFilter(t *testing.T) {
+
+	router := TestSetUP()
+
+	url := "http://localhost:8000/api/filters/publishers"
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+
+	req.Header.Add("Accept", "application/json")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	// Sprawdź, czy zapytanie zakończyło się sukcesem
+	if w.Code != http.StatusOK {
+		t.Errorf("Otrzymano błąd: %v", w.Code)
+	}
+
+	// Wczytaj odpowiedź
+	body, err := io.ReadAll(w.Body)
+	if err != nil {
+		t.Errorf("Błąd podczas odczytywania odpowiedzi: %v", err)
+	}
+
+	// Rozpakuj JSON do struktury
+	var result []models.PublisherFilter
+
+	if err := json.Unmarshal(body, &result); err != nil {
+		t.Errorf("Błąd podczas parsowania JSON: %v", err)
+	}
+
+	t.Logf("Test zakończony pomyślnie.")
+}
+
+func TestGetResearchAreaFilter(t *testing.T) {
 
 	router := TestSetUP()
 
