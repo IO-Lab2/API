@@ -14,13 +14,14 @@ func SearchHandler(ctx context.Context, input *models.SearchInput) (*responses.S
 	logging.Logger.Info("INFO: Handling SearchHandler request")
 	response := &responses.ScientistsResponse{}
 
-	result, err := services.SearchForScientists(input)
+	result, totalCount, err := services.SearchForScientists(input)
 	if result == nil || len(result) == 0 || err != nil {
 		logging.Logger.Error("ERROR: Failed to search for scientists:", err)
 		return nil, huma.Error400BadRequest(err.Error())
 	}
 
 	logging.Logger.Info("INFO: Successfully retrieved search results for scientists")
-	response.Body = result
+	response.Body.Scientists = result
+	response.Body.Count = totalCount
 	return response, nil
 }

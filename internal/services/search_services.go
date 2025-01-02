@@ -12,7 +12,7 @@ import (
 	"github.com/lib/pq"
 )
 
-func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, error) {
+func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, int, error) {
 	query := `
 	SELECT 
 		s.id, 
@@ -28,7 +28,8 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		b.h_index_wos, 
 		b.h_index_scopus, 
 		b.publication_count, 
-		b.ministerial_score
+		b.ministerial_score,
+		COUNT(*) OVER() AS total_count
 	FROM 
 		scientists s
 	LEFT JOIN 
@@ -147,11 +148,12 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 	rows, err := connection.NamedQuery(query, args)
 	if err != nil {
 		logging.Logger.Error("ERROR: Error executing search query:", err)
-		return nil, fmt.Errorf("failed to execute search query: %w", err)
+		return nil, 0, fmt.Errorf("failed to execute search query: %w", err)
 	}
 	defer rows.Close()
 
 	// Parse results
+	var totalCount int
 	var scientists []responses.ScientistBody
 	for rows.Next() {
 		var scientist responses.ScientistBody
@@ -172,9 +174,10 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 			&scientist.Bibliometrics.HIndexScopus,
 			&scientist.Bibliometrics.PublicationCount,
 			&scientist.Bibliometrics.MinisterialScore,
+			&totalCount,
 		); err != nil {
 			logging.Logger.Error("ERROR: Error scanning row: ", err)
-			return nil, fmt.Errorf("failed to scan result row: %w", err)
+			return nil, 0, fmt.Errorf("failed to scan result row: %w", err)
 		}
 
 		// Add research areas to the scientist
@@ -187,10 +190,10 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 
 	logging.Logger.Debug("Number of scientists found: ", len(scientists))
 	if len(scientists) == 0 {
-		return nil, errors.New("No scientists found")
+		return nil, 0, errors.New("No scientists found")
 	}
 
-	return scientists, nil
+	return scientists, totalCount, nil
 }
 
 func isNotEmpty(param interface{}) bool {
