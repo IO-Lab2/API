@@ -7,6 +7,8 @@ type YearScoreFilter struct {
 }
 
 type SearchInput struct {
+	Page                int               `query:"page" doc:"The page number to retrieve."`
+	Limit               int               `query:"limit" doc:"The number of items to retrieve per page."`
 	Name                string            `query:"name" doc:"The name of the scientist to search for."`
 	Surname             string            `query:"surname" doc:"The surname of the scientist to search for."`
 	AcademicTitles      []string          `query:"academic_titles[]" doc:"List of academic titles to filter the search result."`

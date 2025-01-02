@@ -127,6 +127,21 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 	ORDER BY s.last_name, s.first_name
 	`
 
+	if input.Limit < 1 {
+		input.Limit = 50
+	}
+	if input.Page < 1 {
+		input.Page = 1
+	}
+
+	// Add pagination
+	query += `
+	LIMIT :limit
+	OFFSET :offset`
+
+	args["limit"] = input.Limit
+	args["offset"] = (input.Page - 1) * input.Limit
+
 	// Execute query
 	connection := database.GetDB()
 	rows, err := connection.NamedQuery(query, args)
