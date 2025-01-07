@@ -61,6 +61,13 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		whereClauses = append(whereClauses, "s.last_name ILIKE :surname")
 		args["surname"] = "%" + input.Surname + "%"
 	}
+
+	if isNotEmpty(input.Organizations) {
+		organizations := parseList(input.Organizations)
+		whereClauses = append(whereClauses, "o.name = ANY(:organizations)")
+		args["organizations"] = pq.Array(organizations)
+	}
+
 	if isNotEmpty(input.AcademicTitles) {
 		academicTitles := parseList(input.AcademicTitles)
 		whereClauses = append(whereClauses, "s.academic_title = ANY(:academic_titles)")
