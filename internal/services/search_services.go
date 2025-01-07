@@ -62,16 +62,43 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		args["surname"] = "%" + input.Surname + "%"
 	}
 	if isNotEmpty(input.AcademicTitles) {
+		academicTitles := parseList(input.AcademicTitles)
 		whereClauses = append(whereClauses, "s.academic_title = ANY(:academic_titles)")
-		args["academic_titles"] = pq.Array(input.AcademicTitles)
+		args["academic_titles"] = pq.Array(academicTitles)
 	}
-	if isNotEmpty(input.Organizations) {
-		whereClauses = append(whereClauses, "o.name = ANY(:organizations)")
-		args["organizations"] = pq.Array(input.Organizations)
-	}
+
 	if isNotEmpty(input.ResearchAreas) {
+		researchAreas := parseList(input.ResearchAreas)
 		whereClauses = append(whereClauses, "ra.name = ANY(:research_areas)")
-		args["research_areas"] = pq.Array(input.ResearchAreas)
+		args["research_areas"] = pq.Array(researchAreas)
+	}
+
+	if isNotEmpty(input.Positions) {
+		positions := parseList(input.Positions)
+		whereClauses = append(whereClauses, "s.position = ANY(:positions)")
+		args["positions"] = pq.Array(positions)
+	}
+
+	if isNotEmpty(input.JournalTypes) {
+		journalTypes := parseList(input.JournalTypes)
+		whereClauses = append(whereClauses, "p.journal_type = ANY(:journal_types)")
+		args["journal_types"] = pq.Array(journalTypes)
+	}
+
+	if isNotEmpty(input.Publishers) {
+		publishers := parseList(input.Publishers)
+		whereClauses = append(whereClauses, "p.publisher = ANY(:publishers)")
+		args["publishers"] = pq.Array(publishers)
+	}
+	if isNotEmpty(input.Positions) {
+		positions := parseList(input.Positions)
+		whereClauses = append(whereClauses, "s.position = ANY(:positions)")
+		args["positions"] = pq.Array(positions)
+	}
+	if isNotEmpty(input.Publishers) {
+		publishers := parseList(input.Publishers)
+		whereClauses = append(whereClauses, "p.publisher = ANY(:publishers)")
+		args["publishers"] = pq.Array(publishers)
 	}
 	if isNotEmpty(input.MinPublications) {
 		whereClauses = append(whereClauses, "b.publication_count >= :min_publications")
@@ -88,18 +115,6 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 	if isNotEmpty(input.MaxMinisterialScore) {
 		whereClauses = append(whereClauses, "b.ministerial_score <= :max_score")
 		args["max_score"] = input.MaxMinisterialScore
-	}
-	if isNotEmpty(input.Positions) {
-		whereClauses = append(whereClauses, "s.position = ANY(:positions)")
-		args["positions"] = pq.Array(input.Positions)
-	}
-	if isNotEmpty(input.JournalTypes) {
-		whereClauses = append(whereClauses, "p.journal_type = ANY(:journal_types)")
-		args["journal_types"] = pq.Array(input.JournalTypes)
-	}
-	if isNotEmpty(input.Publishers) {
-		whereClauses = append(whereClauses, "p.publisher = ANY(:publishers)")
-		args["publishers"] = pq.Array(input.Publishers)
 	}
 
 	// New Year-Specific Ministerial Score Filter
@@ -209,4 +224,24 @@ func isNotEmpty(param interface{}) bool {
 	default:
 		return false
 	}
+}
+
+func parseList(input []string) []string {
+	unique := make(map[string]struct{}) // A set-like structure to track unique values
+	var result []string
+
+	for _, item := range input {
+		parts := strings.Split(item, ",") // Split by commas
+		for _, part := range parts {
+			trimmed := strings.TrimSpace(part) // Trim whitespace
+			if trimmed != "" {
+				if _, exists := unique[trimmed]; !exists { // Check for uniqueness
+					unique[trimmed] = struct{}{}
+					result = append(result, trimmed)
+				}
+			}
+		}
+	}
+
+	return result
 }
