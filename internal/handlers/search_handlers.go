@@ -12,7 +12,9 @@ import (
 
 func SearchHandler(ctx context.Context, input *models.SearchInput) (*responses.ScientistsResponse, error) {
 	logging.Logger.Info("INFO: Handling SearchHandler request")
-	response := &responses.ScientistsResponse{}
+	response := &responses.ScientistsResponse{
+		Body: &responses.ScientistsResponseBody{},
+	}
 
 	result, totalCount, err := services.SearchForScientists(input)
 	if result == nil || len(result) == 0 || err != nil {
