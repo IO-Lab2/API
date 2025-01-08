@@ -7,10 +7,12 @@ import (
 )
 
 type ScientistsResponse struct {
-	Body struct {
-		Scientists []ScientistBody `json:"scientists" doc:"List of scientists"`
-		Count      int             `json:"count" doc:"Total number of scientists"`
-	}
+	Body *ScientistsResponseBody `json:"body" doc:"List of scientists"`
+}
+
+type ScientistsResponseBody struct {
+	Scientists []ScientistBody `json:"scientists" doc:"List of scientists"`
+	Count      int             `json:"count" doc:"Total number of scientists"`
 }
 
 type ScientistResponse struct {
