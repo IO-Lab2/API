@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io-project-api/internal/models"
 	"io-project-api/internal/responses"
 	"io-project-api/internal/services"
 	"log"
@@ -42,13 +41,13 @@ func TestSearchAcademicTitle(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Scientist
+	var result responses.ScientistsResponse
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	for _, item := range result {
+	for _, item := range result.Body.Scientists {
 		if err := item.AcademicTitle == "PhD"; err == false {
 			t.Errorf("AcademicTitle jest niewłaściwy.")
 		}
@@ -86,20 +85,20 @@ func TestSearchMinisterialScore(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Scientist
+	var result responses.ScientistsResponse
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	for _, item := range result {
+	for _, item := range result.Body.Scientists {
 		bibliometric := GetBibliometrics(item)
 		if bibliometric.MinisterialScore < minimalScore || bibliometric.MinisterialScore > maximalScore {
 			t.Errorf("Niewłaściwa punktacja")
 		}
 	}
 }
-func GetBibliometrics(scientists models.Scientist) *responses.BibliometricBody {
+func GetBibliometrics(scientists responses.ScientistBody) *responses.BibliometricBody {
 
 	result, err := services.GetBibliometricByScientistID(scientists.ID)
 	if err != nil {
@@ -140,12 +139,12 @@ func TestSearchByName(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Scientist
+	var result responses.ScientistsResponse
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result {
+	for _, item := range result.Body.Scientists {
 		if item.FirstName != name {
 			t.Errorf("Imię naukowca się niezgadza.")
 		}
@@ -179,12 +178,12 @@ func TestSearchByOrganizations(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Scientist
+	var result responses.ScientistsResponse
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result {
+	for _, item := range result.Body.Scientists {
 		organizations := GetOrganization(item)
 		if ContainsOrganization(organizations, organizationName) == false {
 			t.Errorf("Niewłaściwa organizacja naukowca.")
@@ -192,7 +191,7 @@ func TestSearchByOrganizations(t *testing.T) {
 
 	}
 }
-func GetOrganization(scientist models.Scientist) []responses.OrganizationBodyExtended {
+func GetOrganization(scientist responses.ScientistBody) []responses.OrganizationBodyExtended {
 
 	result, err := services.GetOrganizationsByScientistID(scientist.ID)
 	if err != nil {
@@ -240,12 +239,12 @@ func TestSearchByJournalTypes(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Scientist
+	var result responses.ScientistsResponse
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result {
+	for _, item := range result.Body.Scientists {
 		bibliometric := GetBibliometrics(item)
 		if bibliometric == bibliometric {
 			//dokończyć
@@ -280,12 +279,12 @@ func TestSearchByPositions(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Scientist
+	var result responses.ScientistsResponse
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result {
+	for _, item := range result.Body.Scientists {
 		if item.Position == nil {
 			log.Fatalf("Przekazano pusy wskaźnik.")
 		}
@@ -325,12 +324,12 @@ func TestSearchByPublicationsCount(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Scientist
+	var result responses.ScientistsResponse
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result {
+	for _, item := range result.Body.Scientists {
 		bibliometric := GetBibliometrics(item)
 		if bibliometric.PublicationCount < publicationMinCount || bibliometric.PublicationCount > publicationMaxCount {
 			t.Errorf("Niewłaściwa ilość publikacji")
@@ -365,19 +364,19 @@ func TestSearchByResearchAreas(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Scientist
+	var result responses.ScientistsResponse
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result {
+	for _, item := range result.Body.Scientists {
 		if !ContainsResearchArea(researchArea, item.ResearchAreas) {
 			t.Errorf("Naukowiec nie posiada odpowiedniej dyscypliny.")
 			t.SkipNow()
 		}
 	}
 }
-func ContainsResearchArea(researchArea string, area []models.ResearchArea) bool {
+func ContainsResearchArea(researchArea string, area []responses.ResearchArea) bool {
 	for _, resArea := range area {
 		if resArea.Name == researchArea {
 			return true
@@ -412,12 +411,12 @@ func TestSearchBySurname(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result []models.Scientist
+	var result responses.ScientistsResponse
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result {
+	for _, item := range result.Body.Scientists {
 		if !strings.Contains(strings.ToLower(item.LastName), strings.ToLower(surname)) {
 			t.Errorf("Nazwisko naukowca nie zawiera fragmentu: %s.", surname)
 			t.SkipNow()

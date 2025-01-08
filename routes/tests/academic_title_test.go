@@ -82,9 +82,9 @@ func TestRegisterAcademicTitle(t *testing.T) {
 	}
 
 	// Porównanie z tytułów
-	// if subject[0].AcademicTitle != result.AcademicTitle {
-	// 	t.Errorf("Tytułu naukowców się rożnią. Oczekiwano: %+v, Otrzymano: %+v", subject[0].AcademicTitle, result.AcademicTitle)
-	// }
+	if subject.Scientists[0].AcademicTitle != result.AcademicTitle {
+		t.Errorf("Tytułu naukowców się rożnią. Oczekiwano: %+v, Otrzymano: %+v", subject.Scientists[0].AcademicTitle, result.AcademicTitle)
+	}
 
 	t.Logf("Test zakończony pomyślnie.")
 }

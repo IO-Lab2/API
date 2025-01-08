@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io-project-api/internal/models"
+	"io-project-api/internal/responses"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -39,17 +40,17 @@ func TestRegisterScientistsPublicationsByScientistsID(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var subject []models.Scientist
+	var subject *responses.ScientistsResponseBody
 
 	if err := json.Unmarshal(body, &subject); err != nil {
 		t.Errorf("Błąd podczas parsowania subject JSON: %v", err)
 	}
 
-	if len(subject) == 0 {
-		t.Errorf("Nie znaleziono naukowca dla nazwiska %s", surname)
+	if subject == nil {
+		t.Errorf("Nie znaleziono naukowca dla nazwiska: %s", surname)
 	}
 
-	id := subject[0].ID
+	id := subject.Scientists[0].ID
 	url = fmt.Sprintf("http://localhost:8000/api/scientists_publications/%s", id)
 
 	req, err = http.NewRequest("GET", url, nil)
