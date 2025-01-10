@@ -1,10 +1,28 @@
 package responses
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 )
+
+// Implement the sql.Scanner interface for PublicationScore
+func (ps *PublicationScore) Scan(value interface{}) error {
+	bytes, ok := value.([]byte)
+	if !ok {
+		return fmt.Errorf("failed to scan PublicationScore: %v", value)
+	}
+
+	return json.Unmarshal(bytes, ps)
+}
+
+// Implement the driver.Valuer interface for PublicationScore
+func (ps PublicationScore) Value() (driver.Value, error) {
+	return json.Marshal(ps)
+}
 
 type ScientistsResponse struct {
 	Body *ScientistsResponseBody `json:"body" doc:"List of scientists"`
@@ -35,7 +53,7 @@ type ScientistBody struct {
 }
 
 type PublicationScore struct {
-	Year  *string  `json:"year" doc:"Year of the publication score" format:"string" example:"2021"`
+	Year  *int     `json:"year" doc:"Year of the publication score" format:"int" example:"2021"`
 	Score *float64 `json:"score" doc:"Total score for the publications" format:"float" example:"1.0"`
 }
 

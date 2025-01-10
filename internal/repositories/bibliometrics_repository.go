@@ -56,7 +56,7 @@ func BibliometricByID(db *sqlx.DB, id uuid.UUID) (*responses.BibliometricBody, e
 	var publicationScores []responses.PublicationScore
 
 	for rows.Next() {
-		var year *string
+		var year *int
 		var score *float64
 		if err := rows.Scan(&year, &score); err != nil {
 			logging.Logger.Error("ERROR: Error scanning publication scores:", err)
@@ -132,7 +132,7 @@ func BibliometricByScientistID(db *sqlx.DB, id uuid.UUID) (*responses.Bibliometr
 	var publicationScores []responses.PublicationScore
 
 	for rows.Next() {
-		var year *string
+		var year *int
 		var score *float64
 		if err := rows.Scan(&year, &score); err != nil {
 			logging.Logger.Error("ERROR: Error scanning publication scores:", err)
