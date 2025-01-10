@@ -15,10 +15,10 @@ import (
 )
 
 func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, int, error) {
-	if input.Limit <= 0 {
+	if input.Limit < 1 {
 		input.Limit = 50
 	}
-	if input.Page <= 0 {
+	if input.Page < 1 {
 		input.Page = 1
 	}
 
@@ -54,18 +54,118 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
     LEFT JOIN 
         scientists_publications sp ON s.id = sp.scientist_id
     LEFT JOIN 
-        publications p ON sp.publication_id = p.id
-    GROUP BY 
-        s.id, b.h_index_wos, b.h_index_scopus, b.publication_count, b.ministerial_score
-    ORDER BY 
-        s.last_name, s.first_name
-    LIMIT :limit OFFSET :offset`
+        publications p ON sp.publication_id = p.id`
 
 	args := map[string]interface{}{
 		"limit":  input.Limit,
 		"offset": (input.Page - 1) * input.Limit,
 	}
 
+	var whereClauses []string
+
+	if isNotEmpty(input.Name) {
+		whereClauses = append(whereClauses, "s.first_name ILIKE :name")
+		args["name"] = "%" + input.Name + "%"
+	}
+	if isNotEmpty(input.Surname) {
+		whereClauses = append(whereClauses, "s.last_name ILIKE :surname")
+		args["surname"] = "%" + input.Surname + "%"
+	}
+
+	if isNotEmpty(input.Organizations) {
+		organizations := parseList(input.Organizations)
+		whereClauses = append(whereClauses, "o.name = ANY(:organizations)")
+		args["organizations"] = pq.Array(organizations)
+	}
+
+	if isNotEmpty(input.AcademicTitles) {
+		academicTitles := parseList(input.AcademicTitles)
+		whereClauses = append(whereClauses, "s.academic_title = ANY(:academic_titles)")
+		args["academic_titles"] = pq.Array(academicTitles)
+	}
+
+	if isNotEmpty(input.ResearchAreas) {
+		researchAreas := parseList(input.ResearchAreas)
+		whereClauses = append(whereClauses, "ra.name = ANY(:research_areas)")
+		args["research_areas"] = pq.Array(researchAreas)
+	}
+
+	if isNotEmpty(input.Positions) {
+		positions := parseList(input.Positions)
+		whereClauses = append(whereClauses, "s.position = ANY(:positions)")
+		args["positions"] = pq.Array(positions)
+	}
+
+	if isNotEmpty(input.JournalTypes) {
+		journalTypes := parseList(input.JournalTypes)
+		whereClauses = append(whereClauses, "p.journal_type = ANY(:journal_types)")
+		args["journal_types"] = pq.Array(journalTypes)
+	}
+
+	if isNotEmpty(input.Publishers) {
+		publishers := parseList(input.Publishers)
+		whereClauses = append(whereClauses, "p.publisher = ANY(:publishers)")
+		args["publishers"] = pq.Array(publishers)
+	}
+	if isNotEmpty(input.Positions) {
+		positions := parseList(input.Positions)
+		whereClauses = append(whereClauses, "s.position = ANY(:positions)")
+		args["positions"] = pq.Array(positions)
+	}
+	if isNotEmpty(input.Publishers) {
+		publishers := parseList(input.Publishers)
+		whereClauses = append(whereClauses, "p.publisher = ANY(:publishers)")
+		args["publishers"] = pq.Array(publishers)
+	}
+	if isNotEmpty(input.MinPublications) {
+		whereClauses = append(whereClauses, "b.publication_count >= :min_publications")
+		args["min_publications"] = input.MinPublications
+	}
+	if isNotEmpty(input.MaxPublications) {
+		whereClauses = append(whereClauses, "b.publication_count <= :max_publications")
+		args["max_publications"] = input.MaxPublications
+	}
+	if isNotEmpty(input.MinMinisterialScore) {
+		whereClauses = append(whereClauses, "b.ministerial_score >= :min_score")
+		args["min_score"] = input.MinMinisterialScore
+	}
+	if isNotEmpty(input.MaxMinisterialScore) {
+		whereClauses = append(whereClauses, "b.ministerial_score <= :max_score")
+		args["max_score"] = input.MaxMinisterialScore
+	}
+
+	// New Year-Specific Ministerial Score Filter
+	if len(input.YearScoreFilters) > 0 {
+		yearConditions := []string{}
+		for i, filter := range input.YearScoreFilters {
+			condition := fmt.Sprintf(`
+				(EXTRACT(YEAR FROM p.publication_date) = :year_%d 
+				AND SUM(p.ministerial_score) BETWEEN :min_score_%d AND :max_score_%d)`, i, i, i)
+			yearConditions = append(yearConditions, condition)
+			args[fmt.Sprintf("year_%d", i)] = filter.Year
+			args[fmt.Sprintf("min_score_%d", i)] = filter.MinScore
+			args[fmt.Sprintf("max_score_%d", i)] = filter.MaxScore
+		}
+		whereClauses = append(whereClauses, "("+strings.Join(yearConditions, " OR ")+")")
+	}
+
+	// Combine query
+	if len(whereClauses) > 0 {
+		query += " WHERE " + strings.Join(whereClauses, " AND ")
+	}
+
+	// Group and order results
+	query += `
+	GROUP BY s.id, b.h_index_wos, b.h_index_scopus, b.publication_count, b.ministerial_score
+	ORDER BY s.last_name, s.first_name
+	`
+
+	// Add pagination
+	query += `
+	LIMIT :limit
+	OFFSET :offset`
+
+	logging.Logger.Debug("Search query: ", query)
 	connection := database.GetDB()
 	rows, err := connection.NamedQuery(query, args)
 	if err != nil {
