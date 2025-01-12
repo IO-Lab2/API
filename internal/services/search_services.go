@@ -138,21 +138,6 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		args["max_score"] = input.MaxMinisterialScore
 	}
 
-	// New Year-Specific Ministerial Score Filter
-	if len(input.YearScoreFilters) > 0 {
-		yearConditions := []string{}
-		for i, filter := range input.YearScoreFilters {
-			condition := fmt.Sprintf(`
-				(EXTRACT(YEAR FROM p.publication_date) = :year_%d 
-				AND SUM(p.ministerial_score) BETWEEN :min_score_%d AND :max_score_%d)`, i, i, i)
-			yearConditions = append(yearConditions, condition)
-			args[fmt.Sprintf("year_%d", i)] = filter.Year
-			args[fmt.Sprintf("min_score_%d", i)] = filter.MinScore
-			args[fmt.Sprintf("max_score_%d", i)] = filter.MaxScore
-		}
-		whereClauses = append(whereClauses, "("+strings.Join(yearConditions, " OR ")+")")
-	}
-
 	// Combine query
 	if len(whereClauses) > 0 {
 		query += " WHERE " + strings.Join(whereClauses, " AND ")
