@@ -3,6 +3,7 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"io"
 	"io-project-api/internal/models"
 	"io-project-api/internal/responses"
@@ -19,7 +20,7 @@ func TestRegisterBibliometricsRoutesByID(t *testing.T) {
 	id := "8611c0f6-039e-4a73-be41-b36ddf4e4674"
 	url := fmt.Sprintf("http://localhost:8000/api/bibliometrics/%s", id)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -57,7 +58,7 @@ func TestRegisterBibliometricsRoutesByAuthor(t *testing.T) {
 	surname := "Bator"
 	url := fmt.Sprintf("http://localhost:8000/api/search?name=%s&surname=%s", name, surname)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -92,7 +93,7 @@ func TestRegisterBibliometricsRoutesByAuthor(t *testing.T) {
 	id := subject.Scientists[0].ID
 	url = fmt.Sprintf("http://localhost:8000/api/bibliometrics/author/%s", id)
 
-	req, err = http.NewRequest("GET", url, nil)
+	req, err = http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -119,6 +120,53 @@ func TestRegisterBibliometricsRoutesByAuthor(t *testing.T) {
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania result JSON: %v", err)
 	}
+}
 
-	t.Logf("Test zakończony pomyślnie.")
+func TestRegisterBibliometricsRoutesBadID(t *testing.T) {
+	router := TestSetUP()
+	id := uuid.New()
+	url := fmt.Sprintf("http://localhost:8000/api/bibliometrics/%s", id)
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwano kod błęd %d. Otrzymano: %v", http.StatusBadRequest, w.Code)
+	}
+}
+
+func TestRegisterBibliometricsRoutesBadAuthor(t *testing.T) {
+	router := TestSetUP()
+	id := uuid.New()
+	url := fmt.Sprintf("http://localhost:8000/api/bibliometrics/author/%s", id)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nieudało się utworzyć żadania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwano kod błedu %d. Otrzymano: %v", http.StatusBadRequest, w.Code)
+	}
+}
+
+func TestRegisterBibliometricsRoutesIDNil(t *testing.T) {
+	router := TestSetUP()
+	id := ""
+	url := fmt.Sprintf("http://localhost:8000/api/bibliometrics/%s", id)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Oczekiwano kod błd %d. Otrzymano: %v", http.StatusNotFound, w.Code)
+	}
 }

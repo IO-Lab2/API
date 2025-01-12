@@ -18,7 +18,7 @@ func TestRegisterScientistsPublicationsByScientistsID(t *testing.T) {
 	surname := "Nafkha"
 	url := fmt.Sprintf("http://localhost:8000/api/search?surname=%s", surname)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -53,7 +53,7 @@ func TestRegisterScientistsPublicationsByScientistsID(t *testing.T) {
 	id := subject.Scientists[0].ID
 	url = fmt.Sprintf("http://localhost:8000/api/scientists_publications/%s", id)
 
-	req, err = http.NewRequest("GET", url, nil)
+	req, err = http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}

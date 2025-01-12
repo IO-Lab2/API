@@ -17,7 +17,7 @@ func TestRegisterOrganizations(t *testing.T) {
 	id := "d328f702-3f5c-45ed-ba33-ae311fd6ca97"
 	url := fmt.Sprintf("http://localhost:8000/api/organizations/%s", id)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -45,5 +45,4 @@ func TestRegisterOrganizations(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	t.Logf("Test zakończony pomyślnie, tytuły naukowców są zgodne.")
 }

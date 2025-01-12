@@ -17,7 +17,7 @@ func TestRegisterMinisterialScore(t *testing.T) {
 	id := "8611c0f6-039e-4a73-be41-b36ddf4e4674"
 	url := fmt.Sprintf("http://localhost:8000/api/bibliometrics/%s", id)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -45,5 +45,4 @@ func TestRegisterMinisterialScore(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	t.Logf("Test zakończony pomyślnie.")
 }

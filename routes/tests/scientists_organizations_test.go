@@ -18,7 +18,7 @@ func TestRegisterScientistsOrganizationsByID(t *testing.T) {
 	id := "d58b4cf2-f79b-4820-a465-868892e122a6"
 	url := fmt.Sprintf("http://localhost:8000/api/scientists_organizations/%s", id)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -55,7 +55,7 @@ func TestRegisterScientistsOrganizationsByScientistID(t *testing.T) {
 	surname := "Bator"
 	url := fmt.Sprintf("http://localhost:8000/api/search?name=%s&surname=%s", name, surname)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -90,7 +90,7 @@ func TestRegisterScientistsOrganizationsByScientistID(t *testing.T) {
 	id := subject.Scientists[0].ID
 	url = fmt.Sprintf("http://localhost:8000/api/organizations/scientist/%s", id)
 
-	req, err = http.NewRequest("GET", url, nil)
+	req, err = http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}

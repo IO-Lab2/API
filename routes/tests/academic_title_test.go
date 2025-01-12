@@ -3,6 +3,7 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"io"
 	"io-project-api/internal/models"
 	"io-project-api/internal/responses"
@@ -18,7 +19,7 @@ func TestRegisterAcademicTitle(t *testing.T) {
 	surname := "Bator"
 	url := fmt.Sprintf("http://localhost:8000/api/search?name=%s&surname=%s", name, surname)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -53,7 +54,7 @@ func TestRegisterAcademicTitle(t *testing.T) {
 	id := subject.Scientists[0].ID
 	url = fmt.Sprintf("http://localhost:8000/api/scientists/%s", id)
 
-	req, err = http.NewRequest("GET", url, nil)
+	req, err = http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -85,6 +86,38 @@ func TestRegisterAcademicTitle(t *testing.T) {
 	if subject.Scientists[0].AcademicTitle != result.AcademicTitle {
 		t.Errorf("Tytułu naukowców się rożnią. Oczekiwano: %+v, Otrzymano: %+v", subject.Scientists[0].AcademicTitle, result.AcademicTitle)
 	}
+}
+func TestRegisterAcademicTitleBadID(t *testing.T) {
+	router := TestSetUP()
+	id := uuid.New()
+	url := fmt.Sprintf("http://localhost:8000/api/scientists/%s", id)
 
-	t.Logf("Test zakończony pomyślnie.")
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nieudało się utworzyć żądania %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwano kod błedu 400. Otrzymano %d", w.Code)
+	}
+}
+func TestRegisterAcademicTitleIDNil(t *testing.T) {
+	router := TestSetUP()
+	id := ""
+	url := fmt.Sprintf("http://localhost:8000/api/scientists/%s", id)
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nieudało się utworzyć żądania %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if w.Code == http.StatusOK {
+		t.Errorf("Oczekiwano kod błedu %d. Otrzymano %d", http.StatusBadRequest, w.Code)
+	}
 }

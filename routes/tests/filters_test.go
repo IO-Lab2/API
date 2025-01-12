@@ -3,6 +3,7 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"io"
 	"io-project-api/internal/models"
 	"io-project-api/internal/responses"
@@ -17,7 +18,7 @@ func TestGetAcademicTitleFilter(t *testing.T) {
 
 	url := "http://localhost:8000/api/filters/academic-titles"
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -45,15 +46,13 @@ func TestGetAcademicTitleFilter(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	t.Logf("Test zakończony pomyślnie.")
 }
 func TestGetJournalTypesFilter(t *testing.T) {
-	t.Skip("Nieskończony test. Czeka na funkcjonalność")
 
 	router := TestSetUP()
 	url := "http://localhost:8000/api/filters/journal-types"
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -81,7 +80,6 @@ func TestGetJournalTypesFilter(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	t.Logf("Test zakończony pomyślnie.")
 }
 
 func TestGetMinisterialScoreFilter(t *testing.T) {
@@ -90,7 +88,7 @@ func TestGetMinisterialScoreFilter(t *testing.T) {
 
 	url := "http://localhost:8000/api/filters/ministerial-scores"
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -125,7 +123,7 @@ func TestGetOrganizationsFilter(t *testing.T) {
 
 	url := "http://localhost:8000/api/filters/organizations"
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -152,7 +150,6 @@ func TestGetOrganizationsFilter(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	t.Logf("Test zakończony pomyślnie.")
 }
 
 func TestGetTraverseOrganizationsTree(t *testing.T) {
@@ -161,7 +158,7 @@ func TestGetTraverseOrganizationsTree(t *testing.T) {
 
 	url := "http://localhost:8000/api/filters/organizations-tree"
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -188,7 +185,6 @@ func TestGetTraverseOrganizationsTree(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	t.Logf("Test zakończony pomyślnie.")
 }
 
 func TestGetTraverseOrganizationsTreeByID(t *testing.T) {
@@ -198,7 +194,7 @@ func TestGetTraverseOrganizationsTreeByID(t *testing.T) {
 	id := "271e4cc1-4190-473c-98e0-65c316daf6ef"
 	url := fmt.Sprintf("http://localhost:8000/api/filters/organizations-tree?id=%s", id)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -226,7 +222,45 @@ func TestGetTraverseOrganizationsTreeByID(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	t.Logf("Test zakończony pomyślnie.")
+}
+func TestGetTraverseOrganizationsTreeByBadID(t *testing.T) {
+	router := TestSetUP()
+	id := uuid.New()
+	url := fmt.Sprintf("http://localhost:8000/api/filters/organizations-tree?id=%s", id)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądnia: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwany kod błęd: %d. Otrzymano %d", http.StatusBadRequest, w.Code)
+	}
+}
+
+func TestGetPositionFilter(t *testing.T) {
+	router := TestSetUP()
+	url := "http://localhost:8000/api/filters/positions"
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Errorf("Otrzymano błąd: %d", w.Code)
+	}
+	body, err := io.ReadAll(w.Body)
+	if err != nil {
+		t.Errorf("Otrzymano błąd podczas odczytywania odpowiedzi: %v", err)
+	}
+
+	var results []models.PositionFilter
+	if err := json.Unmarshal(body, &results); err != nil {
+		t.Errorf("Otrzymano błąd podczas parsowania JSON: %v", err)
+	}
 }
 
 func TestPublicationsCountFilter(t *testing.T) {
@@ -235,7 +269,7 @@ func TestPublicationsCountFilter(t *testing.T) {
 
 	url := "http://localhost:8000/api/filters/publication-counts"
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -263,7 +297,33 @@ func TestPublicationsCountFilter(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	t.Logf("Test zakończony pomyślnie.")
+}
+func TestPublicationYearsFilter(t *testing.T) {
+	router := TestSetUP()
+
+	url := "http://localhost:8000/api/filters/publication-years"
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+
+	req.Header.Add("Accept", "application/json")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Otrzymano błd: %v", w.Code)
+	}
+	body, err := io.ReadAll(w.Body)
+	if err != nil {
+		t.Errorf("Otrzymano błąd podczas odczytywania odpowiedzi: %v", err)
+	}
+	var results []models.PublicationsYear
+	if err := json.Unmarshal(body, &results); err != nil {
+		t.Errorf("Otrzymano błd podczas parsowania JSON: %v", err)
+	}
 }
 
 func TestPublishersFilter(t *testing.T) {
@@ -272,7 +332,7 @@ func TestPublishersFilter(t *testing.T) {
 
 	url := "http://localhost:8000/api/filters/publishers"
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -299,8 +359,6 @@ func TestPublishersFilter(t *testing.T) {
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-
-	t.Logf("Test zakończony pomyślnie.")
 }
 
 func TestGetResearchAreaFilter(t *testing.T) {
@@ -309,7 +367,7 @@ func TestGetResearchAreaFilter(t *testing.T) {
 
 	url := "http://localhost:8000/api/research-areas"
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -337,5 +395,4 @@ func TestGetResearchAreaFilter(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	t.Logf("Test zakończony pomyślnie.")
 }

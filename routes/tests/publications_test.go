@@ -10,14 +10,14 @@ import (
 	"testing"
 )
 
-func TestRegisterPublicationsbyID(t *testing.T) {
+func TestRegisterPublicationsByID(t *testing.T) {
 
 	router := TestSetUP()
 
 	id := "cd9d766f-897f-40d3-a259-9d9001545394"
 	url := fmt.Sprintf("http://localhost:8000/api/publications/%s", id)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -45,5 +45,4 @@ func TestRegisterPublicationsbyID(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	t.Logf("Test zakończony pomyślnie, tytuły naukowców są zgodne.")
 }

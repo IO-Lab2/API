@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"io-project-api/internal/responses"
-	"io-project-api/internal/services"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -19,7 +18,7 @@ func TestSearchAcademicTitle(t *testing.T) {
 
 	url := "http://localhost:8000/api/search?academic_titles%5B%5D=PhD"
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -41,13 +40,13 @@ func TestSearchAcademicTitle(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result responses.ScientistsResponse
+	var result responses.ScientistsResponseBody
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	for _, item := range result.Body.Scientists {
+	for _, item := range result.Scientists {
 		if err := item.AcademicTitle == "PhD"; err == false {
 			t.Errorf("AcademicTitle jest niewłaściwy.")
 		}
@@ -63,7 +62,7 @@ func TestSearchMinisterialScore(t *testing.T) {
 
 	url := fmt.Sprintf("http://localhost:8000/api/search?ministerial_score_min=%v&ministerial_score_max=%v", minimalScore, maximalScore)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -85,30 +84,18 @@ func TestSearchMinisterialScore(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result responses.ScientistsResponse
+	var result responses.ScientistsResponseBody
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 
-	for _, item := range result.Body.Scientists {
+	for _, item := range result.Scientists {
 		bibliometric := GetBibliometrics(item)
 		if bibliometric.MinisterialScore < minimalScore || bibliometric.MinisterialScore > maximalScore {
 			t.Errorf("Niewłaściwa punktacja")
 		}
 	}
-}
-func GetBibliometrics(scientists responses.ScientistBody) *responses.BibliometricBody {
-
-	result, err := services.GetBibliometricByScientistID(scientists.ID)
-	if err != nil {
-		log.Fatalf("GetBibliometrics error: %v", err)
-	}
-	if result == nil {
-		log.Fatalf("GetBibliometrics result jest nil")
-
-	}
-	return result
 }
 func TestSearchByName(t *testing.T) {
 
@@ -117,7 +104,7 @@ func TestSearchByName(t *testing.T) {
 	name := "Marcin"
 	url := fmt.Sprintf("http://localhost:8000/api/search?name=%s", name)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -139,12 +126,12 @@ func TestSearchByName(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result responses.ScientistsResponse
+	var result responses.ScientistsResponseBody
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result.Body.Scientists {
+	for _, item := range result.Scientists {
 		if item.FirstName != name {
 			t.Errorf("Imię naukowca się niezgadza.")
 		}
@@ -156,7 +143,7 @@ func TestSearchByOrganizations(t *testing.T) {
 	organizationName := "Institute of Information Technology" //Nazwa potrzebna do stworzenia zapytania
 
 	url := "http://localhost:8000/api/search?organizations%5B%5D=Institute of Information Technology"
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -178,12 +165,12 @@ func TestSearchByOrganizations(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result responses.ScientistsResponse
+	var result responses.ScientistsResponseBody
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result.Body.Scientists {
+	for _, item := range result.Scientists {
 		organizations := GetOrganization(item)
 		if ContainsOrganization(organizations, organizationName) == false {
 			t.Errorf("Niewłaściwa organizacja naukowca.")
@@ -191,33 +178,13 @@ func TestSearchByOrganizations(t *testing.T) {
 
 	}
 }
-func GetOrganization(scientist responses.ScientistBody) []responses.OrganizationBodyExtended {
-
-	result, err := services.GetOrganizationsByScientistID(scientist.ID)
-	if err != nil {
-		log.Fatalf("GetOrganizationsByScientistID error: %v", err)
-	}
-	if result == nil {
-		log.Fatalf("GetOrganizationsByScientistID result jest nil")
-	}
-	return result
-}
-func ContainsOrganization(organizations []responses.OrganizationBodyExtended, organizationName string) bool {
-	for _, organization := range organizations {
-		if organization.Name == organizationName {
-			return true
-		}
-	}
-	return false
-}
-
 func TestSearchByJournalTypes(t *testing.T) {
 	t.Skip("Test nieskończony. Czeka na wprowadzenie funkcjonalności.")
 	router := TestSetUP()
 	journalType := "artykuł"
 
 	url := fmt.Sprintf("http://localhost:8000/api/search?journal_type=%s", journalType)
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -239,12 +206,12 @@ func TestSearchByJournalTypes(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result responses.ScientistsResponse
+	var result responses.ScientistsResponseBody
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result.Body.Scientists {
+	for _, item := range result.Scientists {
 		bibliometric := GetBibliometrics(item)
 		if bibliometric == bibliometric {
 			//dokończyć
@@ -257,7 +224,7 @@ func TestSearchByPositions(t *testing.T) {
 
 	position := "Professor"
 	url := "http://localhost:8000/api/search?positions%5B%5D=" + position
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -279,12 +246,12 @@ func TestSearchByPositions(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result responses.ScientistsResponse
+	var result responses.ScientistsResponseBody
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result.Body.Scientists {
+	for _, item := range result.Scientists {
 		if item.Position == nil {
 			log.Fatalf("Przekazano pusy wskaźnik.")
 		}
@@ -302,7 +269,7 @@ func TestSearchByPublicationsCount(t *testing.T) {
 	publicationMaxCount := 20
 
 	url := fmt.Sprintf("http://localhost:8000/api/search?publications_min=%v&publications_max=%v", publicationMinCount, publicationMaxCount)
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -324,12 +291,12 @@ func TestSearchByPublicationsCount(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result responses.ScientistsResponse
+	var result responses.ScientistsResponseBody
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result.Body.Scientists {
+	for _, item := range result.Scientists {
 		bibliometric := GetBibliometrics(item)
 		if bibliometric.PublicationCount < publicationMinCount || bibliometric.PublicationCount > publicationMaxCount {
 			t.Errorf("Niewłaściwa ilość publikacji")
@@ -342,7 +309,7 @@ func TestSearchByResearchAreas(t *testing.T) {
 	researchArea := "information and communication technology (ICT)"
 
 	url := "http://localhost:8000/api/search?research_areas%5B%5D=" + researchArea
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -364,32 +331,24 @@ func TestSearchByResearchAreas(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result responses.ScientistsResponse
+	var result responses.ScientistsResponseBody
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result.Body.Scientists {
+	for _, item := range result.Scientists {
 		if !ContainsResearchArea(researchArea, item.ResearchAreas) {
 			t.Errorf("Naukowiec nie posiada odpowiedniej dyscypliny.")
 			t.SkipNow()
 		}
 	}
 }
-func ContainsResearchArea(researchArea string, area []responses.ResearchArea) bool {
-	for _, resArea := range area {
-		if resArea.Name == researchArea {
-			return true
-		}
-	}
-	return false
-}
 func TestSearchBySurname(t *testing.T) {
 	router := TestSetUP()
 	surname := "Kowa"
 
 	url := fmt.Sprintf("http://localhost:8000/api/search?surname=%s", surname)
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -411,12 +370,12 @@ func TestSearchBySurname(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result responses.ScientistsResponse
+	var result responses.ScientistsResponseBody
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
-	for _, item := range result.Body.Scientists {
+	for _, item := range result.Scientists {
 		if !strings.Contains(strings.ToLower(item.LastName), strings.ToLower(surname)) {
 			t.Errorf("Nazwisko naukowca nie zawiera fragmentu: %s.", surname)
 			t.SkipNow()
@@ -425,5 +384,39 @@ func TestSearchBySurname(t *testing.T) {
 	t.Logf("Test przeszedł pomyślnie")
 }
 func TestSearchByYearScoreFilters(t *testing.T) {
-	t.Skip("Test nieskończony. Czeka na zaimplementowanie funkcjonalności.")
+	router := TestSetUP()
+	year := 2021
+
+	url := "http://localhost:8000/api/search?year_score_filters%5B%5D=2021" + string(rune(year))
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+
+	req.Header.Add("Accept", "application/json")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Otrzymano kod błędu: %v", w.Code)
+	}
+
+	body, err := io.ReadAll(w.Body)
+	if err != nil {
+		t.Errorf("Otrzymano błda podczas odczytywania odpowiedzi: %v", err)
+	}
+
+	var result responses.ScientistsResponseBody
+
+	if err := json.Unmarshal(body, &result); err != nil {
+		t.Errorf("Otrzymano błąda podczas parsowania JSON: %v", err)
+	}
+	for _, item := range result.Scientists {
+
+		if ContainsPickedYearOfPublication(item.PublicationScores, &year) != nil {
+			t.Errorf("Otrzymano kod błędu %s", err.Error())
+		}
+	}
 }

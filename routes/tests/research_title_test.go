@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io-project-api/internal/models"
 	"io-project-api/internal/responses"
 	"net/http"
 	"net/http/httptest"
@@ -18,7 +17,7 @@ func TestRegisterResearchTitle(t *testing.T) {
 	surname := "Bator"
 	url := fmt.Sprintf("http://localhost:8000/api/search?name=%s&surname=%s", name, surname)
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -53,7 +52,7 @@ func TestRegisterResearchTitle(t *testing.T) {
 	id := subject.Scientists[0].ID
 	url = fmt.Sprintf("http://localhost:8000/api/scientists/%s", id)
 
-	req, err = http.NewRequest("GET", url, nil)
+	req, err = http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
 	}
@@ -75,15 +74,15 @@ func TestRegisterResearchTitle(t *testing.T) {
 	}
 
 	// Rozpakuj JSON do struktury
-	var result models.Scientist
+	var result responses.ScientistBody
 
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania result JSON: %v", err)
 	}
 
-	// if subject[0].ResearchArea != result.ResearchArea {
-	// 	t.Errorf("Dziedziny naukowe się różnią. Oczekiwano: %+v, Otrzymano: %+v", subject[0].AcademicTitle, result.AcademicTitle)
-	// }
+	err = CompareResearchAreas(subject.Scientists[0].ResearchAreas, result.ResearchAreas)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
 
-	t.Logf("Test zakończony sukcesem.")
 }
