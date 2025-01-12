@@ -120,6 +120,9 @@ func ScientistByID(db *sqlx.DB, id uuid.UUID) (*responses.ScientistBody, error) 
 			logging.Logger.Error("ERROR: Error scanning publication scores:", err)
 			return nil, err
 		}
+		if year == nil {
+			continue
+		}
 		publicationScores = append(publicationScores, responses.PublicationScore{Year: year, Score: score})
 	}
 
