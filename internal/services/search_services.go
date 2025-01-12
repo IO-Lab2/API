@@ -53,6 +53,10 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
         bibliometrics b ON s.id = b.scientist_id
     LEFT JOIN 
         scientists_publications sp ON s.id = sp.scientist_id
+	LEFT JOIN 
+    	scientist_organization so ON s.id = so.scientist_id
+	LEFT JOIN 
+    	organizations o ON so.organization_id = o.id
     LEFT JOIN 
         publications p ON sp.publication_id = p.id`
 
