@@ -106,7 +106,7 @@ func BibliometricByScientistID(db *sqlx.DB, id uuid.UUID) (*responses.Bibliometr
 	// Fetch publication scores grouped by year
 	publicationScoresQuery := `
 	SELECT 
-		COALESCE(EXTRACT(YEAR FROM p.publication_date)::TEXT, 'null') AS year, 
+		EXTRACT(YEAR FROM p.publication_date) AS year, 
 		SUM(COALESCE(p.ministerial_score, 0)) AS total_score
 	FROM 
 		publications p
