@@ -7,6 +7,7 @@ import (
 	logging "io-project-api/internal/logger"
 	"io-project-api/internal/models"
 	"io-project-api/internal/responses"
+	"strconv"
 	"strings"
 
 	"encoding/json"
@@ -265,4 +266,45 @@ func parseList(input []string) []string {
 	}
 
 	return result
+}
+
+func ParseYearScoreFilters(filters []string) ([]models.YearScoreFilter, error) {
+	var result []models.YearScoreFilter
+
+	for _, filter := range filters {
+		parts := strings.Split(filter, ":")
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("invalid format: %s, expected year:min_score-max_score", filter)
+		}
+
+		// Parse the year
+		year, err := strconv.Atoi(parts[0])
+		if err != nil {
+			return nil, fmt.Errorf("invalid year in filter: %s", filter)
+		}
+
+		// Parse min_score and max_score
+		scoreRange := strings.Split(parts[1], "-")
+		if len(scoreRange) != 2 {
+			return nil, fmt.Errorf("invalid score range in filter: %s", filter)
+		}
+
+		minScore, err := strconv.ParseFloat(scoreRange[0], 64)
+		if err != nil {
+			return nil, fmt.Errorf("invalid min score in filter: %s", filter)
+		}
+
+		maxScore, err := strconv.ParseFloat(scoreRange[1], 64)
+		if err != nil {
+			return nil, fmt.Errorf("invalid max score in filter: %s", filter)
+		}
+
+		result = append(result, models.YearScoreFilter{
+			Year:     year,
+			MinScore: minScore,
+			MaxScore: maxScore,
+		})
+	}
+
+	return result, nil
 }
