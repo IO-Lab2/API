@@ -7,6 +7,7 @@ import (
 	logging "io-project-api/internal/logger"
 	"io-project-api/internal/models"
 	"io-project-api/internal/responses"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -139,41 +140,13 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		args["max_score"] = input.MaxMinisterialScore
 	}
 
-	// Parse YearScoreFilter
-	var havingClauses []string
-	if len(input.YearScoreFilter) > 0 {
-		yearScoreFilters, err := ParseYearScoreFilters(input.YearScoreFilter)
-		if err != nil {
-			logging.Logger.Error("ERROR: Invalid year score filter: ", err)
-			return nil, 0, fmt.Errorf("invalid year score filter: %w", err)
-		}
-
-		for i, filter := range yearScoreFilters {
-			havingClauses = append(havingClauses, fmt.Sprintf(
-				"SUM(CASE WHEN EXTRACT(YEAR FROM p.publication_date) = :year_%d THEN p.ministerial_score ELSE 0 END) BETWEEN :min_score_%d AND :max_score_%d",
-				i, i, i,
-			))
-			args[fmt.Sprintf("year_%d", i)] = filter.Year
-			args[fmt.Sprintf("min_score_%d", i)] = filter.MinScore
-			args[fmt.Sprintf("max_score_%d", i)] = filter.MaxScore
-		}
-	}
-
 	// Combine query
 	if len(whereClauses) > 0 {
 		query += " WHERE " + strings.Join(whereClauses, " AND ")
 	}
 
 	query += `
-	GROUP BY s.id, b.h_index_wos, b.h_index_scopus, b.publication_count, b.ministerial_score`
-
-	// Add HAVING clause for YearScoreFilter
-	if len(havingClauses) > 0 {
-		query += " HAVING " + strings.Join(havingClauses, " AND ")
-	}
-
-	// Order and paginate
-	query += `
+    GROUP BY s.id, b.h_index_wos, b.h_index_scopus, b.publication_count, b.ministerial_score
 	ORDER BY s.last_name, s.first_name
 	LIMIT :limit OFFSET :offset`
 
@@ -229,6 +202,28 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 			}
 		}
 
+		// Filter by YearScoreFilter
+		if len(input.YearScoreFilter) > 0 {
+			yearScoreFilters, err := ParseYearScoreFilters(input.YearScoreFilter)
+			if err != nil {
+				logging.Logger.Error("ERROR: Invalid year score filter: ", err)
+				return nil, 0, fmt.Errorf("invalid year score filter: %w", err)
+			}
+
+			meetsCriteria := true
+			for _, filter := range yearScoreFilters {
+				score, exists := combinedScores[filter.Year]
+				if !exists || score < filter.MinScore || score > filter.MaxScore {
+					meetsCriteria = false
+					break
+				}
+			}
+
+			if !meetsCriteria {
+				continue // Skip this scientist
+			}
+		}
+
 		// Convert combined scores map to slice
 		var combinedPublicationScores []responses.PublicationScore
 		for year, score := range combinedScores {
@@ -242,6 +237,11 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		for i, name := range researchAreaNames {
 			scientist.ResearchAreas[i] = responses.ResearchArea{Name: name}
 		}
+
+		// Sort the combinedPublicationScores by year in ascending order
+		sort.Slice(combinedPublicationScores, func(i, j int) bool {
+			return *combinedPublicationScores[i].Year < *combinedPublicationScores[j].Year
+		})
 
 		scientist.PublicationScores = combinedPublicationScores
 		scientists = append(scientists, scientist)
