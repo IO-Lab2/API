@@ -92,7 +92,7 @@ func TestSearchMinisterialScore(t *testing.T) {
 
 	for _, item := range result.Scientists {
 		bibliometric := GetBibliometrics(item)
-		if bibliometric.MinisterialScore < minimalScore || bibliometric.MinisterialScore > maximalScore {
+		if *bibliometric.MinisterialScore < minimalScore || *bibliometric.MinisterialScore > maximalScore {
 			t.Errorf("Niewłaściwa punktacja")
 		}
 	}
@@ -298,7 +298,7 @@ func TestSearchByPublicationsCount(t *testing.T) {
 	}
 	for _, item := range result.Scientists {
 		bibliometric := GetBibliometrics(item)
-		if bibliometric.PublicationCount < publicationMinCount || bibliometric.PublicationCount > publicationMaxCount {
+		if *bibliometric.PublicationCount < publicationMinCount || *bibliometric.PublicationCount > publicationMaxCount {
 			t.Errorf("Niewłaściwa ilość publikacji")
 		}
 	}
