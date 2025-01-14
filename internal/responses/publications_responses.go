@@ -19,6 +19,8 @@ type PublicationBody struct {
 	Journal             *string   `db:"journal" json:"journal" doc:"Journal where publication is published" format:"string" example:"Nature"`
 	PublicationDate     time.Time `db:"publication_date" json:"publication_date" doc:"Publication date" format:"date-time" example:"2021-01-01T00:00:00Z"`
 	JournalImpactFactor float64   `db:"journal_impact_factor" json:"journal_impact_factor" doc:"Impact factor" format:"float" example:"12.123"`
+	JournalType         *string   `db:"journal_type" json:"journal_type" doc:"Journal type" format:"string" example:"Science"`
+	MinisterialScore    *int      `db:"ministerial_score" json:"ministerial_score" doc:"Ministerial score" format:"int" example:"5"`
 	CreatedAt           time.Time `db:"created_at" json:"created_at" doc:"Creation date of publication" format:"date-time" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt           time.Time `db:"updated_at" json:"updated_at" doc:"Update date of publication" format:"date-time" examle:"2021-01-01T00:00:00Z"`
 }

@@ -11,7 +11,7 @@ import (
 )
 
 func PublicationByID(db *sqlx.DB, id uuid.UUID) (*responses.PublicationBody, error) {
-	query := "SELECT id, title, journal, publication_date, journal_impact_factor, created_at, updated_at FROM publications WHERE id = $1"
+	query := "SELECT id, title, journal, publication_date, journal_impact_factor, journal_type, ministerial_score, created_at, updated_at FROM publications WHERE id = $1"
 	logging.Logger.Info("INFO: Executing query:", query)
 
 	var publication responses.PublicationBody
@@ -24,7 +24,7 @@ func PublicationByID(db *sqlx.DB, id uuid.UUID) (*responses.PublicationBody, err
 }
 
 func RandomPublication(db *sqlx.DB) (*responses.PublicationBody, error) {
-	query := "SELECT id, title, journal, publication_date, journal_impact_factor, created_at, updated_at FROM publications ORDER BY RANDOM() LIMIT 1"
+	query := "SELECT id, title, journal, publication_date, journal_impact_factor, journal_type, ministerial_score, created_at, updated_at FROM publications ORDER BY RANDOM() LIMIT 1"
 	logging.Logger.Info("INFO: Executing query:", query)
 
 	var publication responses.PublicationBody
@@ -38,7 +38,8 @@ func RandomPublication(db *sqlx.DB) (*responses.PublicationBody, error) {
 
 func PublicationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.PublicationBody, error) {
 	query := `
-		SELECT p.id, p.title, p.journal, p.publication_date, p.journal_impact_factor, p.created_at, p.updated_at
+		SELECT p.id, p.title, p.journal, p.publication_date, p.journal_impact_factor, p.journal_type, p.ministerial_score,
+		p.created_at, p.updated_at
 		FROM publications p
 		JOIN scientist_publication sp ON p.id = sp.publication_id
 		WHERE sp.scientist_id = $1`
