@@ -12,7 +12,7 @@ import (
 func GetOrganizationTree(parentID uuid.UUID) (*responses.ListOfOrganizations, error) {
 
 	result, err := repositories.QueryGetOrganizationTree(database.GetDB(), &parentID)
-	if err != nil {
+	if len(result.Body) == 0 || err != nil {
 		logging.Logger.Error("Error while getting organization tree: ", err)
 		return nil, err
 	}
