@@ -87,3 +87,12 @@ func ContainsPickedYearOfPublication(yearsOfPublication []responses.PublicationS
 	}
 	return errors.New("brak publikacji z oczekiwanego roku")
 }
+func ContainsPickedJournalType(publications []responses.PublicationBody, journalType string) error {
+	for i := 0; i < len(publications); i++ {
+
+		if *publications[i].Journal == journalType {
+			return nil
+		}
+	}
+	return errors.New("brak oczekiwanego typu publikacji")
+}

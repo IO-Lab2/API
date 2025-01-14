@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io-project-api/internal/database"
+	"io-project-api/internal/repositories"
 	"io-project-api/internal/responses"
 	"log"
 	"net/http"
@@ -173,17 +175,16 @@ func TestSearchByOrganizations(t *testing.T) {
 	for _, item := range result.Scientists {
 		organizations := GetOrganization(item)
 		if ContainsOrganization(organizations, organizationName) == false {
-			t.Errorf("Niewłaściwa organizacja naukowca.")
+			t.Errorf("Niewłaściwa organizacja naukowca dla %s %s o ID: %s", *item.FirstName, *item.LastName, item.ID)
 		}
 
 	}
 }
 func TestSearchByJournalTypes(t *testing.T) {
-	t.Skip("Test nieskończony. Czeka na wprowadzenie funkcjonalności.")
-	router := TestSetUP()
-	journalType := "artykuł"
 
-	url := fmt.Sprintf("http://localhost:8000/api/search?journal_type=%s", journalType)
+	router := TestSetUP()
+	url := "http://localhost:8000/api/search?journal_types%5B%5D=artyku%C5%82"
+
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %v", err)
@@ -211,11 +212,22 @@ func TestSearchByJournalTypes(t *testing.T) {
 	if err := json.Unmarshal(body, &result); err != nil {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
+
+	db, err := database.InitDB()
+	if err != nil {
+		t.Errorf("Nie udało się połączyć z bazą danych")
+	}
+	journalType := "artykuł"
 	for _, item := range result.Scientists {
-		bibliometric := GetBibliometrics(item)
-		if bibliometric == bibliometric {
-			//dokończyć
+		t.Logf("Niewłaściwe typy publikci naukowca dla %s %s o ID: %s", *item.FirstName, *item.LastName, item.ID)
+		publications, err := repositories.PublicationsByScientistID(db, item.ID)
+		if err != nil {
+			t.Errorf("Nie udało się dostać publikacji: %d", err)
 		}
+		if ContainsPickedJournalType(publications, journalType) != nil {
+			t.Errorf(err.Error())
+		}
+
 	}
 }
 func TestSearchByPositions(t *testing.T) {
@@ -391,7 +403,7 @@ func TestSearchByYearScoreFilters(t *testing.T) {
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+		t.Errorf("Nie udało się utworzyć żądania: %d", err)
 	}
 
 	req.Header.Add("Accept", "application/json")
@@ -400,12 +412,12 @@ func TestSearchByYearScoreFilters(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	if w.Code != http.StatusOK {
-		t.Errorf("Otrzymano kod błędu: %v", w.Code)
+		t.Errorf("Otrzymano kod błędu: %d", w.Code)
 	}
 
 	body, err := io.ReadAll(w.Body)
 	if err != nil {
-		t.Errorf("Otrzymano błda podczas odczytywania odpowiedzi: %v", err)
+		t.Errorf("Otrzymano błda podczas odczytywania odpowiedzi: %d", err)
 	}
 
 	var result responses.ScientistsResponseBody
