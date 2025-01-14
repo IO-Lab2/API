@@ -3,13 +3,14 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
 	"io"
 	"io-project-api/internal/models"
 	"io-project-api/internal/responses"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 func TestRegisterAcademicTitle(t *testing.T) {
@@ -83,7 +84,7 @@ func TestRegisterAcademicTitle(t *testing.T) {
 	}
 
 	// Porównanie z tytułów
-	if subject.Scientists[0].AcademicTitle != result.AcademicTitle {
+	if *subject.Scientists[0].AcademicTitle != result.AcademicTitle {
 		t.Errorf("Tytułu naukowców się rożnią. Oczekiwano: %+v, Otrzymano: %+v", subject.Scientists[0].AcademicTitle, result.AcademicTitle)
 	}
 }

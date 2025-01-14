@@ -47,7 +47,7 @@ func TestSearchAcademicTitle(t *testing.T) {
 	}
 
 	for _, item := range result.Scientists {
-		if err := item.AcademicTitle == "PhD"; err == false {
+		if err := *item.AcademicTitle == "PhD"; err == false {
 			t.Errorf("AcademicTitle jest niewłaściwy.")
 		}
 	}
@@ -132,7 +132,7 @@ func TestSearchByName(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 	for _, item := range result.Scientists {
-		if item.FirstName != name {
+		if *item.FirstName != name {
 			t.Errorf("Imię naukowca się niezgadza.")
 		}
 	}
@@ -376,7 +376,7 @@ func TestSearchBySurname(t *testing.T) {
 		t.Errorf("Błąd podczas parsowania JSON: %v", err)
 	}
 	for _, item := range result.Scientists {
-		if !strings.Contains(strings.ToLower(item.LastName), strings.ToLower(surname)) {
+		if !strings.Contains(strings.ToLower(*item.LastName), strings.ToLower(surname)) {
 			t.Errorf("Nazwisko naukowca nie zawiera fragmentu: %s.", surname)
 			t.SkipNow()
 		}

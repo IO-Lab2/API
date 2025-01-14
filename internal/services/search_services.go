@@ -245,7 +245,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 
 		scientist.ResearchAreas = make([]responses.ResearchArea, len(researchAreaNames))
 		for i, name := range researchAreaNames {
-			scientist.ResearchAreas[i] = responses.ResearchArea{Name: name}
+			scientist.ResearchAreas[i] = responses.ResearchArea{Name: &name}
 		}
 
 		// Sort the combinedPublicationScores by year in ascending order

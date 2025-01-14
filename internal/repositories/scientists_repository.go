@@ -62,7 +62,7 @@ func ScientistByID(db *sqlx.DB, id uuid.UUID) (*responses.ScientistBody, error) 
 
 	// Map research area names to ResearchArea structs
 	for _, name := range researchAreaNames {
-		scientist.ResearchAreas = append(scientist.ResearchAreas, responses.ResearchArea{Name: name})
+		scientist.ResearchAreas = append(scientist.ResearchAreas, responses.ResearchArea{Name: &name})
 	}
 
 	// Fetch bibliometrics information
@@ -185,7 +185,7 @@ func ScientistByName(db *sqlx.DB, name *requests.ScientistName) (*responses.Scie
 
 	// Map research area names to ResearchArea structs
 	for _, name := range researchAreaNames {
-		scientist.ResearchAreas = append(scientist.ResearchAreas, responses.ResearchArea{Name: name})
+		scientist.ResearchAreas = append(scientist.ResearchAreas, responses.ResearchArea{Name: &name})
 	}
 
 	logging.Logger.Info("INFO: Successfully retrieved scientist by name")

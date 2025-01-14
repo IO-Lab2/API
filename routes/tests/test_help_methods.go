@@ -40,7 +40,7 @@ func ContainsOrganization(organizations []responses.OrganizationBodyExtended, or
 }
 func ContainsResearchArea(researchArea string, area []responses.ResearchArea) bool {
 	for _, resArea := range area {
-		if resArea.Name == researchArea {
+		if *resArea.Name == researchArea {
 			return true
 		}
 	}
