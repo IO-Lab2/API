@@ -56,8 +56,7 @@ func ComparePublicationScores(expected []responses.PublicationScore, received []
 		for j := 0; j < len(received); j++ {
 			if *expected[i].Year == *received[j].Year {
 				if *expected[i].Score != *received[j].Score {
-					log.Printf("Oczekiwano punktacji %f, a otrzymano %f", *expected[i].Score, *received[i].Score)
-					log.Printf("Na pozycji %d ", i)
+					log.Printf("Oczekiwano punktacji %f z roku %d, a otrzymano %f z roku %d", *expected[i].Score, *expected[i].Year, *received[j].Score, *received[j].Year)
 					return errors.New("nieprawidłowy wynik za rok")
 				}
 			}
@@ -68,11 +67,11 @@ func ComparePublicationScores(expected []responses.PublicationScore, received []
 }
 func CompareResearchAreas(expected []responses.ResearchArea, received []responses.ResearchArea) error {
 	if len(received) != len(expected) {
-		log.Printf("Oczekiwano %d, dyscypli, a otrzymano %d", len(expected), len(received))
+		log.Printf("Oczekiwano %d, dyscyplin, a otrzymano %d", len(expected), len(received))
 		return errors.New("nieodpowiednia ilość dyscyplin")
 	}
 	for i := 0; i < len(received); i++ {
-		if received[i].Name != expected[i].Name {
+		if *received[i].Name != *expected[i].Name {
 			log.Printf("Oczekiwano dyscypliny %s, a otrzymano %s", *received[i].Name, *expected[i].Name)
 			return errors.New("niepasujące nazwy dyscyplin")
 		}

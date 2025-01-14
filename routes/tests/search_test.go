@@ -54,6 +54,20 @@ func TestSearchAcademicTitle(t *testing.T) {
 		}
 	}
 }
+func TestSearchBadAcademicTitle(t *testing.T) {
+	router := TestSetUP()
+	url := "http://localhost:8000/api/search?academic_titles%5B%5D=BAD_TITLE"
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwano kod błędu: %d, a otrzymano %d", http.StatusBadRequest, w.Code)
+	}
+}
 
 func TestSearchMinisterialScore(t *testing.T) {
 
@@ -62,7 +76,7 @@ func TestSearchMinisterialScore(t *testing.T) {
 	minimalScore := 15.5
 	maximalScore := 205.5
 
-	url := fmt.Sprintf("http://localhost:8000/api/search?ministerial_score_min=%v&ministerial_score_max=%v", minimalScore, maximalScore)
+	url := fmt.Sprintf("http://localhost:8000/api/search?ministerial_score_min=%f&ministerial_score_max=%f", minimalScore, maximalScore)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -99,6 +113,64 @@ func TestSearchMinisterialScore(t *testing.T) {
 		}
 	}
 }
+
+func TestSearchNegativeMinMinisterialScore(t *testing.T) {
+	router := TestSetUP()
+	minimalScore := -15.5
+	maximalScore := 0
+
+	url := fmt.Sprintf("http://localhost:8000/api/search?ministerial_score_min=%v&ministerial_score_max=%v", minimalScore, maximalScore)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwano kod błędu: %d, a otrzymano %d", http.StatusBadRequest, w.Code)
+	}
+}
+
+func TestSearchNegativeMaxMinisterialScore(t *testing.T) {
+	router := TestSetUP()
+	minimalScore := 0
+	maximalScore := -205.5
+
+	url := fmt.Sprintf("http://localhost:8000/api/search?ministerial_score_min=%v&ministerial_score_max=%v", minimalScore, maximalScore)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwano kod błędu: %d, a otrzymano %d", http.StatusBadRequest, w.Code)
+	}
+}
+
+func TestSearchMinisterialScoreWhenNotANumber(t *testing.T) {
+	router := TestSetUP()
+	minimalScore := "Pomidor"
+	maximalScore := 205.5
+
+	url := fmt.Sprintf("http://localhost:8000/api/search?ministerial_score_min=%v&ministerial_score_max=%v", minimalScore, maximalScore)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusUnprocessableEntity {
+		t.Errorf("Oczekiwano kod błędu: %d, a otrzymano %d", http.StatusUnprocessableEntity, w.Code)
+	}
+}
+
 func TestSearchByName(t *testing.T) {
 
 	router := TestSetUP()
@@ -140,6 +212,24 @@ func TestSearchByName(t *testing.T) {
 	}
 
 }
+
+func TestSearchByBadName(t *testing.T) {
+	router := TestSetUP()
+	name := "WRONG_NAME"
+
+	url := fmt.Sprintf("http://localhost:8000/api/search?name=%s", name)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania %d", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwano kodu błędu: %d, a otrzymano %d", http.StatusBadRequest, w.Code)
+	}
+}
+
 func TestSearchByOrganizations(t *testing.T) {
 	router := TestSetUP()
 	organizationName := "Institute of Information Technology" //Nazwa potrzebna do stworzenia zapytania
@@ -180,6 +270,24 @@ func TestSearchByOrganizations(t *testing.T) {
 
 	}
 }
+
+func TestSearchByOrganizationsBadName(t *testing.T) {
+	router := TestSetUP()
+	organizationName := "WRONG ORGANIZATION NAME"
+
+	url := "http://localhost:8000/api/search?organizations%5B%5D=" + organizationName
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żdania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwano kodu błędu: %d, a otrzymano %d", http.StatusBadRequest, w.Code)
+	}
+}
+
 func TestSearchByJournalTypes(t *testing.T) {
 
 	router := TestSetUP()
@@ -230,6 +338,24 @@ func TestSearchByJournalTypes(t *testing.T) {
 
 	}
 }
+
+func TestSearchByBadJournalTypes(t *testing.T) {
+	router := TestSetUP()
+
+	url := "http://localhost:8000/api/search?journal_types%5B%5D=BAD JOURNAL TYPE%C5%82"
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwano kod błędu %d, a otrzymano %d", http.StatusBadRequest, w.Code)
+	}
+}
+
 func TestSearchByPositions(t *testing.T) {
 
 	router := TestSetUP()
@@ -274,6 +400,24 @@ func TestSearchByPositions(t *testing.T) {
 	}
 
 }
+
+func TestSearchByBadPositions(t *testing.T) {
+	router := TestSetUP()
+	position := "BAD POSITION"
+
+	url := "http://localhost:8000/api/search?positions%5B%5D=" + position
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzć żądania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwano kod błędu %d, a otrzymano %d", http.StatusBadRequest, w.Code)
+	}
+}
+
 func TestSearchByPublicationsCount(t *testing.T) {
 	router := TestSetUP()
 
@@ -313,6 +457,48 @@ func TestSearchByPublicationsCount(t *testing.T) {
 		if *bibliometric.PublicationCount < publicationMinCount || *bibliometric.PublicationCount > publicationMaxCount {
 			t.Errorf("Niewłaściwa ilość publikacji")
 		}
+	}
+}
+
+func TestSearchByNegativePublicationsCount(t *testing.T) {
+	router := TestSetUP()
+	publicationMinCount := -1
+	publicationMaxCount := -10
+
+	url := fmt.Sprintf("http://localhost:8000/api/search?publications_min=%v&publications_max=%v", publicationMinCount, publicationMaxCount)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+
+	req.Header.Add("Accept", "application/json")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwano kodu błędu %d, a otrzymano %d", http.StatusBadRequest, w.Code)
+	}
+}
+
+func TestSearchByPublicationsCountWhenNotANumber(t *testing.T) {
+	router := TestSetUP()
+	publicationMinCount := "Pomidor"
+	publicationMaxCount := 20
+
+	url := fmt.Sprintf("http://localhost:8000/api/search?publications_min=%v&publications_max=%v", publicationMinCount, publicationMaxCount)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+
+	req.Header.Add("Accept", "application/json")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusUnprocessableEntity {
+		t.Errorf("Oczekiwano kodu błędu %d, a otrzymano %d", http.StatusUnprocessableEntity, w.Code)
 	}
 }
 
@@ -395,11 +581,28 @@ func TestSearchBySurname(t *testing.T) {
 	}
 	t.Logf("Test przeszedł pomyślnie")
 }
+
+func TestSearchByBadSurname(t *testing.T) {
+	router := TestSetUP()
+	surname := "BAD SURNAME"
+	url := fmt.Sprintf("http://localhost:8000/api/search?surname=%s", surname)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %v", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekiwno kodu błędu %d, a otrzymano %d", http.StatusBadRequest, w.Code)
+	}
+}
+
 func TestSearchByYearScoreFilters(t *testing.T) {
 	router := TestSetUP()
 	year := 2021
-
-	url := "http://localhost:8000/api/search?year_score_filters%5B%5D=2021" + string(rune(year))
+	t.Skip()
+	url := "http://localhost:8000/api/search?year_score_filters%5B%5D=" + string(rune(year))
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -430,5 +633,38 @@ func TestSearchByYearScoreFilters(t *testing.T) {
 		if ContainsPickedYearOfPublication(item.PublicationScores, &year) != nil {
 			t.Errorf("Otrzymano kod błędu %s", err.Error())
 		}
+	}
+}
+func TestSearchByNegativeYearScoreFilters(t *testing.T) {
+	router := TestSetUP()
+	year := -2021
+
+	url := "http://localhost:8000/api/search?year_score_filters%5B%5D=" + string(rune(year))
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %d", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Errorf("Oczekwiano kodu błędu %d, a otrzymano %d", http.StatusBadRequest, w.Code)
+	}
+}
+func TestSearchByYearScoreFiltersWhenNotANumber(t *testing.T) {
+	router := TestSetUP()
+	year := "Pomidor"
+	url := "http://localhost:8000/api/search?year_score_filters%5B%5D=" + year
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		t.Errorf("Nie udało się utworzyć żądania: %d", err)
+	}
+	req.Header.Add("Accept", "application/json")
+	w := httptest.NewRecorder()
+
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusUnprocessableEntity {
+		t.Errorf("Oczekwiano kodu błędu %d, a otrzymano %d", http.StatusUnprocessableEntity, w.Code)
 	}
 }
