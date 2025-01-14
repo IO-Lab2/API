@@ -140,6 +140,15 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		args["max_score"] = input.MaxMinisterialScore
 	}
 
+	if isNotEmpty(input.PublicationsYears) {
+		publicationYears := make([]string, len(input.PublicationsYears))
+		for i, year := range input.PublicationsYears {
+			publicationYears[i] = strconv.Itoa(year)
+		}
+		whereClauses = append(whereClauses, "EXTRACT(YEAR FROM p.publication_date) = ANY(:publication_years)")
+		args["publication_years"] = pq.Array(publicationYears)
+	}
+
 	// Combine query
 	if len(whereClauses) > 0 {
 		query += " WHERE " + strings.Join(whereClauses, " AND ")
@@ -151,6 +160,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 	LIMIT :limit OFFSET :offset`
 
 	logging.Logger.Debug("Search query: ", query)
+	logging.Logger.Debug("Search query args: ", args)
 	connection := database.GetDB()
 	rows, err := connection.NamedQuery(query, args)
 	if err != nil {
@@ -260,6 +270,12 @@ func isNotEmpty(param interface{}) bool {
 	case string:
 		return v != ""
 	case []string:
+		return len(v) > 0
+	case []int:
+		return len(v) > 0
+	case []float64:
+		return len(v) > 0
+	case []float32:
 		return len(v) > 0
 	case int:
 		return v > 0
