@@ -73,7 +73,7 @@ func CompareResearchAreas(expected []responses.ResearchArea, received []response
 	}
 	for i := 0; i < len(received); i++ {
 		if received[i].Name != expected[i].Name {
-			log.Printf("Oczekiwano dyscypliny %s, a otrzymano %s", received[i].Name, expected[i].Name)
+			log.Printf("Oczekiwano dyscypliny %s, a otrzymano %s", *received[i].Name, *expected[i].Name)
 			return errors.New("niepasujące nazwy dyscyplin")
 		}
 	}

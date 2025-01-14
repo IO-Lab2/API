@@ -86,13 +86,13 @@ func TestRegisterScientists(t *testing.T) {
 		t.Errorf("Różne ID: oczekiwano %s, otrzymano %s", expected.ID, received.ID)
 	}
 	if expected.FirstName != received.FirstName {
-		t.Errorf("Różne imiona: oczekiwano %s, otzymano %s", expected.FirstName, received.FirstName)
+		t.Errorf("Różne imiona: oczekiwano %s, otzymano %s", *expected.FirstName, *received.FirstName)
 	}
 	if expected.LastName != received.LastName {
-		t.Errorf("Różne nazwiska: oczekiwano %s, otrzymano %s", expected.LastName, received.LastName)
+		t.Errorf("Różne nazwiska: oczekiwano %s, otrzymano %s", *expected.LastName, *received.LastName)
 	}
 	if expected.AcademicTitle != received.AcademicTitle {
-		t.Errorf("Różne tytuły: oczekiwano %s, otrzymano %s", expected.AcademicTitle, received.AcademicTitle)
+		t.Errorf("Różne tytuły: oczekiwano %s, otrzymano %s", *expected.AcademicTitle, *received.AcademicTitle)
 	}
 	if *expected.Position != *received.Position {
 		t.Errorf("Różne pozycje: oczekwiano %v, otrzymano %v", *expected.Position, *received.Position)
