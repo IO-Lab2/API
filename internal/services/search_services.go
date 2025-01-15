@@ -44,7 +44,8 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
         json_agg(json_build_object(
             'year', EXTRACT(YEAR FROM p.publication_date),
             'score', p.ministerial_score
-        )) AS publication_scores
+        )) AS publication_scores,
+		COUNT(*) OVER() AS total_count
     FROM 
         scientists s
     LEFT JOIN 
@@ -170,6 +171,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 	}
 	defer rows.Close()
 
+	var totalRows int
 	var scientists []responses.ScientistBody
 	for rows.Next() {
 		var scientist responses.ScientistBody
@@ -193,6 +195,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 			&scientist.Bibliometrics.MinisterialScore,
 			&scientist.Bibliometrics.ImpactFactor,
 			&publicationScoresJSON,
+			&totalRows,
 		); err != nil {
 			logging.Logger.Error("ERROR: Error scanning row: ", err)
 			return nil, 0, fmt.Errorf("failed to scan result row: %w", err)
@@ -207,7 +210,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		// Combine scores for each year
 		combinedScores := make(map[int]float64)
 		for _, score := range publicationScores {
-			if score.Year != nil {
+			if score.Year != nil && score.Score != nil {
 				combinedScores[*score.Year] += *score.Score
 			}
 		}
@@ -277,7 +280,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		return nil, 0, errors.New("No scientists found")
 	}
 
-	return scientists, len(scientists), nil
+	return scientists, totalRows, nil
 }
 
 func isNotEmpty(param interface{}) bool {

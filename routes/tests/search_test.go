@@ -327,9 +327,9 @@ func TestSearchByJournalTypes(t *testing.T) {
 	}
 	journalType := "artykuł"
 	for _, item := range result.Scientists {
-		t.Logf("Niewłaściwe typy publikci naukowca dla %s %s o ID: %s", *item.FirstName, *item.LastName, item.ID)
+		t.Logf("Niewłaściwe typy publikacji naukowca dla %s %s o ID: %s", *item.FirstName, *item.LastName, item.ID)
 		publications, err := repositories.PublicationsByScientistID(db, item.ID)
-		if err != nil {
+		if err != nil || len(publications) == 0 {
 			t.Errorf("Nie udało się dostać publikacji: %d", err)
 		}
 		if ContainsPickedJournalType(publications, journalType) != nil {
@@ -360,7 +360,7 @@ func TestSearchByPositions(t *testing.T) {
 
 	router := TestSetUP()
 
-	position := "Professor"
+	position := "profesor"
 	url := "http://localhost:8000/api/search?positions%5B%5D=" + position
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
