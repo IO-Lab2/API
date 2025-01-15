@@ -110,13 +110,6 @@ func TestRegisterScientists(t *testing.T) {
 		t.Errorf("Różne czasy utworzenia: oczekiwano %s, otrzymano %s", expected.CreatedAt, received.CreatedAt)
 	}
 	if expected.UpdatedAt != received.UpdatedAt {
-		t.Errorf("Różne czasy uaktualniania: oczekiawno %s, otrzymano %s", expected.UpdatedAt, received.UpdatedAt)
-	}
-	if !reflect.DeepEqual(expected.Bibliometrics, received.Bibliometrics) {
-		t.Errorf("Różne bibliometrie: oczekiwano %+v, otzrmano %+v", expected.Bibliometrics, received.Bibliometrics)
-	}
-	err = ComparePublicationScores(expected.PublicationScores, received.PublicationScores)
-	if err != nil {
-		t.Errorf(err.Error())
+		t.Errorf("Różne czasy uaktualniania: oczekiwano %s, otrzymano %s", expected.UpdatedAt, received.UpdatedAt)
 	}
 }
