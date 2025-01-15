@@ -41,7 +41,7 @@ func PublicationsByScientistID(db *sqlx.DB, id uuid.UUID) ([]responses.Publicati
 		SELECT p.id, p.title, p.journal, p.publication_date, p.journal_impact_factor, p.journal_type, p.ministerial_score,
 		p.created_at, p.updated_at
 		FROM publications p
-		JOIN scientist_publication sp ON p.id = sp.publication_id
+		JOIN scientists_publications sp ON p.id = sp.publication_id
 		WHERE sp.scientist_id = $1`
 	logging.Logger.Info("INFO: Executing query:", query)
 
