@@ -18,7 +18,7 @@ func TestSearchAcademicTitle(t *testing.T) {
 
 	router := TestSetUP()
 
-	url := "http://localhost:8000/api/search?academic_titles%5B%5D=PhD"
+	url := "http://localhost:8000/api/search?academic_titles%5B%5D=dr"
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -49,7 +49,7 @@ func TestSearchAcademicTitle(t *testing.T) {
 	}
 
 	for _, item := range result.Scientists {
-		if err := *item.AcademicTitle == "PhD"; err == false {
+		if err := *item.AcademicTitle == "dr"; err == false {
 			t.Errorf("AcademicTitle jest niewłaściwy.")
 		}
 	}
