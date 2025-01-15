@@ -25,6 +25,19 @@ func RegisterSearchRoutes(api huma.API, prefix string) {
 			"500": {Description: "Internal server error"},
 		}},
 		func(ctx context.Context, input *models.SearchInput) (*responses.ScientistsResponse, error) {
+
+			if input.MinImpactFactor < 0 || input.MinImpactFactor > input.MaxImpactFactor {
+				return nil, huma.Error400BadRequest("Invalid search input")
+			}
+
+			if input.MinMinisterialScore < 0 || input.MinMinisterialScore > input.MaxMinisterialScore {
+				return nil, huma.Error400BadRequest("Invalid search input")
+			}
+
+			if input.MinPublications < 0 || input.MinPublications > input.MaxPublications {
+				return nil, huma.Error400BadRequest("Invalid search input")
+			}
+
 			return handlers.SearchHandler(ctx, input)
 		},
 	)
