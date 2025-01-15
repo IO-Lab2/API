@@ -655,7 +655,7 @@ func TestSearchByNegativeYearScoreFilters(t *testing.T) {
 func TestSearchByYearScoreFiltersWhenNotANumber(t *testing.T) {
 	router := TestSetUP()
 	year := "Pomidor"
-	url := "http://localhost:8000/api/search?year_score_filters%5B%5D=" + year
+	url := "http://localhost:8000/api/search?year_score_filter%5B%5D=" + year
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Errorf("Nie udało się utworzyć żądania: %d", err)
@@ -664,7 +664,7 @@ func TestSearchByYearScoreFiltersWhenNotANumber(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	router.ServeHTTP(w, req)
-	if w.Code != http.StatusUnprocessableEntity {
+	if w.Code != http.StatusBadRequest {
 		t.Errorf("Oczekwiano kodu błędu %d, a otrzymano %d", http.StatusUnprocessableEntity, w.Code)
 	}
 }
