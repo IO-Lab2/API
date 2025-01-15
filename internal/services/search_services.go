@@ -40,6 +40,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
         b.h_index_scopus, 
         b.publication_count, 
         b.ministerial_score,
+		b.impact_factor,
         COUNT(*) OVER() AS total_count,
         json_agg(json_build_object(
             'year', EXTRACT(YEAR FROM p.publication_date),
@@ -140,6 +141,16 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		args["max_score"] = input.MaxMinisterialScore
 	}
 
+	if isNotEmpty(input.MinImpactFactor) {
+		whereClauses = append(whereClauses, "b.impact_factor >= :min_impact_factor")
+		args["min_impact_factor"] = input.MinImpactFactor
+	}
+
+	if isNotEmpty(input.MaxImpactFactor) {
+		whereClauses = append(whereClauses, "b.impact_factor <= :max_impact_factor")
+		args["max_impact_factor"] = input.MaxImpactFactor
+	}
+
 	if isNotEmpty(input.PublicationsYears) {
 		publicationYears := make([]string, len(input.PublicationsYears))
 		for i, year := range input.PublicationsYears {
@@ -155,7 +166,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 	}
 
 	query += `
-    GROUP BY s.id, b.h_index_wos, b.h_index_scopus, b.publication_count, b.ministerial_score
+    GROUP BY s.id, b.h_index_wos, b.h_index_scopus, b.publication_count, b.ministerial_score, b.impact_factor
 	ORDER BY s.last_name, s.first_name
 	LIMIT :limit OFFSET :offset`
 
@@ -191,6 +202,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 			&scientist.Bibliometrics.HIndexScopus,
 			&scientist.Bibliometrics.PublicationCount,
 			&scientist.Bibliometrics.MinisterialScore,
+			&scientist.Bibliometrics.ImpactFactor,
 			&totalCount,
 			&publicationScoresJSON,
 		); err != nil {

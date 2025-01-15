@@ -62,6 +62,7 @@ type Bibliometrics struct {
 	HIndexScopus     *int     `db:"h_index_scopus" json:"h_index_scopus,omitempty"`
 	PublicationCount *int     `db:"publication_count" json:"publication_count"`
 	MinisterialScore *float64 `db:"ministerial_score" json:"ministerial_score" doc:"Total ministerial score of the scientist" format:"float" example:"1.0"`
+	ImpactFactor     *float64 `db:"impact_factor" json:"impact_factor,omitempty"`
 }
 
 type ResearchArea struct {

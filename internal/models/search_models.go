@@ -19,6 +19,8 @@ type SearchInput struct {
 	YearScoreFilter     []string `query:"year_score_filter[]" doc:"List of year and score filters. Format: year:min_score-max_score."`
 	MinPublications     int      `query:"publications_min" doc:"Minimum number of publications."`
 	MaxPublications     int      `query:"publications_max" doc:"Maximum number of publications."`
+	MaxImpactFactor     float64  `query:"impact_factor_max" doc:"Maximum impact factor."`
+	MinImpactFactor     float64  `query:"impact_factor_min" doc:"Minimum impact factor."`
 	Positions           []string `query:"positions[]" doc:"List of positions to filter the search result."`
 	JournalTypes        []string `query:"journal_types[]" doc:"List of journal types to filter the search result."`
 	PublicationsYears   []int    `query:"publications_years[]" doc:"List of publication years to filter the search result."`
