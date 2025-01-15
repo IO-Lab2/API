@@ -41,7 +41,6 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
         b.publication_count, 
         b.ministerial_score,
 		b.impact_factor,
-        COUNT(*) OVER() AS total_count,
         json_agg(json_build_object(
             'year', EXTRACT(YEAR FROM p.publication_date),
             'score', p.ministerial_score
@@ -151,15 +150,6 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		args["max_impact_factor"] = input.MaxImpactFactor
 	}
 
-	if isNotEmpty(input.PublicationsYears) {
-		publicationYears := make([]string, len(input.PublicationsYears))
-		for i, year := range input.PublicationsYears {
-			publicationYears[i] = strconv.Itoa(year)
-		}
-		whereClauses = append(whereClauses, "EXTRACT(YEAR FROM p.publication_date) = ANY(:publication_years)")
-		args["publication_years"] = pq.Array(publicationYears)
-	}
-
 	// Combine query
 	if len(whereClauses) > 0 {
 		query += " WHERE " + strings.Join(whereClauses, " AND ")
@@ -181,7 +171,6 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 	defer rows.Close()
 
 	var scientists []responses.ScientistBody
-	var totalCount int
 	for rows.Next() {
 		var scientist responses.ScientistBody
 		var researchAreaNames []string
@@ -203,7 +192,6 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 			&scientist.Bibliometrics.PublicationCount,
 			&scientist.Bibliometrics.MinisterialScore,
 			&scientist.Bibliometrics.ImpactFactor,
-			&totalCount,
 			&publicationScoresJSON,
 		); err != nil {
 			logging.Logger.Error("ERROR: Error scanning row: ", err)
@@ -246,6 +234,21 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 			}
 		}
 
+		// Filter by the PublicationsYears
+		if isNotEmpty(input.PublicationsYears) {
+			meetsCriteria := false
+			for _, year := range input.PublicationsYears {
+				if _, exists := combinedScores[year]; exists {
+					meetsCriteria = true
+					break
+				}
+			}
+
+			if !meetsCriteria {
+				continue // Skip this scientist
+			}
+		}
+
 		// Convert combined scores map to slice
 		var combinedPublicationScores []responses.PublicationScore
 		for year, score := range combinedScores {
@@ -274,7 +277,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 		return nil, 0, errors.New("No scientists found")
 	}
 
-	return scientists, totalCount, nil
+	return scientists, len(scientists), nil
 }
 
 func isNotEmpty(param interface{}) bool {
