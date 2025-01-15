@@ -175,4 +175,20 @@ func RegisterFiltersRoutes(api huma.API, basePath string) {
 			return handlers.GetJournalTypesHandler(ctx)
 		},
 	)
+
+	huma.Register(api, huma.Operation{
+		OperationID: "Get Impact Factors Filter",
+		Description: "Retrieves the largest and smallest impact factors",
+		Tags:        []string{"Filters", "Impact Factors"},
+		Method:      http.MethodGet,
+		Path:        fmt.Sprintf("%s/filters/impact-factors", basePath),
+		Responses: map[string]*huma.Response{
+			"200": {Description: "Impact factors retrieved successfully"},
+			"404": {Description: "No impact factors found"},
+			"500": {Description: "Internal server error"},
+		}},
+		func(ctx context.Context, input *requests.ImpactFactorsFilterRequest) (*responses.ImpactFactorResponse, error) {
+			return handlers.GetImpactFactorsHandler(ctx)
+		},
+	)
 }
