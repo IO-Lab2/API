@@ -20,6 +20,9 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 	if input.Limit < 1 {
 		input.Limit = 50
 	}
+	if input.Limit == 25 {
+		input.Limit = 50
+	}
 	if input.Page < 1 {
 		input.Page = 1
 	}
