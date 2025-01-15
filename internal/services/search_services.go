@@ -220,6 +220,7 @@ func SearchForScientists(input *models.SearchInput) ([]responses.ScientistBody, 
 
 		// Filter by YearScoreFilter
 		if len(input.YearScoreFilter) > 0 {
+			totalRows = len(scientists)
 			yearScoreFilters, err := ParseYearScoreFilters(input.YearScoreFilter)
 			if err != nil {
 				logging.Logger.Error("ERROR: Invalid year score filter: ", err)
